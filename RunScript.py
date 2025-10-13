@@ -1,8 +1,19 @@
 import os
 import xml.etree.ElementTree as ET
 # import get_pthat_binsOriginal as gpt
-
-def main(pthat_index, FolderName):
+def load_problem_ids(problems_csv):
+    if not problems_csv:
+        return None
+    import re
+    try:
+        with open(problems_csv, "r") as f:
+            txt = f.read().strip()
+        ids = [int(t) for t in re.split(r"[,\s]+", txt) if t]
+        return ids if ids else None
+    except Exception as e:
+        print(f"[WARN] Could not read '{problems_csv}': {e}")
+        return None
+def main(pthat_index, FolderName, problems_csv=None):
     # XML file path
     os.makedirs(f"{FolderName}", exist_ok=True)
     # pthat_bins = gpt.GetPtHatBins(5020)
@@ -10,8 +21,10 @@ def main(pthat_index, FolderName):
     tree = ET.parse(xml_file)
     root = tree.getroot()
 
+    problem_ids = load_problem_ids(problems_csv)
     # Iterate over events
-    for k in range(0,200):
+    # for k in range(0,200):
+    for k in (problem_ids if problem_ids is not None else range(0, 200)):
         #if k in [0,1,4,5,6,7]:
         #    continue
         xml_file = f"{FolderName}/jet_main.xml"
@@ -165,7 +178,8 @@ rm -r {build_dir}
         
         
     return 0
-
+#To delete the content of the directory and rerunning the script, use the following command
+#rm -rf log/ build_*/ jetmod_Run*.xml job_script_*.sh  jetmod_*_final_state_hadrons.dat
 if __name__ == "__main__":
     for i in range(42,43):
         # main(i,"/wsu/home/gy/gy40/gy4065/ml-jet-ext/simulation_results/c0005_alpha0p2_q_1p0")
@@ -177,44 +191,44 @@ if __name__ == "__main__":
         # main(i,"/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_1p0")
         # main(i,"/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_1p5")
 
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_1p0")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_1p5")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_2p0")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_2p5")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_3p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_1p0") #InPROGRESS
+        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_1p5") #InPROGRESS
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_2p0") #InPROGRESS
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_2p5")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_3p0")
 
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_1p0")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_1p5")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_2p0")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_2p5")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_3p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_1p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_1p5")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_2p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_2p5")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_3p0")
 
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_1p0")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_1p5")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_2p0")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_2p5")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_3p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_1p0") #DONE
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_1p5")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_2p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_2p5")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_3p0")
 
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_1p0")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_1p5")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_2p0")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_2p5")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_3p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_1p0") #DONE
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_1p5")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_2p0") #DONE
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_2p5")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_3p0") #DONE
 
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_1p0")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_1p5")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_2p0")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_2p5")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_3p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_1p0") #DONE
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_1p5")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_2p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_2p5") #DONE
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_3p0") #DONE
 
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_1p0")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_1p5")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_2p0")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_2p5")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_3p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_1p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_1p5")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_2p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_2p5")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_3p0")
 
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_1p0")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_1p5")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_2p0")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_2p5")
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_3p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_1p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_1p5")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_2p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_2p5")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_3p0")
