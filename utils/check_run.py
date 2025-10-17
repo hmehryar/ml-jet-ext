@@ -28,6 +28,7 @@ class RunScanConfig:
 class RunScanner:
     def __init__(self, cfg: RunScanConfig):
         self.cfg = cfg
+        self.df = pd.DataFrame()
 
     def non_empty(self, p: Path) -> bool:
         try:
@@ -56,30 +57,109 @@ class RunScanner:
         line = self.last_line_fast(path)
         return ("sigmaGen" in line) and ("sigmaErr" in line)
 
-    def scan(self) -> pd.DataFrame:
-        files = sorted(self.cfg.run_dir.glob(f"{self.cfg.prefix}*{self.cfg.suffix}"))
-        if self.cfg.max_files:
-            files = files[:self.cfg.max_files]
+    # def scan(self) -> pd.DataFrame:
+    #     files = sorted(self.cfg.run_dir.glob(f"{self.cfg.prefix}*{self.cfg.suffix}"))
+    #     if self.cfg.max_files:
+    #         files = files[:self.cfg.max_files]
 
-        rows: List[Dict[str, Any]] = []
-        for f in files:
-            name = f.name
-            k_str = name[len(self.cfg.prefix):-len(self.cfg.suffix)]
-            try:
-                k = int(k_str)
-            except ValueError:
-                k = None
+    #     rows: List[Dict[str, Any]] = []
+    #     for f in files:
+    #         name = f.name
+    #         k_str = name[len(self.cfg.prefix):-len(self.cfg.suffix)]
+    #         try:
+    #             k = int(k_str)
+    #         except ValueError:
+    #             k = None
+    #         rows.append({
+    #             "k": k,
+    #             "file": str(f),
+    #             "exists": f.exists(),
+    #             "nonempty": self.non_empty(f),
+    #             "complete": self.is_complete(f),
+    #         })
+    #     self.df = pd.DataFrame(rows).sort_values("k").reset_index(drop=True)
+    #     self.save_results()
+    #     return self.df
+    # import pandas as pd
+
+    # def add_missing_indices(self, df: pd.DataFrame, idx_col: str = "idx",
+    #                         start: int = 0, end: int = 199) -> pd.DataFrame:
+    #     """
+    #     Ensure rows for every index in [start, end]. For indices not present,
+    #     append rows with exists=False, nonempty=False, complete=False.
+    #     Keeps existing rows/values intact and returns a sorted DataFrame.
+    #     """
+    #     if idx_col not in df.columns:
+    #         raise ValueError(f"DataFrame must contain '{idx_col}' column.")
+
+    #     df = self.df.copy()
+    #     # Work with the index set to idx_col for easy alignment
+    #     df = df.set_index(idx_col, drop=False)
+
+    #     expected = pd.Index(range(start, end + 1), name=idx_col)
+    #     missing = expected.difference(df.index)
+
+    #     # Make sure the 3 flag columns exist; if not, create (don’t override existing)
+    #     for col in ("exists", "nonempty", "complete"):
+    #         if col not in df.columns:
+    #             df[col] = pd.NA  # preserve unknowns for existing rows
+
+    #     # Build rows for missing indices with required defaults
+    #     if len(missing) > 0:
+    #         missing_df = pd.DataFrame({
+    #             idx_col: missing,
+    #             "exists": False,
+    #             "nonempty": False,
+    #             "complete": False,
+    #         }).set_index(idx_col, drop=False)
+
+    #         # Ensure missing_df has any extra columns your df has (as NA)
+    #         for col in df.columns:
+    #             if col not in missing_df.columns:
+    #                 missing_df[col] = pd.NA
+
+    #         df = pd.concat([df, missing_df], axis=0, sort=False)
+
+    #     # Reindex to sorted 0..199 order; keep existing values intact
+    #     df = df.reindex(expected)
+
+    #     # Final tidy up
+    #     self.df = df.reset_index(drop=True)
+
+    #     return self.df
+
+    def scan(self) -> pd.DataFrame:
+        """
+        Loop over expected jetmod_0..jetmod_199 files and record:
+        - exists: file is present on disk
+        - nonempty: size > 0 (only meaningful if exists)
+        - complete: last line contains the completion markers (only if exists)
+        If a file is missing, record exists=False, nonempty=False, complete=False.
+        """
+        # Respect max_files for smoke tests (0..max_files-1), else full 0..199
+        last_k = 199 if self.cfg.max_files is None else min(199, self.cfg.max_files - 1)
+
+        rows = []
+        for k in range(0, last_k + 1):
+            fname = f"{self.cfg.prefix}{k}{self.cfg.suffix}"
+            p = self.cfg.run_dir / fname
+
+            exists = p.is_file()
+            nonempty = self.non_empty(p) if exists else False
+            complete = self.is_complete(p) if exists else False  # checks for proper ending
+
             rows.append({
                 "k": k,
-                "file": str(f),
-                "exists": f.exists(),
-                "nonempty": self.non_empty(f),
-                "complete": self.is_complete(f),
+                "file": str(p),
+                "exists": exists,
+                "nonempty": nonempty,
+                "complete": complete,
             })
+
         self.df = pd.DataFrame(rows).sort_values("k").reset_index(drop=True)
         self.save_results()
         return self.df
-    
+
     def save_results(self):
         if self.df is None or self.df.empty:
             print("[WARN] No data to save.")
@@ -94,6 +174,7 @@ class RunScanner:
         """
         if self.df is None:
             self.scan()
+            self.add_missing_indices(self.df, idx_col="k", start=0, end=199)
 
         if self.df is None or self.df.empty:
             return []
@@ -149,7 +230,7 @@ def main(run_dir: str = None, max_files: int = None):
 
     print(f"[INFO] Scanning {run_dir_path} (max_files={max_files})")
     scanner.scan()
-
+    
     bad_jobs = scanner.get_problem_jobs()
     scanner.save_problem_jobs()
     print(f"[DONE] Found {len(bad_jobs)} problem jobs:", bad_jobs)
@@ -167,20 +248,34 @@ from pathlib import Path
 if __name__ == "__main__":
     BASE = Path("/rs/rs_grp_mljet/ml-jet-ext/simulation_results/")
     RUN_DIRS = [
-        "c0005_alpha0p20_q_1p0", "c0005_alpha0p20_q_1p5", "c0005_alpha0p20_q_2p0",
-        "c0005_alpha0p20_q_2p5", "c0005_alpha0p20_q_3p0",
-        "c0005_alpha0p25_q_1p0", "c0005_alpha0p25_q_1p5", "c0005_alpha0p25_q_2p0",
-        "c0005_alpha0p25_q_2p5", "c0005_alpha0p25_q_3p0",
-        "c0005_alpha0p30_q_1p0", "c0005_alpha0p30_q_1p5", "c0005_alpha0p30_q_2p0",
-        "c0005_alpha0p30_q_2p5", "c0005_alpha0p30_q_3p0",
-        "c0005_alpha0p35_q_1p0", "c0005_alpha0p35_q_1p5", "c0005_alpha0p35_q_2p0",
-        "c0005_alpha0p35_q_2p5", "c0005_alpha0p35_q_3p0",
-        "c0005_alpha0p40_q_1p0", "c0005_alpha0p40_q_1p5", "c0005_alpha0p40_q_2p0",
-        "c0005_alpha0p40_q_2p5", "c0005_alpha0p40_q_3p0",
-        "c0005_alpha0p45_q_1p0", "c0005_alpha0p45_q_1p5", "c0005_alpha0p45_q_2p0",
-        "c0005_alpha0p45_q_2p5", "c0005_alpha0p45_q_3p0",
-        "c0005_alpha0p50_q_1p0", "c0005_alpha0p50_q_1p5", "c0005_alpha0p50_q_2p0",
-        "c0005_alpha0p50_q_2p5", "c0005_alpha0p50_q_3p0",
+        # "c0005_alpha0p20_q_1p0",
+        #  "c0005_alpha0p20_q_1p5",
+        #  "c0005_alpha0p20_q_2p0",
+        # "c0005_alpha0p20_q_2p5",
+        #  "c0005_alpha0p20_q_3p0",
+        # "c0005_alpha0p25_q_1p0",
+        #  "c0005_alpha0p25_q_1p5",
+        #  "c0005_alpha0p25_q_2p0",
+        # "c0005_alpha0p25_q_2p5", 
+        # "c0005_alpha0p25_q_3p0",
+        # "c0005_alpha0p30_q_1p0", 
+        # "c0005_alpha0p30_q_1p5",
+        #  "c0005_alpha0p30_q_2p0",
+        # "c0005_alpha0p30_q_2p5",
+        #  "c0005_alpha0p30_q_3p0",
+        # "c0005_alpha0p35_q_1p0",
+        #  "c0005_alpha0p35_q_1p5",
+        #  "c0005_alpha0p35_q_2p0",
+        "c0005_alpha0p35_q_2p5", 
+        "c0005_alpha0p35_q_3p0",
+        # "c0005_alpha0p40_q_1p0", 
+        # "c0005_alpha0p40_q_1p5",
+        #  "c0005_alpha0p40_q_2p0",
+        # "c0005_alpha0p40_q_2p5", "c0005_alpha0p40_q_3p0",
+        # "c0005_alpha0p45_q_1p0", "c0005_alpha0p45_q_1p5", "c0005_alpha0p45_q_2p0",
+        # "c0005_alpha0p45_q_2p5", "c0005_alpha0p45_q_3p0",
+        # "c0005_alpha0p50_q_1p0", "c0005_alpha0p50_q_1p5", "c0005_alpha0p50_q_2p0",
+        # "c0005_alpha0p50_q_2p5", "c0005_alpha0p50_q_3p0",
     ]
 
     for name in RUN_DIRS:
