@@ -205,35 +205,35 @@ if __name__ == "__main__":
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_1p0") #DONE
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_1p5") #DONE
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_2p0") #DONE
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_2p5", "problem_jobs.csv") #DONE, need 122 more jobs
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_3p0", "problem_jobs.csv") #DONE, need 32 more jobs
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_2p5", "problem_jobs.csv") #DONE, need 30 more jobs
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p25_q_3p0", "problem_jobs.csv") #DONE, need 23 more jobs
 
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_1p0") #DONE
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_1p5", "problem_jobs.csv") #DONE, need 58 more jobs
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_1p5", "problem_jobs.csv") #DONE, need 49 more jobs
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_2p0") #DONE
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_2p5") #DONE
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p30_q_3p0") #DONE
 
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_1p0") #DONE
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_1p5") #DONE
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_2p0", "problem_jobs.csv") #DONE, need 194 more jobs
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_2p5") #IN PROGRESS
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_3p0") #IN PROGRESS
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_2p0", "problem_jobs.csv") #DONE, need 194 more jobs
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_2p5") #DONE
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_3p0") #DONE
 
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_1p0") #DONE
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_1p5") #IN PROGRESS
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_2p0") #IN PROGRESS
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_2p5") #IN PROGRESS
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_3p0") #IN PROGRESS
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_1p5") #DONE
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_2p0") #DONE
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_2p5", "problem_jobs.csv") #DONE, need 89 more jobs
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_3p0", "problem_jobs.csv") #DONE, need 6 more jobs
 
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_1p0") #IN PROGRESS
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_1p5")
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_2p0")
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_2p5")
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_3p0")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_1p0", "problem_jobs.csv") #DONE, need 106 more jobss
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_1p5") #IN PROGRESS
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_2p0") #IN PROGRESS
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_2p5") #IN PROGRESS
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_3p0") #IN PROGRESS
 
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_1p0")
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_1p5")
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_2p0")
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_2p5")
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_1p0") #IN PROGRESS
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_1p5") #IN PROGRESS
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_2p0") #IN PROGRESS
+        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_2p5") #IN PROGRESS
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_3p0")
