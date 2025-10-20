@@ -6,9 +6,31 @@
 #include <cmath>
 #include <iomanip> // For setw function
 #include <string>
+#include <sstream>
 
 using namespace std;
 using namespace fastjet;
+
+// add near the top with other includes
+#include <dirent.h>     // opendir/readdir
+#include <sys/stat.h>   // stat, mkdir
+#include <vector>
+#include <algorithm>
+
+// --- helpers ---
+static bool is_dir(const std::string& p) {
+  struct stat st; return ::stat(p.c_str(), &st)==0 && S_ISDIR(st.st_mode);
+}
+static void ensure_dir(const std::string& p) {
+  struct stat st;
+  if (::stat(p.c_str(), &st)==0 && S_ISDIR(st.st_mode)) return;
+  ::mkdir(p.c_str(), 0775);
+}
+static std::string basename_of(const std::string& path) {
+  auto pos = path.find_last_of('/');
+  return (pos == std::string::npos) ? path : path.substr(pos+1);
+}
+
 
 //------------------------------------------------------------------------
 // the user information
@@ -139,11 +161,20 @@ void ProcessJet(fastjet::PseudoJet &jet, std::vector<fastjet::PseudoJet> &new_co
 
 //------------------------------------------------------------
 /// MAIN PROGRAM
-int FastJetProcedure(int lower_lim,int upper_lim,int number){
-  //input file name  
-  std::string input_file="/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_1p0/jetmod_" + std::to_string(number) + "_final_state_hadrons.dat";
-  //output file name
-  std::string output_file="/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_1p0/jetmod_" + std::to_string(number) + "_final_state_hadrons_processed.dat";
+// int FastJetProcedure(int lower_lim,int upper_lim,int number){
+//   //input file name  
+//   std::string input_file="/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_1p0/jetmod_" + std::to_string(number) + "_final_state_hadrons.dat";
+//   //output file name
+//   std::string output_file="/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_1p0/jetmod_" + std::to_string(number) + "_final_state_hadrons_processed.dat";
+int FastJetProcedure(int lower_lim,int upper_lim,int number,
+                     const std::string& input_override="",
+                     const std::string& output_override="") {
+  std::string input_file  = input_override.empty()  
+							? (std::string("//rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_1p0/jetmod_") + std::to_string(number) + "_final_state_hadrons.dat") 
+							: input_override;
+  std::string output_file = output_override.empty() 
+  							? (std::string("//rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_1p0/jetmod_") + std::to_string(number) + "_final_state_hadrons_processed.dat")
+				            : output_override;
 
   double sigma, sigmaerr;
   std::ifstream file0(input_file);  
@@ -299,7 +330,73 @@ int FastJetProcedure(int lower_lim,int upper_lim,int number){
 int main(int argc, char* argv[]){
     int low_lim=0;//atoi(argv[1]);
     int upper_lim=0;//atoi(argv[2]);
-    int number = atoi(argv[1]);
-    FastJetProcedure(low_lim,upper_lim,number);
+    // int number = atoi(argv[1]);
+    // FastJetProcedure(low_lim,upper_lim,number);
+	if (argc == 2) {
+		cout << "Single argument mode\n"<< "  Argument: " << argv[1] << "\n";
+
+       int number = atoi(argv[1]);
+       return FastJetProcedure(low_lim, upper_lim, number);
+	} else if (argc == 3) {
+		// cout << "Two argument mode\n"<< "  Input file: " << argv[1] << "\n"<< "  Output file: " << argv[2] << "\n";
+
+		// return FastJetProcedure(low_lim, upper_lim, /*number=*/0, argv[1], argv[2]);
+		  	std::string in_dir = argv[1];
+			std::string out_dir = argv[2];
+
+			if (!is_dir(in_dir)) {
+				std::cerr << "ERROR: input_dir not found or not a directory: " << in_dir << "\n";
+				return 1;
+			}
+			ensure_dir(out_dir);
+
+			// Collect *.dat that match our expected naming
+			std::vector<std::string> files;
+			DIR* d = ::opendir(in_dir.c_str());
+			if (!d) {
+				std::cerr << "ERROR: cannot open: " << in_dir << "\n";
+				return 1;
+			}
+			for (dirent* e = ::readdir(d); e; e = ::readdir(d)) {
+				if (e->d_type == DT_REG || e->d_type == DT_UNKNOWN) {
+				std::string name = e->d_name;
+				// simplest filter: require both substrings and .dat suffix
+				if (name.find("jetmod_") == 0 &&
+					name.find("_final_state_hadrons.dat") != std::string::npos) {
+					files.push_back(in_dir + "/" + name);
+				}
+				}
+			}
+			::closedir(d);
+			std::sort(files.begin(), files.end()); // jetmod_0..199 in order
+
+			// Report how many we found (expect 200)
+			std::cout << "[jet_unfolding] Found " << files.size()
+						<< " input .dat files in " << in_dir << " (expected 200)\n";
+
+			int ok = 0, fail = 0;
+			for (const auto& in_path : files) {
+				std::string out_path = out_dir + "/" + basename_of(in_path); // same filename
+				cout << "Processing file: " << in_path << " -> " << out_path << "\n";
+				int rc = FastJetProcedure(low_lim, upper_lim, /*number=*/0, in_path, out_path);
+				if (rc == 0) ++ok; else ++fail;
+			}
+
+			std::cout << "[jet_unfolding] Done. processed=" << ok << " failed=" << fail << "\n";
+			return (fail == 0) ? 0 : 2;
+	} else {
+		std::cerr << "Usage: " << argv[0] << " <number>\n"
+					<< "   or: " << argv[0] << " <input_full_path> <output_full_path>\n";
+		return 1;
+	}
     return 0;
 }
+
+// g++ -std=c++11 jet_unfolding.cc -o jet_unfolding $(/wsu/el7/gnu7/fastjet/3.4.0/bin/fastjet-config --cxxflags --libs --plugins)"
+
+/* usage:
+./jet_unfolding 0
+
+or
+./jet_unfolding /rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_1p0/jetmod_0_final_state_hadrons.dat /rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_1p0_unfolded/jetmod_0_final_state_hadrons.dat
+*/
