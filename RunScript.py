@@ -216,17 +216,17 @@ if __name__ == "__main__":
 
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_1p0") #DONE
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_1p5") #DONE
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_2p0", "problem_jobs.csv") #DONE, need 76 more jobs
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_2p0", "problem_jobs.csv") #DONE
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_2p5") #DONE
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p35_q_3p0") #DONE
 
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_1p0") #DONE
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_1p5") #DONE
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_2p0") #DONE
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_2p5", "problem_jobs.csv") #DONE, need 87 more jobs
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_3p0", "problem_jobs.csv") #DONE, need 6 more jobs
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_2p5", "problem_jobs.csv") #DONE
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p40_q_3p0", "problem_jobs.csv") #DONE
 
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_1p0", "problem_jobs.csv") #DONE, need 2 more jobs
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_1p0", "problem_jobs.csv") #DONE
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_1p5") #DONE
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_2p0") #DONE
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p45_q_2p5") #DONE
@@ -237,4 +237,4 @@ if __name__ == "__main__":
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_2p0") #DONE
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_2p5") #DONE
 
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_3p0") #IN PROGRESS
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p50_q_3p0") #DONE
