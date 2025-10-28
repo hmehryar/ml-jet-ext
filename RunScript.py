@@ -192,24 +192,28 @@ rm -r {build_dir}
 #rm -rf log/ build_*/ jetmod_Run*.xml job_script_*.sh  jetmod_*_final_state_hadrons.dat
 
 #To run the script, use the following command
-# main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_1p0")
-# main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results/c0005_alpha0p20_q_1p0", "problem_jobs.csv") #DONE
+# main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_1p0") #Backlog | InProgress | Done
+# main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_1p0", "problem_jobs.csv") #Backlog | InProgress | Done
+
+#main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat100-110_eCM5020/c0005_alpha0p20_q_1p5") #Backlog | InProgress | Done
+#main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat100-110_eCM5020/c0005_alpha0p20_q_1p5", "problem_jobs.csv") #Backlog | InProgress | Done
+
 
 #The main function can be in the Backlog or InProgress or Done status depending on how many jobs have been submitted and completed.
 
 if __name__ == "__main__":
     for i in range(42,43):
 
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_1p0") #InProgress
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_1p5") #InProgress
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_2p0") #InProgress
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_2p5") #InProgress
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_3p0") #InProgress
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_1p0", "problem_jobs.csv") #InProgress | Done
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_1p5", "problem_jobs.csv") #InProgress | Done
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_2p0", "problem_jobs.csv") #InProgress | Done
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_2p5", "problem_jobs.csv") #InProgress | Done
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_3p0", "problem_jobs.csv") #InProgress | Done
 
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_1p0") #Backlog
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_1p5") #Backlog
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_1p0") #InProgress
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_1p5") #InProgress
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_2p0") #Backlog
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_2p5") #Backlog
+        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_2p5") #Backlog
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_3p0") #Backlog
 
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_1p0") #Backlog
