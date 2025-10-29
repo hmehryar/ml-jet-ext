@@ -204,31 +204,31 @@ rm -r {build_dir}
 if __name__ == "__main__":
     for i in range(42,43):
 
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_1p0", "problem_jobs.csv") #InProgress | Done
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_1p5", "problem_jobs.csv") #InProgress | Done
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_1p0") #Done
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_1p5") #Done
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_2p0", "problem_jobs.csv") #InProgress | Done
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_2p5", "problem_jobs.csv") #InProgress | Done
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_2p5") #Done
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_3p0", "problem_jobs.csv") #InProgress | Done
 
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_1p0") #InProgress
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_1p5") #InProgress
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_2p0") #Backlog
-        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_2p5") #Backlog
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_3p0") #Backlog
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_1p0", "problem_jobs.csv") #InProgress | Done
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_1p5") #Done
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_2p0") #Done
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_2p5") #Done
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p25_q_3p0") #InProgress
 
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_1p0") #Backlog
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_1p5") #Backlog
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_2p0") #Backlog
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_2p5") #Backlog
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_3p0") #Backlog
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_1p0") #InProgress
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_1p5") #InProgress
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_2p0") #InProgress
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_2p5") #InProgress
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_3p0") #InProgress
 
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p35_q_1p0") #Backlog
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p35_q_1p5") #Backlog
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p35_q_2p0") #Backlog
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p35_q_2p5") #Backlog
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p35_q_3p0") #Backlog
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p35_q_1p0") #InProgress
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p35_q_1p5") #InProgress
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p35_q_2p0") #InProgress
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p35_q_2p5") #InProgress
+        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p35_q_3p0") #InProgress
 
-        # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p40_q_1p0") #Backlog
+        main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p40_q_1p0") #InProgress
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p40_q_1p5") #Backlog
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p40_q_2p0") #Backlog
         # main(i, "/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p40_q_2p5") #Backlog
