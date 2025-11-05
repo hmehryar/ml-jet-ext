@@ -277,15 +277,15 @@ if __name__ == "__main__":
         # "c0005_alpha0p40_q_2p5", 
         # "c0005_alpha0p40_q_3p0",
         "c0005_alpha0p45_q_1p0", 
-        "c0005_alpha0p45_q_1p5", 
-        "c0005_alpha0p45_q_2p0",
+        # "c0005_alpha0p45_q_1p5", 
+        # "c0005_alpha0p45_q_2p0",
         "c0005_alpha0p45_q_2p5", 
-        "c0005_alpha0p45_q_3p0",
+        # "c0005_alpha0p45_q_3p0",
         "c0005_alpha0p50_q_1p0",
         "c0005_alpha0p50_q_1p5", 
-        "c0005_alpha0p50_q_2p0",
-        "c0005_alpha0p50_q_2p5", 
-        "c0005_alpha0p50_q_3p0",
+        # "c0005_alpha0p50_q_2p0",
+        # "c0005_alpha0p50_q_2p5", 
+        # "c0005_alpha0p50_q_3p0",
     ]
 
     for name in RUN_DIRS:
