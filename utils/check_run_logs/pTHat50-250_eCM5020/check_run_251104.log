@@ -1,6 +1,0 @@
-
-=== Scanning: /rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_3p0 ===
-[INFO] Scanning /rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_3p0 (max_files=None)
-[INFO] Saved scan results to: /rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_3p0/scan_summary.csv
-[INFO] Saved 4 problem jobs to /rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_3p0/problem_jobs.csv
-[DONE] Found 4 problem jobs: [102, 103, 104, 105]
