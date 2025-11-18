@@ -180,7 +180,7 @@ int FastJetProcedure(int lower_lim,int upper_lim,int number,
 								? base_simulation_path+(std::string("c0005_alpha0p20_q_1p0/jetmod_") + std::to_string(number) + "_final_state_hadrons.dat") 
 								: input_override;
 	std::string output_file = output_override.empty() 
-  							? base_simulation_path+(std::string("c0005_alpha0p20_q_1p0/jetmod_") + std::to_string(number) + "_final_state_hadrons_processed.dat")
+  							? base_simulation_path+(std::string("c0005_alpha0p20_q_1p0_unfolded/jetmod_") + std::to_string(number) + "_final_state_hadrons.dat")
 				            : output_override;
 
   double sigma, sigmaerr;
@@ -204,7 +204,7 @@ int FastJetProcedure(int lower_lim,int upper_lim,int number,
 
   vector<fastjet::PseudoJet> input_particles;
   vector<fastjet::PseudoJet> hole_particles;  
-  double R = 1.0; //radius jet
+  double R = 0.4; //radius jet
   fastjet::JetDefinition jet_def(fastjet::antikt_algorithm, R);
   double weight, weightb;
   double EPlane;
@@ -239,7 +239,7 @@ int FastJetProcedure(int lower_lim,int upper_lim,int number,
 				//hole_sub(inclusive_jets,hole_particles,R);
 				for (auto& jet : inclusive_jets){
 					std::vector<fastjet::PseudoJet> new_constituents;
-					if (jet.perp() >= 90.0 &&  jet.perp() <= 110.0 && std::abs(jet.rap())<=2.8){
+					if (jet.perp() >= 50.0 &&  jet.perp() <= 250.0 && std::abs(jet.rap())<=2.8){
 						//file1<< std::setw(5) << "jet #" << std::setw(15) << "rapidity"<< std::setw(15) << "phi" << std::setw(15) << "pt" << std::setw(15)<< "E" <<std::endl;
 						ProcessJet(jet, new_constituents);
 						for (int i=0;i<new_constituents.size();i++) {
@@ -311,7 +311,7 @@ int FastJetProcedure(int lower_lim,int upper_lim,int number,
 	//hole_sub(inclusive_jets,hole_particles,R);
 	for (auto& jet : inclusive_jets){
 		std::vector<fastjet::PseudoJet> new_constituents;
-		if (jet.perp() >= 90.0 &&  jet.perp() <= 110.0 && std::abs(jet.rap())<=2.8){
+		if (jet.perp() >= 50.0 &&  jet.perp() <= 250.0 && std::abs(jet.rap())<=2.8){
 			//file1<< std::setw(5) << "jet #" << std::setw(15) << "rapidity"<< std::setw(15) << "phi" << std::setw(15) << "pt" << std::setw(15)<< "E" <<std::endl;
 			ProcessJet(jet, new_constituents);
 			for (int i=0;i<new_constituents.size();i++) {
