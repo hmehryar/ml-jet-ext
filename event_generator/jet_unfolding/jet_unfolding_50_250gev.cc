@@ -118,7 +118,53 @@ void hole_sub(vector<PseudoJet>& jets, vector<PseudoJet>& holes, double R) {
 }
 */
 
-void ProcessJet(fastjet::PseudoJet &jet, std::vector<fastjet::PseudoJet> &new_constituents){
+// void ProcessJet(fastjet::PseudoJet &jet, std::vector<fastjet::PseudoJet> &new_constituents){
+// 	//rotate around z axis by -phi_jet
+// 	double phi = std::atan2(jet.py(), jet.px());
+// 	double cos_phi = std::cos(-phi);
+// 	double sin_phi = std::sin(-phi);
+// 	//rotate arounf y axis by -theta
+// 	double theta = std::atan2(jet.pz(), jet.perp());
+// 	double cos_theta = std::cos(theta);
+// 	double sin_theta = std::sin(theta);
+
+// 	auto rotate = [&](double &x, double &y, double &z) {
+// 		//rotates about z
+// 		double x1 = cos_phi * x - sin_phi * y;
+// 		double y1 = sin_phi * x + cos_phi * y;
+// 		double z1 = z;
+// 		//rotates about y
+// 		double x2 = cos_theta * x1 + sin_theta * z1;
+// 		double y2 = y1;
+// 		double z2 = -sin_theta * x1 + cos_theta * z1;
+	
+// 		x = x2;
+// 		y = y2;
+// 		z = z2;
+// 	};
+// 	//rotate jet constituents
+// 	for (auto &c : jet.constituents()) {
+// 		double cx = c.px();
+// 		double cy = c.py();
+// 		double cz = c.pz();
+// 		rotate(cx, cy, cz);
+// 		fastjet::PseudoJet new_c(cx, cy, cz, c.E());
+// 		if (c.has_user_info<MyInfo>()) {
+// 			const MyInfo &info = c.user_info<MyInfo>();
+// 			new_c.set_user_info(new MyInfo(info)); 
+// 		}
+// 		new_constituents.push_back(new_c);
+		
+// 	}
+// 	//debug
+// 	//double px = jet.px();
+// 	//double py = jet.py();
+// 	//double pz = jet.pz();
+// 	//rotate(px, py, pz);
+// 	//std::cout<<"Old coordinate x:"<<jet.px()<<" y "<<jet.py()<<" z "<<jet.pz()<<std::endl;
+// 	//std::cout<<"Updated coordinate x:"<<px<<" y "<<py<<" z "<<pz<<" |p| "<<std::pow(std::pow(jet.px(),2.0)+std::pow(jet.py(),2.0)+std::pow(jet.pz(),2.0),0.5)<<" E "<<jet.E()<<std::endl;	
+// }
+void ProcessJet(fastjet::PseudoJet &jet, std::vector<fastjet::PseudoJet> &new_constituents,std::vector<fastjet::PseudoJet> &old_constituents){
 	//rotate around z axis by -phi_jet
 	double phi = std::atan2(jet.py(), jet.px());
 	double cos_phi = std::cos(-phi);
@@ -149,21 +195,24 @@ void ProcessJet(fastjet::PseudoJet &jet, std::vector<fastjet::PseudoJet> &new_co
 		double cz = c.pz();
 		rotate(cx, cy, cz);
 		fastjet::PseudoJet new_c(cx, cy, cz, c.E());
+		fastjet::PseudoJet old_c(c.px(), c.py(), c.pz(), c.E());
 		if (c.has_user_info<MyInfo>()) {
 			const MyInfo &info = c.user_info<MyInfo>();
 			new_c.set_user_info(new MyInfo(info)); 
+			old_c.set_user_info(new MyInfo(info));
 		}
 		new_constituents.push_back(new_c);
-		
+		old_constituents.push_back(old_c);
 	}
 	//debug
-	//double px = jet.px();
-	//double py = jet.py();
-	//double pz = jet.pz();
-	//rotate(px, py, pz);
-	//std::cout<<"Old coordinate x:"<<jet.px()<<" y "<<jet.py()<<" z "<<jet.pz()<<std::endl;
-	//std::cout<<"Updated coordinate x:"<<px<<" y "<<py<<" z "<<pz<<" |p| "<<std::pow(std::pow(jet.px(),2.0)+std::pow(jet.py(),2.0)+std::pow(jet.pz(),2.0),0.5)<<" E "<<jet.E()<<std::endl;	
+	// double px = jet.px();
+	// double py = jet.py();
+	// double pz = jet.pz();
+	// rotate(px, py, pz);
+	// std::cout<<"Old coordinate x:"<<jet.px()<<" y "<<jet.py()<<" z "<<jet.pz()<<std::endl;
+	// std::cout<<"Updated coordinate x:"<<px<<" y "<<py<<" z "<<pz<<" |p| "<<std::pow(std::pow(jet.px(),2.0)+std::pow(jet.py(),2.0)+std::pow(jet.pz(),2.0),0.5)<<" E "<<jet.E()<<std::endl;	
 }
+
 
 //------------------------------------------------------------
 /// MAIN PROGRAM
@@ -239,11 +288,12 @@ int FastJetProcedure(int lower_lim,int upper_lim,int number,
 				//hole_sub(inclusive_jets,hole_particles,R);
 				for (auto& jet : inclusive_jets){
 					std::vector<fastjet::PseudoJet> new_constituents;
+					std::vector<fastjet::PseudoJet> old_constituents;
 					if (jet.perp() >= 50.0 &&  jet.perp() <= 250.0 && std::abs(jet.rap())<=2.8){
 						//file1<< std::setw(5) << "jet #" << std::setw(15) << "rapidity"<< std::setw(15) << "phi" << std::setw(15) << "pt" << std::setw(15)<< "E" <<std::endl;
-						ProcessJet(jet, new_constituents);
+						ProcessJet(jet, new_constituents, old_constituents);
 						for (int i=0;i<new_constituents.size();i++) {
-							file1<< std::setw(5) << i << std::setw(15) << new_constituents[i].user_info<MyInfo>().pid() << std::setw(15) << new_constituents[i].E() << std::setw(15) << new_constituents[i].perp() << std::setw(15) <<new_constituents[i].phi() << std::setw(15) << new_constituents[i].pseudorapidity() << std::endl;
+							file1<< std::setw(5) << i << std::setw(15) << new_constituents[i].user_info<MyInfo>().pid() << std::setw(15) << new_constituents[i].E() << std::setw(15) << new_constituents[i].perp() << std::setw(15) <<old_constituents[i].phi() << std::setw(15) << old_constituents[i].pseudorapidity() << std::endl;
 						}
 						file1<< std::setw(5) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::endl;
 					}
@@ -311,12 +361,13 @@ int FastJetProcedure(int lower_lim,int upper_lim,int number,
 	//hole_sub(inclusive_jets,hole_particles,R);
 	for (auto& jet : inclusive_jets){
 		std::vector<fastjet::PseudoJet> new_constituents;
+		std::vector<fastjet::PseudoJet> old_constituents;
 		if (jet.perp() >= 50.0 &&  jet.perp() <= 250.0 && std::abs(jet.rap())<=2.8){
 			//file1<< std::setw(5) << "jet #" << std::setw(15) << "rapidity"<< std::setw(15) << "phi" << std::setw(15) << "pt" << std::setw(15)<< "E" <<std::endl;
-			ProcessJet(jet, new_constituents);
+			ProcessJet(jet, new_constituents, old_constituents);
 			for (int i=0;i<new_constituents.size();i++) {
 				//const MyInfo& info = new_constituents[i].user_info<MyInfo>();
-				file1<< std::setw(5) << i << std::setw(15) << new_constituents[i].user_info<MyInfo>().pid() << std::setw(15) << new_constituents[i].E() << std::setw(15) << new_constituents[i].perp() << std::setw(15) <<new_constituents[i].phi() << std::setw(15) << new_constituents[i].pseudorapidity() << std::endl;
+				file1<< std::setw(5) << i << std::setw(15) << new_constituents[i].user_info<MyInfo>().pid() << std::setw(15) << new_constituents[i].E() << std::setw(15) << new_constituents[i].perp() << std::setw(15) <<old_constituents[i].phi() << std::setw(15) << old_constituents[i].pseudorapidity() << std::endl;
 			}
 			file1<< std::setw(5) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::endl;
 		}
