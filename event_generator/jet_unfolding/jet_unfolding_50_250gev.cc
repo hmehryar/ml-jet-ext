@@ -293,14 +293,7 @@ int FastJetProcedure(int lower_lim,int upper_lim,int number,
 						//file1<< std::setw(5) << "jet #" << std::setw(15) << "rapidity"<< std::setw(15) << "phi" << std::setw(15) << "pt" << std::setw(15)<< "E" <<std::endl;
 						ProcessJet(jet, new_constituents, old_constituents);
 						for (int i=0;i<new_constituents.size();i++) {
-							file1<< std::setw(5) << 
-							i << std::setw(15) << 
-							new_constituents[i].user_info<MyInfo>().pid() << std::setw(15) <<
-							new_constituents[i].E() << std::setw(15) <<
-							old_constituents[i].perp() << std::setw(15) <<
-							new_constituents[i].phi() << std::setw(15) <<
-							new_constituents[i].pseudorapidity() << 
-							std::endl;
+							file1<< std::setw(5) << i << std::setw(15) << new_constituents[i].user_info<MyInfo>().pid() << std::setw(15) << new_constituents[i].E() << std::setw(15) << old_constituents[i].perp() << std::setw(15) <<old_constituents[i].phi() << std::setw(15) << new_constituents[i].pseudorapidity() << std::endl;
 						}
 						file1<< std::setw(5) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::endl;
 					}
@@ -374,7 +367,7 @@ int FastJetProcedure(int lower_lim,int upper_lim,int number,
 			ProcessJet(jet, new_constituents, old_constituents);
 			for (int i=0;i<new_constituents.size();i++) {
 				//const MyInfo& info = new_constituents[i].user_info<MyInfo>();
-				file1<< std::setw(5) << i << std::setw(15) << new_constituents[i].user_info<MyInfo>().pid() << std::setw(15) << new_constituents[i].E() << std::setw(15) << old_constituents[i].perp() << std::setw(15) <<old_constituents[i].phi() << std::setw(15) << new_constituents[i].pseudorapidity() << std::endl;
+				file1<< std::setw(5) << i << std::setw(15) << new_constituents[i].user_info<MyInfo>().pid() << std::setw(15) << new_constituents[i].E() << std::setw(15) << old_constituents[i].perp() << std::setw(15) <<new_constituents[i].phi() << std::setw(15) << new_constituents[i].pseudorapidity() << std::endl;
 			}
 			file1<< std::setw(5) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::setw(15) << 0 << std::endl;
 		}
