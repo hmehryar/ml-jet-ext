@@ -17,6 +17,15 @@ using namespace fastjet;
 #include <vector>
 #include <algorithm>
 
+/*
+  Jet unfolding for jets with pT between PTMIN and PTMAX GeV
+  The trained emulator with PGun showed high accuracy in this range.
+  So we only keep jets in this pT range for unfolding.
+ */
+const float PTMIN=90.0; // GeV
+const float PTMAX=110.0; // GeV
+const float JETRADIUS=0.4; // Jet radius parameter
+
 // --- helpers ---
 static bool is_dir(const std::string& p) {
   struct stat st; return ::stat(p.c_str(), &st)==0 && S_ISDIR(st.st_mode);
@@ -253,7 +262,7 @@ int FastJetProcedure(int lower_lim,int upper_lim,int number,
 
   vector<fastjet::PseudoJet> input_particles;
   vector<fastjet::PseudoJet> hole_particles;  
-  double R = 0.4; //radius jet
+  double R = JETRADIUS; //radius jet
   fastjet::JetDefinition jet_def(fastjet::antikt_algorithm, R);
   double weight, weightb;
   double EPlane;
@@ -289,7 +298,7 @@ int FastJetProcedure(int lower_lim,int upper_lim,int number,
 				for (auto& jet : inclusive_jets){
 					std::vector<fastjet::PseudoJet> new_constituents;
 					std::vector<fastjet::PseudoJet> old_constituents;
-					if (jet.perp() >= 50.0 &&  jet.perp() <= 250.0 && std::abs(jet.rap())<=2.8){
+					if (jet.perp() >= PTMIN &&  jet.perp() <= PTMAX && std::abs(jet.rap())<=2.8){
 						//file1<< std::setw(5) << "jet #" << std::setw(15) << "rapidity"<< std::setw(15) << "phi" << std::setw(15) << "pt" << std::setw(15)<< "E" <<std::endl;
 						ProcessJet(jet, new_constituents, old_constituents);
 						for (int i=0;i<new_constituents.size();i++) {
@@ -362,7 +371,7 @@ int FastJetProcedure(int lower_lim,int upper_lim,int number,
 	for (auto& jet : inclusive_jets){
 		std::vector<fastjet::PseudoJet> new_constituents;
 		std::vector<fastjet::PseudoJet> old_constituents;
-		if (jet.perp() >= 50.0 &&  jet.perp() <= 250.0 && std::abs(jet.rap())<=2.8){
+		if (jet.perp() >= PTMIN &&  jet.perp() <= PTMAX && std::abs(jet.rap())<=2.8){
 			//file1<< std::setw(5) << "jet #" << std::setw(15) << "rapidity"<< std::setw(15) << "phi" << std::setw(15) << "pt" << std::setw(15)<< "E" <<std::endl;
 			ProcessJet(jet, new_constituents, old_constituents);
 			for (int i=0;i<new_constituents.size();i++) {

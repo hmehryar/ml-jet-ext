@@ -10,12 +10,12 @@ import numpy as np
 
 
 # BIN_COUNT_DEFAULT = 32
-PHI_RANGE_DEFAULT = (-math.pi, math.pi)
-# PHI_RANGE_DEFAULT = (-0.5, 0.5)
-ETA_RANGE_DEFAULT = (-2.8, 2.8)
+# PHI_RANGE_DEFAULT = (-math.pi, math.pi)
+PHI_RANGE_DEFAULT = (-0.5, 0.5)
+# ETA_RANGE_DEFAULT = (-2.8, 2.8)
 BIN_COUNT_DEFAULT = 32
 # PHI_RANGE_DEFAULT = (0.0, 2.0 * math.pi)
-# ETA_RANGE_DEFAULT = (-0.5, 0.5)
+ETA_RANGE_DEFAULT = (-0.5, 0.5)
 
 
 JETMOD_PATTERN = re.compile(r"jetmod_(\d+)_final_state_hadrons\.dat")
