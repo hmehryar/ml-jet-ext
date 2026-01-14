@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "process_unfolded_config.py", line 432, in <module>
+    main()
+  File "process_unfolded_config.py", line 428, in main
+    process_config_dir(config_dir, output_root, args.bin_count)
+  File "process_unfolded_config.py", line 388, in process_config_dir
+    "pT_max": pT_max_global,
+  File "/wsu/el7/pre-compiled/python/3.7/lib/python3.7/csv.py", line 155, in writerow
+    return self.writer.writerow(self._dict_to_list(rowdict))
+  File "/wsu/el7/pre-compiled/python/3.7/lib/python3.7/csv.py", line 151, in _dict_to_list
+    + ", ".join([repr(x) for x in wrong_fields]))
+ValueError: dict contains fields not in fieldnames: 'n_events', 'seed_dir'

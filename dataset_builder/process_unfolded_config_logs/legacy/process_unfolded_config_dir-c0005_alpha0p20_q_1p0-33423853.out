@@ -1,0 +1,27 @@
+[Tue Nov 25 19:02:52 EST 2025] START RUN_DIR=c0005_alpha0p20_q_1p0
+[info] IN=/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020//c0005_alpha0p20_q_1p0_unfolded
+[info] OUT=/rs/rs_grp_mljet/ml-jet-ext/pTHat50-250_eCM5020_agg
+[INFO] Processing config: c0005_alpha0p20_q_1p0_unfolded (alpha=0.2, q0=1.0)
+[INFO] Input dir: /.rs/volumes/rs_grp_mljet/rs_vol_mljet/0862345b-abd8-4592-9024-e242d4d45a54/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_1p0_unfolded
+[INFO] Output root: /.rs/volumes/rs_grp_mljet/rs_vol_mljet/0862345b-abd8-4592-9024-e242d4d45a54/ml-jet-ext/pTHat50-250_eCM5020_agg
+[INFO]   Reading jetmod_0_final_state_hadrons.dat
+Saved 1000 event...
+[INFO]   Seed 000: finished with 1095 events 
+	(phi [-0.3894, 0.4059], 
+	eta [-1.826, 2.484], 
+	pT [0.005314, 98.13]) 
+
+[INFO]   Reading jetmod_1_final_state_hadrons.dat
+Saved 2000 event...
+[INFO]   Seed 001: finished with 1096 events 
+	(phi [-0.3931, 0.3894], 
+	eta [-1.806, 2.854], 
+	pT [0.003995, 93.11]) 
+
+[INFO]   Reading jetmod_2_final_state_hadrons.dat
+Saved 3000 event...
+[INFO]   Seed 002: finished with 1098 events 
+	(phi [-0.3864, 0.4333], 
+	eta [-1.602, 2.859], 
+	pT [0.004876, 99.77]) 
+

@@ -1,0 +1,19 @@
+[Tue Nov 25 12:30:58 EST 2025] START RUN_DIR=c0005_alpha0p20_q_1p0
+[info] IN=/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020//c0005_alpha0p20_q_1p0_unfolded
+[info] OUT=/rs/rs_grp_mljet/ml-jet-ext/pTHat50-250_eCM5020_agg
+[INFO] Processing config: c0005_alpha0p20_q_1p0_unfolded (alpha=0.2, q0=1.0)
+[INFO] Input dir: /.rs/volumes/rs_grp_mljet/rs_vol_mljet/0862345b-abd8-4592-9024-e242d4d45a54/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p20_q_1p0_unfolded
+[INFO] Output root: /.rs/volumes/rs_grp_mljet/rs_vol_mljet/0862345b-abd8-4592-9024-e242d4d45a54/ml-jet-ext/pTHat50-250_eCM5020_agg
+[INFO]   Reading jetmod_0_final_state_hadrons.dat
+Saved 1000 event...
+[INFO] Seed 0 phi range: -0.389415 .. 0.405905
+[INFO] Seed 0 eta range: -1.82637 .. 2.48424
+[INFO] Seed 0 pT  range: 0.00531357 .. 98.1291
+[INFO] Finished config c0005_alpha0p20_q_1p0_unfolded.
+[INFO]   Total events saved: 1095
+[INFO]   Metadata CSV (per-event): /.rs/volumes/rs_grp_mljet/rs_vol_mljet/0862345b-abd8-4592-9024-e242d4d45a54/ml-jet-ext/pTHat50-250_eCM5020_agg/metadata/c0005_alpha0p20_q_1p0_unfolded_events.csv
+[INFO]   Seed stats CSV:          /.rs/volumes/rs_grp_mljet/rs_vol_mljet/0862345b-abd8-4592-9024-e242d4d45a54/ml-jet-ext/pTHat50-250_eCM5020_agg/metadata/c0005_alpha0p20_q_1p0_unfolded_seed_stats.csv
+[INFO]   Global phi range: -0.389415 .. 0.405905
+[INFO]   Global eta range: -1.82637 .. 2.48424
+[INFO]   Global pT  range: 0.00531357 .. 98.1291
+[Tue Nov 25 12:31:07 EST 2025] DONE RUN_DIR=c0005_alpha0p20_q_1p0

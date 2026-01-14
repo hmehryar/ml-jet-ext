@@ -1,0 +1,30 @@
+[Tue Nov 25 19:52:33 EST 2025] START RUN_DIR=c0005_alpha0p40_q_2p0
+[INFO] IN=/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020//c0005_alpha0p40_q_2p0_unfolded
+[INFO] OUT=/rs/rs_grp_mljet/ml-jet-ext/pTHat50-250_eCM5020_pTHat50-250_eCM5020_pT90-110_R0p4
+[INFO] Processing config: c0005_alpha0p40_q_2p0_unfolded (alpha=0.4, q0=2.0)
+[INFO] Input dir: /.rs/volumes/rs_grp_mljet/rs_vol_mljet/0862345b-abd8-4592-9024-e242d4d45a54/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p40_q_2p0_unfolded
+[INFO] Output root: /.rs/volumes/rs_grp_mljet/rs_vol_mljet/0862345b-abd8-4592-9024-e242d4d45a54/ml-jet-ext/pTHat50-250_eCM5020_pTHat50-250_eCM5020_pT90-110_R0p4
+[INFO]   Reading jetmod_0_final_state_hadrons.dat
+[INFO]   Seed 000: finished with 937 jets 
+	(phi [-0.3872, 0.3919], 
+	eta [-1.684, 2.285], 
+	pT [0.002534, 99.84]) 
+
+[INFO]   Reading jetmod_1_final_state_hadrons.dat
+Saved 1000 jet...
+[INFO]   Seed 001: finished with 986 jets 
+	(phi [-0.3877, 0.3914], 
+	eta [-2.108, 2.307], 
+	pT [0.001101, 101.2]) 
+
+[INFO]   Reading jetmod_2_final_state_hadrons.dat
+Saved 2000 jet...
+[INFO]   Seed 002: finished with 916 jets 
+	(phi [-0.397, 0.388], 
+	eta [-1.952, 1.974], 
+	pT [0.008056, 99.77]) 
+
+[INFO] Finished config c0005_alpha0p40_q_2p0_unfolded.
+[INFO]   Total jets saved: 2839
+[INFO]   Metadata CSV (per-jet): /.rs/volumes/rs_grp_mljet/rs_vol_mljet/0862345b-abd8-4592-9024-e242d4d45a54/ml-jet-ext/pTHat50-250_eCM5020_pTHat50-250_eCM5020_pT90-110_R0p4/metadata/c0005_alpha0p40_q_2p0_unfolded_jets.csv
+[Tue Nov 25 19:52:40 EST 2025] DONE RUN_DIR=c0005_alpha0p40_q_2p0

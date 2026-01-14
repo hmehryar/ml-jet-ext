@@ -1,0 +1,1401 @@
+[Tue Nov 25 19:54:13 EST 2025] START RUN_DIR=c0005_alpha0p30_q_3p0
+[INFO] IN=/rs/rs_grp_mljet/ml-jet-ext/simulation_results_pTHat50-250_eCM5020//c0005_alpha0p30_q_3p0_unfolded
+[INFO] OUT=/rs/rs_grp_mljet/ml-jet-ext/pTHat50-250_eCM5020_pTHat50-250_eCM5020_pT90-110_R0p4
+[INFO] Processing config: c0005_alpha0p30_q_3p0_unfolded (alpha=0.3, q0=3.0)
+[INFO] Input dir: /.rs/volumes/rs_grp_mljet/rs_vol_mljet/0862345b-abd8-4592-9024-e242d4d45a54/ml-jet-ext/simulation_results_pTHat50-250_eCM5020/c0005_alpha0p30_q_3p0_unfolded
+[INFO] Output root: /.rs/volumes/rs_grp_mljet/rs_vol_mljet/0862345b-abd8-4592-9024-e242d4d45a54/ml-jet-ext/pTHat50-250_eCM5020_pTHat50-250_eCM5020_pT90-110_R0p4
+[INFO]   Reading jetmod_0_final_state_hadrons.dat
+[INFO]   Seed 000: finished with 955 jets 
+	(phi [-0.3896, 0.4328], 
+	eta [-1.438, 1.198], 
+	pT [0.002896, 99.52]) 
+
+[INFO]   Reading jetmod_100_final_state_hadrons.dat
+Saved 1000 jet...
+[INFO]   Seed 100: finished with 973 jets 
+	(phi [-0.3921, 0.4594], 
+	eta [-1.275, 1.41], 
+	pT [0.003587, 106.5]) 
+
+[INFO]   Reading jetmod_101_final_state_hadrons.dat
+Saved 2000 jet...
+[INFO]   Seed 101: finished with 981 jets 
+	(phi [-0.3932, 0.394], 
+	eta [-1.825, 1.306], 
+	pT [0.006417, 109]) 
+
+[INFO]   Reading jetmod_102_final_state_hadrons.dat
+Saved 3000 jet...
+[INFO]   Seed 102: finished with 967 jets 
+	(phi [-0.3873, 0.3942], 
+	eta [-2.278, 1.422], 
+	pT [0.004587, 93.78]) 
+
+[INFO]   Reading jetmod_103_final_state_hadrons.dat
+Saved 4000 jet...
+[INFO]   Seed 103: finished with 940 jets 
+	(phi [-0.3866, 0.3851], 
+	eta [-1.061, 1.257], 
+	pT [0.006348, 103.9]) 
+
+[INFO]   Reading jetmod_104_final_state_hadrons.dat
+Saved 5000 jet...
+[INFO]   Seed 104: finished with 976 jets 
+	(phi [-0.39, 0.3901], 
+	eta [-2.063, 1.761], 
+	pT [0.004087, 95.07]) 
+
+[INFO]   Reading jetmod_105_final_state_hadrons.dat
+Saved 6000 jet...
+[INFO]   Seed 105: finished with 960 jets 
+	(phi [-0.3951, 0.3852], 
+	eta [-1.576, 2.984], 
+	pT [0.003722, 109.2]) 
+
+[INFO]   Reading jetmod_106_final_state_hadrons.dat
+Saved 7000 jet...
+[INFO]   Seed 106: finished with 958 jets 
+	(phi [-0.3969, 0.3896], 
+	eta [-1.443, 3.596], 
+	pT [0.002538, 92.86]) 
+
+[INFO]   Reading jetmod_107_final_state_hadrons.dat
+Saved 8000 jet...
+[INFO]   Seed 107: finished with 954 jets 
+	(phi [-0.4429, 0.4531], 
+	eta [-1.807, 1.487], 
+	pT [0.003053, 98.2]) 
+
+[INFO]   Reading jetmod_108_final_state_hadrons.dat
+Saved 9000 jet...
+[INFO]   Seed 108: finished with 984 jets 
+	(phi [-0.3952, 0.3887], 
+	eta [-1.158, 1.578], 
+	pT [0.003188, 87.78]) 
+
+[INFO]   Reading jetmod_109_final_state_hadrons.dat
+Saved 10000 jet...
+[INFO]   Seed 109: finished with 917 jets 
+	(phi [-0.465, 0.3949], 
+	eta [-1.217, 1.48], 
+	pT [0.001801, 88.07]) 
+
+[INFO]   Reading jetmod_10_final_state_hadrons.dat
+Saved 11000 jet...
+[INFO]   Seed 010: finished with 953 jets 
+	(phi [-0.4161, 0.39], 
+	eta [-1.194, 1.398], 
+	pT [0.002434, 86.37]) 
+
+[INFO]   Reading jetmod_110_final_state_hadrons.dat
+Saved 12000 jet...
+[INFO]   Seed 110: finished with 966 jets 
+	(phi [-0.3872, 0.3959], 
+	eta [-1.924, 1.622], 
+	pT [0.003442, 97.23]) 
+
+[INFO]   Reading jetmod_111_final_state_hadrons.dat
+Saved 13000 jet...
+[INFO]   Seed 111: finished with 957 jets 
+	(phi [-0.3934, 0.3859], 
+	eta [-1.518, 3.031], 
+	pT [0.00502, 107.7]) 
+
+[INFO]   Reading jetmod_112_final_state_hadrons.dat
+Saved 14000 jet...
+[INFO]   Seed 112: finished with 932 jets 
+	(phi [-0.3926, 0.3864], 
+	eta [-1.465, 1.783], 
+	pT [0.005403, 102.8]) 
+
+[INFO]   Reading jetmod_113_final_state_hadrons.dat
+Saved 15000 jet...
+[INFO]   Seed 113: finished with 961 jets 
+	(phi [-0.4667, 0.422], 
+	eta [-1.828, 1.813], 
+	pT [0.003411, 94.72]) 
+
+[INFO]   Reading jetmod_114_final_state_hadrons.dat
+Saved 16000 jet...
+[INFO]   Seed 114: finished with 1013 jets 
+	(phi [-0.4166, 0.3894], 
+	eta [-1.614, 1.212], 
+	pT [0.0008175, 88.69]) 
+
+[INFO]   Reading jetmod_115_final_state_hadrons.dat
+Saved 17000 jet...
+[INFO]   Seed 115: finished with 962 jets 
+	(phi [-0.393, 0.3829], 
+	eta [-1.236, 2.927], 
+	pT [0.0009664, 105.1]) 
+
+[INFO]   Reading jetmod_116_final_state_hadrons.dat
+Saved 18000 jet...
+[INFO]   Seed 116: finished with 991 jets 
+	(phi [-0.3921, 0.4088], 
+	eta [-2.479, 2.417], 
+	pT [0.001443, 95.89]) 
+
+[INFO]   Reading jetmod_117_final_state_hadrons.dat
+Saved 19000 jet...
+[INFO]   Seed 117: finished with 954 jets 
+	(phi [-0.3834, 0.3891], 
+	eta [-2.058, 1.315], 
+	pT [0.002194, 101.2]) 
+
+[INFO]   Reading jetmod_118_final_state_hadrons.dat
+Saved 20000 jet...
+[INFO]   Seed 118: finished with 939 jets 
+	(phi [-0.4008, 0.3883], 
+	eta [-1.442, 1.713], 
+	pT [0.00404, 93.12]) 
+
+[INFO]   Reading jetmod_119_final_state_hadrons.dat
+Saved 21000 jet...
+[INFO]   Seed 119: finished with 958 jets 
+	(phi [-0.4194, 0.3878], 
+	eta [-1.351, 1.846], 
+	pT [0.001899, 89.39]) 
+
+[INFO]   Reading jetmod_11_final_state_hadrons.dat
+Saved 22000 jet...
+[INFO]   Seed 011: finished with 922 jets 
+	(phi [-0.4394, 0.393], 
+	eta [-1.821, 1.338], 
+	pT [0.004656, 80.03]) 
+
+[INFO]   Reading jetmod_120_final_state_hadrons.dat
+Saved 23000 jet...
+[INFO]   Seed 120: finished with 1022 jets 
+	(phi [-0.3859, 0.3898], 
+	eta [-1.597, 1.176], 
+	pT [0.003159, 88.42]) 
+
+[INFO]   Reading jetmod_121_final_state_hadrons.dat
+Saved 24000 jet...
+[INFO]   Seed 121: finished with 1001 jets 
+	(phi [-0.3948, 0.3861], 
+	eta [-1.184, 2.902], 
+	pT [0.002185, 91.3]) 
+
+[INFO]   Reading jetmod_122_final_state_hadrons.dat
+Saved 25000 jet...
+[INFO]   Seed 122: finished with 993 jets 
+	(phi [-0.3972, 0.384], 
+	eta [-4.467, 1.225], 
+	pT [0.001214, 101.7]) 
+
+[INFO]   Reading jetmod_123_final_state_hadrons.dat
+Saved 26000 jet...
+[INFO]   Seed 123: finished with 973 jets 
+	(phi [-0.3885, 0.3881], 
+	eta [-1.592, 1.484], 
+	pT [0.00586, 94.18]) 
+
+[INFO]   Reading jetmod_124_final_state_hadrons.dat
+[INFO]   Seed 124: finished with 879 jets 
+	(phi [-0.3911, 0.3937], 
+	eta [-1.249, 1.056], 
+	pT [0.002404, 102.5]) 
+
+[INFO]   Reading jetmod_125_final_state_hadrons.dat
+Saved 27000 jet...
+[INFO]   Seed 125: finished with 1022 jets 
+	(phi [-0.3863, 0.3967], 
+	eta [-1.628, 1.294], 
+	pT [0.002219, 92.63]) 
+
+[INFO]   Reading jetmod_126_final_state_hadrons.dat
+Saved 28000 jet...
+[INFO]   Seed 126: finished with 916 jets 
+	(phi [-0.3908, 0.3952], 
+	eta [-1.745, 2.516], 
+	pT [0.005111, 89.56]) 
+
+[INFO]   Reading jetmod_127_final_state_hadrons.dat
+Saved 29000 jet...
+[INFO]   Seed 127: finished with 943 jets 
+	(phi [-0.4209, 0.4148], 
+	eta [-1.823, 1.458], 
+	pT [0.003622, 85.29]) 
+
+[INFO]   Reading jetmod_128_final_state_hadrons.dat
+Saved 30000 jet...
+[INFO]   Seed 128: finished with 936 jets 
+	(phi [-0.3793, 0.394], 
+	eta [-1.207, 1.29], 
+	pT [0.007486, 93.23]) 
+
+[INFO]   Reading jetmod_129_final_state_hadrons.dat
+Saved 31000 jet...
+[INFO]   Seed 129: finished with 993 jets 
+	(phi [-0.3888, 0.4242], 
+	eta [-1.617, 2.251], 
+	pT [0.004183, 95.08]) 
+
+[INFO]   Reading jetmod_12_final_state_hadrons.dat
+Saved 32000 jet...
+[INFO]   Seed 012: finished with 907 jets 
+	(phi [-3.057, 0.4869], 
+	eta [-2.735, 1.254], 
+	pT [0.004719, 91.89]) 
+
+[INFO]   Reading jetmod_130_final_state_hadrons.dat
+Saved 33000 jet...
+[INFO]   Seed 130: finished with 983 jets 
+	(phi [-0.3919, 0.3999], 
+	eta [-1.904, 1.797], 
+	pT [0.003843, 100.6]) 
+
+[INFO]   Reading jetmod_131_final_state_hadrons.dat
+Saved 34000 jet...
+[INFO]   Seed 131: finished with 909 jets 
+	(phi [-0.3924, 0.3938], 
+	eta [-1.941, 2.215], 
+	pT [0.004782, 82.93]) 
+
+[INFO]   Reading jetmod_132_final_state_hadrons.dat
+Saved 35000 jet...
+[INFO]   Seed 132: finished with 890 jets 
+	(phi [-0.3912, 0.3919], 
+	eta [-1.83, 1.835], 
+	pT [0.00407, 89.59]) 
+
+[INFO]   Reading jetmod_133_final_state_hadrons.dat
+Saved 36000 jet...
+[INFO]   Seed 133: finished with 1009 jets 
+	(phi [-0.4071, 0.3862], 
+	eta [-1.338, 1.714], 
+	pT [0.004281, 97.18]) 
+
+[INFO]   Reading jetmod_134_final_state_hadrons.dat
+Saved 37000 jet...
+[INFO]   Seed 134: finished with 921 jets 
+	(phi [-0.4782, 0.4127], 
+	eta [-2.509, 2.292], 
+	pT [0.004462, 93.07]) 
+
+[INFO]   Reading jetmod_135_final_state_hadrons.dat
+Saved 38000 jet...
+[INFO]   Seed 135: finished with 958 jets 
+	(phi [-0.3923, 0.389], 
+	eta [-1.184, 1.707], 
+	pT [0.004548, 95.68]) 
+
+[INFO]   Reading jetmod_136_final_state_hadrons.dat
+Saved 39000 jet...
+[INFO]   Seed 136: finished with 994 jets 
+	(phi [-0.3999, 0.3887], 
+	eta [-1.657, 1.571], 
+	pT [0.002767, 83.07]) 
+
+[INFO]   Reading jetmod_137_final_state_hadrons.dat
+Saved 40000 jet...
+[INFO]   Seed 137: finished with 962 jets 
+	(phi [-0.3887, 0.3942], 
+	eta [-2.006, 1.327], 
+	pT [0.008931, 80.18]) 
+
+[INFO]   Reading jetmod_138_final_state_hadrons.dat
+Saved 41000 jet...
+[INFO]   Seed 138: finished with 940 jets 
+	(phi [-0.4714, 0.3845], 
+	eta [-1.669, 1.433], 
+	pT [0.007568, 107.2]) 
+
+[INFO]   Reading jetmod_139_final_state_hadrons.dat
+Saved 42000 jet...
+[INFO]   Seed 139: finished with 933 jets 
+	(phi [-0.3949, 0.3892], 
+	eta [-2.206, 1.934], 
+	pT [0.005207, 103.4]) 
+
+[INFO]   Reading jetmod_13_final_state_hadrons.dat
+Saved 43000 jet...
+[INFO]   Seed 013: finished with 921 jets 
+	(phi [-0.3924, 0.4877], 
+	eta [-1.846, 1.543], 
+	pT [0.00238, 102.6]) 
+
+[INFO]   Reading jetmod_140_final_state_hadrons.dat
+Saved 44000 jet...
+[INFO]   Seed 140: finished with 1018 jets 
+	(phi [-0.3903, 0.3859], 
+	eta [-1.916, 2.116], 
+	pT [0.004999, 101.1]) 
+
+[INFO]   Reading jetmod_141_final_state_hadrons.dat
+Saved 45000 jet...
+[INFO]   Seed 141: finished with 938 jets 
+	(phi [-3.104, 0.3921], 
+	eta [-1.634, 3.602], 
+	pT [0.003507, 97.08]) 
+
+[INFO]   Reading jetmod_142_final_state_hadrons.dat
+[INFO]   Seed 142: finished with 961 jets 
+	(phi [-0.3929, 0.3808], 
+	eta [-3.107, 1.272], 
+	pT [0.002774, 83.56]) 
+
+[INFO]   Reading jetmod_143_final_state_hadrons.dat
+Saved 46000 jet...
+[INFO]   Seed 143: finished with 1004 jets 
+	(phi [-0.3861, 0.3924], 
+	eta [-2.188, 1.618], 
+	pT [0.002028, 104.9]) 
+
+[INFO]   Reading jetmod_144_final_state_hadrons.dat
+Saved 47000 jet...
+[INFO]   Seed 144: finished with 968 jets 
+	(phi [-0.3853, 0.3834], 
+	eta [-1.69, 1.933], 
+	pT [0.003072, 76.47]) 
+
+[INFO]   Reading jetmod_145_final_state_hadrons.dat
+Saved 48000 jet...
+[INFO]   Seed 145: finished with 1008 jets 
+	(phi [-0.3904, 0.4919], 
+	eta [-1.864, 1.479], 
+	pT [0.006001, 94.61]) 
+
+[INFO]   Reading jetmod_146_final_state_hadrons.dat
+Saved 49000 jet...
+[INFO]   Seed 146: finished with 916 jets 
+	(phi [-0.387, 0.3961], 
+	eta [-1.281, 1.596], 
+	pT [0.002238, 85.27]) 
+
+[INFO]   Reading jetmod_147_final_state_hadrons.dat
+Saved 50000 jet...
+[INFO]   Seed 147: finished with 948 jets 
+	(phi [-0.3806, 0.3934], 
+	eta [-1.818, 1.219], 
+	pT [0.004516, 95.94]) 
+
+[INFO]   Reading jetmod_148_final_state_hadrons.dat
+Saved 51000 jet...
+[INFO]   Seed 148: finished with 923 jets 
+	(phi [-2.263, 0.3926], 
+	eta [-5.22, 2.629], 
+	pT [0.004907, 99.26]) 
+
+[INFO]   Reading jetmod_149_final_state_hadrons.dat
+Saved 52000 jet...
+[INFO]   Seed 149: finished with 927 jets 
+	(phi [-0.3819, 0.3975], 
+	eta [-1.749, 1.29], 
+	pT [0.0004065, 100.8]) 
+
+[INFO]   Reading jetmod_14_final_state_hadrons.dat
+Saved 53000 jet...
+[INFO]   Seed 014: finished with 905 jets 
+	(phi [-0.3891, 0.3771], 
+	eta [-1.923, 1.732], 
+	pT [0.001843, 84.87]) 
+
+[INFO]   Reading jetmod_150_final_state_hadrons.dat
+Saved 54000 jet...
+[INFO]   Seed 150: finished with 950 jets 
+	(phi [-0.391, 0.4128], 
+	eta [-1.453, 1.566], 
+	pT [0.0002602, 102]) 
+
+[INFO]   Reading jetmod_151_final_state_hadrons.dat
+Saved 55000 jet...
+[INFO]   Seed 151: finished with 887 jets 
+	(phi [-0.3839, 0.4123], 
+	eta [-1.714, 2.07], 
+	pT [0.004818, 86.35]) 
+
+[INFO]   Reading jetmod_152_final_state_hadrons.dat
+Saved 56000 jet...
+[INFO]   Seed 152: finished with 941 jets 
+	(phi [-0.3874, 0.3944], 
+	eta [-1.279, 3.056], 
+	pT [0.00406, 106.4]) 
+
+[INFO]   Reading jetmod_153_final_state_hadrons.dat
+Saved 57000 jet...
+[INFO]   Seed 153: finished with 970 jets 
+	(phi [-0.3899, 0.3903], 
+	eta [-2.166, 1.933], 
+	pT [0.006436, 101.5]) 
+
+[INFO]   Reading jetmod_154_final_state_hadrons.dat
+Saved 58000 jet...
+[INFO]   Seed 154: finished with 937 jets 
+	(phi [-0.3921, 0.3913], 
+	eta [-1.778, 1.465], 
+	pT [0.00282, 109.3]) 
+
+[INFO]   Reading jetmod_155_final_state_hadrons.dat
+Saved 59000 jet...
+[INFO]   Seed 155: finished with 918 jets 
+	(phi [-0.3909, 0.3824], 
+	eta [-1.736, 1.417], 
+	pT [0.00702, 95.63]) 
+
+[INFO]   Reading jetmod_156_final_state_hadrons.dat
+Saved 60000 jet...
+[INFO]   Seed 156: finished with 973 jets 
+	(phi [-0.3882, 0.488], 
+	eta [-1.352, 2.288], 
+	pT [0.001726, 107.2]) 
+
+[INFO]   Reading jetmod_157_final_state_hadrons.dat
+Saved 61000 jet...
+[INFO]   Seed 157: finished with 964 jets 
+	(phi [-0.3779, 0.3916], 
+	eta [-1.393, 1.294], 
+	pT [0.008703, 78.08]) 
+
+[INFO]   Reading jetmod_158_final_state_hadrons.dat
+Saved 62000 jet...
+[INFO]   Seed 158: finished with 898 jets 
+	(phi [-0.4142, 0.3932], 
+	eta [-1.421, 1.414], 
+	pT [0.002161, 98.04]) 
+
+[INFO]   Reading jetmod_159_final_state_hadrons.dat
+[INFO]   Seed 159: finished with 964 jets 
+	(phi [-0.3932, 0.3961], 
+	eta [-1.85, 1.188], 
+	pT [0.007764, 94.46]) 
+
+[INFO]   Reading jetmod_15_final_state_hadrons.dat
+Saved 63000 jet...
+[INFO]   Seed 015: finished with 961 jets 
+	(phi [-0.3877, 0.3955], 
+	eta [-1.59, 3.69], 
+	pT [0.002885, 87.38]) 
+
+[INFO]   Reading jetmod_160_final_state_hadrons.dat
+Saved 64000 jet...
+[INFO]   Seed 160: finished with 988 jets 
+	(phi [-0.486, 0.4808], 
+	eta [-2.743, 1.623], 
+	pT [0.006002, 91.3]) 
+
+[INFO]   Reading jetmod_161_final_state_hadrons.dat
+Saved 65000 jet...
+[INFO]   Seed 161: finished with 989 jets 
+	(phi [-0.4529, 0.4913], 
+	eta [-1.66, 2.778], 
+	pT [0.001377, 87.57]) 
+
+[INFO]   Reading jetmod_162_final_state_hadrons.dat
+Saved 66000 jet...
+[INFO]   Seed 162: finished with 935 jets 
+	(phi [-0.3847, 0.3864], 
+	eta [-1.626, 1.718], 
+	pT [0.003617, 107.1]) 
+
+[INFO]   Reading jetmod_163_final_state_hadrons.dat
+Saved 67000 jet...
+[INFO]   Seed 163: finished with 960 jets 
+	(phi [-0.4274, 0.3916], 
+	eta [-1.945, 1.766], 
+	pT [0.003319, 93.58]) 
+
+[INFO]   Reading jetmod_164_final_state_hadrons.dat
+Saved 68000 jet...
+[INFO]   Seed 164: finished with 960 jets 
+	(phi [-0.4021, 0.3914], 
+	eta [-1.35, 1.37], 
+	pT [0.004724, 92.14]) 
+
+[INFO]   Reading jetmod_165_final_state_hadrons.dat
+Saved 69000 jet...
+[INFO]   Seed 165: finished with 953 jets 
+	(phi [-0.3787, 0.3943], 
+	eta [-1.635, 1.89], 
+	pT [0.002879, 90]) 
+
+[INFO]   Reading jetmod_166_final_state_hadrons.dat
+Saved 70000 jet...
+[INFO]   Seed 166: finished with 999 jets 
+	(phi [-0.4072, 0.3922], 
+	eta [-1.747, 1.465], 
+	pT [0.001788, 103.5]) 
+
+[INFO]   Reading jetmod_167_final_state_hadrons.dat
+Saved 71000 jet...
+[INFO]   Seed 167: finished with 971 jets 
+	(phi [-0.4393, 0.3916], 
+	eta [-1.697, 1.481], 
+	pT [0.002127, 97.11]) 
+
+[INFO]   Reading jetmod_168_final_state_hadrons.dat
+Saved 72000 jet...
+[INFO]   Seed 168: finished with 934 jets 
+	(phi [-0.4066, 0.3911], 
+	eta [-2.605, 1.589], 
+	pT [0.003095, 97.2]) 
+
+[INFO]   Reading jetmod_169_final_state_hadrons.dat
+Saved 73000 jet...
+[INFO]   Seed 169: finished with 915 jets 
+	(phi [-0.3889, 0.3861], 
+	eta [-1.688, 1.503], 
+	pT [0.00393, 108.6]) 
+
+[INFO]   Reading jetmod_16_final_state_hadrons.dat
+Saved 74000 jet...
+[INFO]   Seed 016: finished with 987 jets 
+	(phi [-0.3815, 0.435], 
+	eta [-2.564, 2.063], 
+	pT [0.0009407, 107.3]) 
+
+[INFO]   Reading jetmod_170_final_state_hadrons.dat
+Saved 75000 jet...
+[INFO]   Seed 170: finished with 935 jets 
+	(phi [-0.4661, 0.3852], 
+	eta [-1.93, 1.256], 
+	pT [0.006564, 106.4]) 
+
+[INFO]   Reading jetmod_171_final_state_hadrons.dat
+Saved 76000 jet...
+[INFO]   Seed 171: finished with 889 jets 
+	(phi [-0.4014, 0.3897], 
+	eta [-1.328, 2.167], 
+	pT [0.001019, 86.69]) 
+
+[INFO]   Reading jetmod_172_final_state_hadrons.dat
+Saved 77000 jet...
+[INFO]   Seed 172: finished with 926 jets 
+	(phi [-0.3785, 0.3809], 
+	eta [-1.575, 1.303], 
+	pT [0.003173, 88.96]) 
+
+[INFO]   Reading jetmod_173_final_state_hadrons.dat
+Saved 78000 jet...
+[INFO]   Seed 173: finished with 948 jets 
+	(phi [-0.3954, 0.416], 
+	eta [-1.673, 1.285], 
+	pT [0.003489, 103.1]) 
+
+[INFO]   Reading jetmod_174_final_state_hadrons.dat
+Saved 79000 jet...
+[INFO]   Seed 174: finished with 942 jets 
+	(phi [-0.4325, 0.4296], 
+	eta [-1.454, 1.12], 
+	pT [0.002821, 98.75]) 
+
+[INFO]   Reading jetmod_175_final_state_hadrons.dat
+Saved 80000 jet...
+[INFO]   Seed 175: finished with 900 jets 
+	(phi [-0.4394, 0.4407], 
+	eta [-1.386, 1.462], 
+	pT [0.005706, 87.57]) 
+
+[INFO]   Reading jetmod_176_final_state_hadrons.dat
+[INFO]   Seed 176: finished with 907 jets 
+	(phi [-0.3933, 0.3844], 
+	eta [-1.862, 2.06], 
+	pT [0.003148, 100.7]) 
+
+[INFO]   Reading jetmod_177_final_state_hadrons.dat
+Saved 81000 jet...
+[INFO]   Seed 177: finished with 952 jets 
+	(phi [-0.3981, 0.3971], 
+	eta [-1.89, 2.368], 
+	pT [0.0009572, 95.12]) 
+
+[INFO]   Reading jetmod_178_final_state_hadrons.dat
+Saved 82000 jet...
+[INFO]   Seed 178: finished with 964 jets 
+	(phi [-0.4219, 0.3916], 
+	eta [-1.611, 1.48], 
+	pT [0.006178, 92.23]) 
+
+[INFO]   Reading jetmod_179_final_state_hadrons.dat
+Saved 83000 jet...
+[INFO]   Seed 179: finished with 959 jets 
+	(phi [-0.392, 2.359], 
+	eta [-4.063, 1.293], 
+	pT [0.003008, 85.03]) 
+
+[INFO]   Reading jetmod_17_final_state_hadrons.dat
+Saved 84000 jet...
+[INFO]   Seed 017: finished with 982 jets 
+	(phi [-0.4182, 0.3905], 
+	eta [-1.266, 1.917], 
+	pT [0.00172, 100.4]) 
+
+[INFO]   Reading jetmod_180_final_state_hadrons.dat
+Saved 85000 jet...
+[INFO]   Seed 180: finished with 939 jets 
+	(phi [-0.3858, 0.3878], 
+	eta [-1.914, 1.364], 
+	pT [0.004396, 95.22]) 
+
+[INFO]   Reading jetmod_181_final_state_hadrons.dat
+Saved 86000 jet...
+[INFO]   Seed 181: finished with 1030 jets 
+	(phi [-0.489, 0.4829], 
+	eta [-1.472, 2.177], 
+	pT [0.0018, 108.6]) 
+
+[INFO]   Reading jetmod_182_final_state_hadrons.dat
+Saved 87000 jet...
+[INFO]   Seed 182: finished with 905 jets 
+	(phi [-0.4573, 0.4494], 
+	eta [-1.553, 2.205], 
+	pT [0.002506, 86.28]) 
+
+[INFO]   Reading jetmod_183_final_state_hadrons.dat
+Saved 88000 jet...
+[INFO]   Seed 183: finished with 975 jets 
+	(phi [-0.4105, 0.3933], 
+	eta [-1.754, 2.315], 
+	pT [0.003422, 102.4]) 
+
+[INFO]   Reading jetmod_184_final_state_hadrons.dat
+Saved 89000 jet...
+[INFO]   Seed 184: finished with 1010 jets 
+	(phi [-2.916, 0.3921], 
+	eta [-3.28, 1.885], 
+	pT [0.003791, 103.8]) 
+
+[INFO]   Reading jetmod_185_final_state_hadrons.dat
+Saved 90000 jet...
+[INFO]   Seed 185: finished with 929 jets 
+	(phi [-0.3884, 0.3879], 
+	eta [-1.893, 1.18], 
+	pT [0.002258, 100.6]) 
+
+[INFO]   Reading jetmod_186_final_state_hadrons.dat
+Saved 91000 jet...
+[INFO]   Seed 186: finished with 905 jets 
+	(phi [-0.386, 0.4416], 
+	eta [-1.497, 1.082], 
+	pT [0.006323, 92.17]) 
+
+[INFO]   Reading jetmod_187_final_state_hadrons.dat
+Saved 92000 jet...
+[INFO]   Seed 187: finished with 962 jets 
+	(phi [-0.4035, 0.4053], 
+	eta [-1.291, 2.146], 
+	pT [0.004111, 102.4]) 
+
+[INFO]   Reading jetmod_188_final_state_hadrons.dat
+Saved 93000 jet...
+[INFO]   Seed 188: finished with 968 jets 
+	(phi [-0.3962, 0.3875], 
+	eta [-1.567, 1.66], 
+	pT [0.001108, 103.5]) 
+
+[INFO]   Reading jetmod_189_final_state_hadrons.dat
+Saved 94000 jet...
+[INFO]   Seed 189: finished with 969 jets 
+	(phi [-0.3886, 0.4821], 
+	eta [-1.554, 1.519], 
+	pT [0.002944, 78.06]) 
+
+[INFO]   Reading jetmod_18_final_state_hadrons.dat
+Saved 95000 jet...
+[INFO]   Seed 018: finished with 904 jets 
+	(phi [-0.3862, 0.3911], 
+	eta [-1.453, 2.518], 
+	pT [0.004133, 91.1]) 
+
+[INFO]   Reading jetmod_190_final_state_hadrons.dat
+Saved 96000 jet...
+[INFO]   Seed 190: finished with 946 jets 
+	(phi [-0.39, 0.3836], 
+	eta [-1.69, 1.317], 
+	pT [0.0011, 88.78]) 
+
+[INFO]   Reading jetmod_191_final_state_hadrons.dat
+Saved 97000 jet...
+[INFO]   Seed 191: finished with 947 jets 
+	(phi [-0.3892, 0.4008], 
+	eta [-1.604, 2.929], 
+	pT [0.002899, 98.54]) 
+
+[INFO]   Reading jetmod_192_final_state_hadrons.dat
+Saved 98000 jet...
+[INFO]   Seed 192: finished with 981 jets 
+	(phi [-0.3891, 0.3853], 
+	eta [-1.38, 1.721], 
+	pT [0.004905, 90.62]) 
+
+[INFO]   Reading jetmod_193_final_state_hadrons.dat
+Saved 99000 jet...
+[INFO]   Seed 193: finished with 953 jets 
+	(phi [-0.3896, 0.3879], 
+	eta [-1.704, 1.701], 
+	pT [0.003722, 98.73]) 
+
+[INFO]   Reading jetmod_194_final_state_hadrons.dat
+Saved 100000 jet...
+[INFO]   Seed 194: finished with 990 jets 
+	(phi [-0.3859, 0.4158], 
+	eta [-2.317, 1.623], 
+	pT [0.003677, 86.08]) 
+
+[INFO]   Reading jetmod_195_final_state_hadrons.dat
+Saved 101000 jet...
+[INFO]   Seed 195: finished with 953 jets 
+	(phi [-0.3909, 0.3934], 
+	eta [-2.997, 2.023], 
+	pT [0.002314, 98.49]) 
+
+[INFO]   Reading jetmod_196_final_state_hadrons.dat
+Saved 102000 jet...
+[INFO]   Seed 196: finished with 981 jets 
+	(phi [-0.3862, 0.4842], 
+	eta [-1.976, 1.488], 
+	pT [0.006119, 89.15]) 
+
+[INFO]   Reading jetmod_197_final_state_hadrons.dat
+Saved 103000 jet...
+[INFO]   Seed 197: finished with 1016 jets 
+	(phi [-0.4292, 0.4123], 
+	eta [-2.617, 1.491], 
+	pT [0.002719, 94.91]) 
+
+[INFO]   Reading jetmod_198_final_state_hadrons.dat
+Saved 104000 jet...
+[INFO]   Seed 198: finished with 1013 jets 
+	(phi [-0.4246, 0.3953], 
+	eta [-1.475, 1.864], 
+	pT [0.00182, 89.07]) 
+
+[INFO]   Reading jetmod_199_final_state_hadrons.dat
+Saved 105000 jet...
+[INFO]   Seed 199: finished with 1006 jets 
+	(phi [-0.3939, 0.3945], 
+	eta [-1.215, 2.063], 
+	pT [0.007266, 95.5]) 
+
+[INFO]   Reading jetmod_19_final_state_hadrons.dat
+Saved 106000 jet...
+[INFO]   Seed 019: finished with 959 jets 
+	(phi [-0.521, 0.3887], 
+	eta [-2.306, 2.117], 
+	pT [0.004019, 95.79]) 
+
+[INFO]   Reading jetmod_1_final_state_hadrons.dat
+Saved 107000 jet...
+[INFO]   Seed 001: finished with 963 jets 
+	(phi [-0.3826, 0.3887], 
+	eta [-2.843, 1.881], 
+	pT [0.002094, 101.2]) 
+
+[INFO]   Reading jetmod_20_final_state_hadrons.dat
+Saved 108000 jet...
+[INFO]   Seed 020: finished with 971 jets 
+	(phi [-0.3918, 0.3786], 
+	eta [-1.464, 1.841], 
+	pT [0.001012, 104.1]) 
+
+[INFO]   Reading jetmod_21_final_state_hadrons.dat
+[INFO]   Seed 021: finished with 929 jets 
+	(phi [-0.3889, 0.3929], 
+	eta [-1.676, 1.392], 
+	pT [0.0052, 100.6]) 
+
+[INFO]   Reading jetmod_22_final_state_hadrons.dat
+Saved 109000 jet...
+Saved 110000 jet...
+[INFO]   Seed 022: finished with 1045 jets 
+	(phi [-0.3914, 0.3826], 
+	eta [-1.793, 1.359], 
+	pT [0.0006905, 95.83]) 
+
+[INFO]   Reading jetmod_23_final_state_hadrons.dat
+[INFO]   Seed 023: finished with 955 jets 
+	(phi [-0.3998, 0.3936], 
+	eta [-1.436, 2.632], 
+	pT [0.0005715, 75.8]) 
+
+[INFO]   Reading jetmod_24_final_state_hadrons.dat
+Saved 111000 jet...
+[INFO]   Seed 024: finished with 971 jets 
+	(phi [-0.39, 0.3853], 
+	eta [-1.373, 2.39], 
+	pT [0.0028, 105.1]) 
+
+[INFO]   Reading jetmod_25_final_state_hadrons.dat
+Saved 112000 jet...
+[INFO]   Seed 025: finished with 915 jets 
+	(phi [-0.4193, 0.926], 
+	eta [-2.381, 5.66], 
+	pT [0.001371, 87.39]) 
+
+[INFO]   Reading jetmod_26_final_state_hadrons.dat
+Saved 113000 jet...
+[INFO]   Seed 026: finished with 951 jets 
+	(phi [-0.4468, 0.3945], 
+	eta [-1.868, 2.104], 
+	pT [0.004238, 108.8]) 
+
+[INFO]   Reading jetmod_27_final_state_hadrons.dat
+Saved 114000 jet...
+[INFO]   Seed 027: finished with 897 jets 
+	(phi [-0.3918, 0.3804], 
+	eta [-1.079, 1.466], 
+	pT [0.003807, 93.81]) 
+
+[INFO]   Reading jetmod_28_final_state_hadrons.dat
+Saved 115000 jet...
+[INFO]   Seed 028: finished with 982 jets 
+	(phi [-0.4595, 0.3975], 
+	eta [-1.632, 2.1], 
+	pT [0.002696, 86.73]) 
+
+[INFO]   Reading jetmod_29_final_state_hadrons.dat
+Saved 116000 jet...
+[INFO]   Seed 029: finished with 1040 jets 
+	(phi [-0.397, 0.4677], 
+	eta [-1.744, 3.019], 
+	pT [0.000809, 93.68]) 
+
+[INFO]   Reading jetmod_2_final_state_hadrons.dat
+Saved 117000 jet...
+[INFO]   Seed 002: finished with 956 jets 
+	(phi [-0.3903, 0.3867], 
+	eta [-1.178, 2.241], 
+	pT [0.004494, 99.77]) 
+
+[INFO]   Reading jetmod_30_final_state_hadrons.dat
+Saved 118000 jet...
+[INFO]   Seed 030: finished with 948 jets 
+	(phi [-0.3916, 0.3903], 
+	eta [-1.792, 1.809], 
+	pT [0.002812, 96.72]) 
+
+[INFO]   Reading jetmod_31_final_state_hadrons.dat
+Saved 119000 jet...
+[INFO]   Seed 031: finished with 939 jets 
+	(phi [-0.395, 0.4294], 
+	eta [-2.234, 2.148], 
+	pT [0.003805, 93.96]) 
+
+[INFO]   Reading jetmod_32_final_state_hadrons.dat
+Saved 120000 jet...
+[INFO]   Seed 032: finished with 965 jets 
+	(phi [-0.393, 0.384], 
+	eta [-1.195, 1.809], 
+	pT [0.005138, 85.2]) 
+
+[INFO]   Reading jetmod_33_final_state_hadrons.dat
+Saved 121000 jet...
+[INFO]   Seed 033: finished with 946 jets 
+	(phi [-0.3879, 0.392], 
+	eta [-1.337, 1.214], 
+	pT [0.004869, 104.1]) 
+
+[INFO]   Reading jetmod_34_final_state_hadrons.dat
+Saved 122000 jet...
+[INFO]   Seed 034: finished with 979 jets 
+	(phi [-0.3972, 0.3939], 
+	eta [-2.285, 1.177], 
+	pT [0.005603, 99.97]) 
+
+[INFO]   Reading jetmod_35_final_state_hadrons.dat
+Saved 123000 jet...
+[INFO]   Seed 035: finished with 992 jets 
+	(phi [-0.3839, 0.4006], 
+	eta [-1.629, 1.495], 
+	pT [0.002113, 105.6]) 
+
+[INFO]   Reading jetmod_36_final_state_hadrons.dat
+Saved 124000 jet...
+[INFO]   Seed 036: finished with 932 jets 
+	(phi [-0.3935, 0.3925], 
+	eta [-1.604, 1.295], 
+	pT [0.008051, 98.58]) 
+
+[INFO]   Reading jetmod_37_final_state_hadrons.dat
+Saved 125000 jet...
+[INFO]   Seed 037: finished with 956 jets 
+	(phi [-0.3847, 0.3938], 
+	eta [-1.963, 1.334], 
+	pT [0.002547, 107.6]) 
+
+[INFO]   Reading jetmod_38_final_state_hadrons.dat
+Saved 126000 jet...
+[INFO]   Seed 038: finished with 955 jets 
+	(phi [-0.3833, 3.129], 
+	eta [-2.889, 2.043], 
+	pT [0.003832, 99.13]) 
+
+[INFO]   Reading jetmod_39_final_state_hadrons.dat
+Saved 127000 jet...
+[INFO]   Seed 039: finished with 953 jets 
+	(phi [-0.3919, 0.4018], 
+	eta [-1.79, 1.728], 
+	pT [0.004416, 94.29]) 
+
+[INFO]   Reading jetmod_3_final_state_hadrons.dat
+Saved 128000 jet...
+[INFO]   Seed 003: finished with 973 jets 
+	(phi [-0.3835, 0.4078], 
+	eta [-1.54, 1.842], 
+	pT [0.005176, 103]) 
+
+[INFO]   Reading jetmod_40_final_state_hadrons.dat
+Saved 129000 jet...
+[INFO]   Seed 040: finished with 945 jets 
+	(phi [-0.3913, 0.3971], 
+	eta [-1.179, 1.748], 
+	pT [0.001225, 106]) 
+
+[INFO]   Reading jetmod_41_final_state_hadrons.dat
+Saved 130000 jet...
+[INFO]   Seed 041: finished with 920 jets 
+	(phi [-0.4109, 0.3789], 
+	eta [-1.876, 1.463], 
+	pT [0.001622, 102]) 
+
+[INFO]   Reading jetmod_42_final_state_hadrons.dat
+[INFO]   Seed 042: finished with 917 jets 
+	(phi [-0.3908, 0.3785], 
+	eta [-1.774, 1.781], 
+	pT [0.006145, 88.6]) 
+
+[INFO]   Reading jetmod_43_final_state_hadrons.dat
+Saved 131000 jet...
+[INFO]   Seed 043: finished with 909 jets 
+	(phi [-0.4226, 0.3959], 
+	eta [-1.522, 2.301], 
+	pT [0.006319, 103.7]) 
+
+[INFO]   Reading jetmod_44_final_state_hadrons.dat
+Saved 132000 jet...
+[INFO]   Seed 044: finished with 949 jets 
+	(phi [-0.4018, 0.4359], 
+	eta [-2.516, 1.195], 
+	pT [0.007119, 96.11]) 
+
+[INFO]   Reading jetmod_45_final_state_hadrons.dat
+Saved 133000 jet...
+[INFO]   Seed 045: finished with 977 jets 
+	(phi [-0.3843, 2.989], 
+	eta [-3.127, 1.859], 
+	pT [0.0016, 101.4]) 
+
+[INFO]   Reading jetmod_46_final_state_hadrons.dat
+Saved 134000 jet...
+[INFO]   Seed 046: finished with 982 jets 
+	(phi [-0.3872, 0.42], 
+	eta [-1.966, 1.47], 
+	pT [0.003793, 95.49]) 
+
+[INFO]   Reading jetmod_47_final_state_hadrons.dat
+Saved 135000 jet...
+[INFO]   Seed 047: finished with 977 jets 
+	(phi [-0.3821, 0.4178], 
+	eta [-1.388, 2.534], 
+	pT [0.001925, 95.24]) 
+
+[INFO]   Reading jetmod_48_final_state_hadrons.dat
+Saved 136000 jet...
+[INFO]   Seed 048: finished with 948 jets 
+	(phi [-0.3814, 0.3868], 
+	eta [-1.755, 1.897], 
+	pT [0.003154, 100.7]) 
+
+[INFO]   Reading jetmod_49_final_state_hadrons.dat
+Saved 137000 jet...
+[INFO]   Seed 049: finished with 940 jets 
+	(phi [-0.391, 0.3839], 
+	eta [-1.859, 1.546], 
+	pT [0.004636, 96.87]) 
+
+[INFO]   Reading jetmod_4_final_state_hadrons.dat
+Saved 138000 jet...
+[INFO]   Seed 004: finished with 1039 jets 
+	(phi [-0.4635, 0.3835], 
+	eta [-2.725, 1.517], 
+	pT [0.006355, 88.88]) 
+
+[INFO]   Reading jetmod_50_final_state_hadrons.dat
+Saved 139000 jet...
+[INFO]   Seed 050: finished with 940 jets 
+	(phi [-0.3922, 0.3954], 
+	eta [-1.692, 1.559], 
+	pT [0.005214, 88.04]) 
+
+[INFO]   Reading jetmod_51_final_state_hadrons.dat
+Saved 140000 jet...
+[INFO]   Seed 051: finished with 1005 jets 
+	(phi [-0.6276, 0.3902], 
+	eta [-3.892, 1.402], 
+	pT [0.001633, 102.9]) 
+
+[INFO]   Reading jetmod_52_final_state_hadrons.dat
+Saved 141000 jet...
+[INFO]   Seed 052: finished with 972 jets 
+	(phi [-0.3971, 0.3913], 
+	eta [-1.906, 1.562], 
+	pT [0.005152, 88.68]) 
+
+[INFO]   Reading jetmod_53_final_state_hadrons.dat
+Saved 142000 jet...
+[INFO]   Seed 053: finished with 985 jets 
+	(phi [-0.3794, 0.4419], 
+	eta [-1.734, 1.925], 
+	pT [0.007951, 106.1]) 
+
+[INFO]   Reading jetmod_54_final_state_hadrons.dat
+Saved 143000 jet...
+[INFO]   Seed 054: finished with 943 jets 
+	(phi [-0.387, 0.3892], 
+	eta [-2.436, 2.147], 
+	pT [0.0009714, 93.12]) 
+
+[INFO]   Reading jetmod_55_final_state_hadrons.dat
+Saved 144000 jet...
+[INFO]   Seed 055: finished with 965 jets 
+	(phi [-0.3937, 3.112], 
+	eta [-1.565, 3.253], 
+	pT [0.006147, 81.8]) 
+
+[INFO]   Reading jetmod_56_final_state_hadrons.dat
+Saved 145000 jet...
+[INFO]   Seed 056: finished with 967 jets 
+	(phi [-0.393, 0.3908], 
+	eta [-1.756, 1.514], 
+	pT [0.001371, 104.3]) 
+
+[INFO]   Reading jetmod_57_final_state_hadrons.dat
+Saved 146000 jet...
+[INFO]   Seed 057: finished with 938 jets 
+	(phi [-0.3818, 2.638], 
+	eta [-1.53, 3.637], 
+	pT [0.001583, 105.5]) 
+
+[INFO]   Reading jetmod_58_final_state_hadrons.dat
+Saved 147000 jet...
+[INFO]   Seed 058: finished with 917 jets 
+	(phi [-0.3822, 0.3881], 
+	eta [-1.645, 1.462], 
+	pT [0.003002, 89.65]) 
+
+[INFO]   Reading jetmod_59_final_state_hadrons.dat
+Saved 148000 jet...
+[INFO]   Seed 059: finished with 1002 jets 
+	(phi [-0.3936, 0.3964], 
+	eta [-2.427, 1.474], 
+	pT [0.008268, 105.8]) 
+
+[INFO]   Reading jetmod_5_final_state_hadrons.dat
+Saved 149000 jet...
+[INFO]   Seed 005: finished with 992 jets 
+	(phi [-0.3875, 0.3976], 
+	eta [-1.375, 1.521], 
+	pT [0.001958, 93.49]) 
+
+[INFO]   Reading jetmod_60_final_state_hadrons.dat
+Saved 150000 jet...
+[INFO]   Seed 060: finished with 966 jets 
+	(phi [-0.4437, 0.3903], 
+	eta [-1.858, 2.308], 
+	pT [0.003704, 88.53]) 
+
+[INFO]   Reading jetmod_61_final_state_hadrons.dat
+Saved 151000 jet...
+[INFO]   Seed 061: finished with 915 jets 
+	(phi [-0.3907, 0.3993], 
+	eta [-1.401, 1.722], 
+	pT [0.001538, 90.99]) 
+
+[INFO]   Reading jetmod_62_final_state_hadrons.dat
+Saved 152000 jet...
+[INFO]   Seed 062: finished with 1005 jets 
+	(phi [-0.396, 0.4878], 
+	eta [-2.226, 1.499], 
+	pT [0.005725, 97.14]) 
+
+[INFO]   Reading jetmod_63_final_state_hadrons.dat
+Saved 153000 jet...
+[INFO]   Seed 063: finished with 947 jets 
+	(phi [-0.391, 0.3895], 
+	eta [-1.866, 1.78], 
+	pT [0.001749, 96.52]) 
+
+[INFO]   Reading jetmod_64_final_state_hadrons.dat
+Saved 154000 jet...
+[INFO]   Seed 064: finished with 909 jets 
+	(phi [-0.3908, 0.3919], 
+	eta [-1.637, 1.364], 
+	pT [0.001443, 99.38]) 
+
+[INFO]   Reading jetmod_65_final_state_hadrons.dat
+Saved 155000 jet...
+[INFO]   Seed 065: finished with 974 jets 
+	(phi [-0.3797, 0.3873], 
+	eta [-2.118, 2.191], 
+	pT [0.003269, 107.2]) 
+
+[INFO]   Reading jetmod_66_final_state_hadrons.dat
+Saved 156000 jet...
+[INFO]   Seed 066: finished with 967 jets 
+	(phi [-0.3923, 0.3863], 
+	eta [-1.453, 1.356], 
+	pT [0.006035, 92.86]) 
+
+[INFO]   Reading jetmod_67_final_state_hadrons.dat
+[INFO]   Seed 067: finished with 894 jets 
+	(phi [-0.391, 0.3814], 
+	eta [-1.41, 1.486], 
+	pT [0.002506, 99.39]) 
+
+[INFO]   Reading jetmod_68_final_state_hadrons.dat
+Saved 157000 jet...
+[INFO]   Seed 068: finished with 970 jets 
+	(phi [-0.4423, 0.4303], 
+	eta [-1.469, 2.441], 
+	pT [0.006769, 102.4]) 
+
+[INFO]   Reading jetmod_69_final_state_hadrons.dat
+Saved 158000 jet...
+[INFO]   Seed 069: finished with 930 jets 
+	(phi [-0.3988, 0.3892], 
+	eta [-1.172, 1.784], 
+	pT [0.009592, 104.5]) 
+
+[INFO]   Reading jetmod_6_final_state_hadrons.dat
+Saved 159000 jet...
+[INFO]   Seed 006: finished with 968 jets 
+	(phi [-0.3959, 0.3862], 
+	eta [-1.305, 1.745], 
+	pT [0.004316, 94.81]) 
+
+[INFO]   Reading jetmod_70_final_state_hadrons.dat
+Saved 160000 jet...
+[INFO]   Seed 070: finished with 888 jets 
+	(phi [-0.3756, 0.3864], 
+	eta [-1.639, 1.501], 
+	pT [0.003038, 84.83]) 
+
+[INFO]   Reading jetmod_71_final_state_hadrons.dat
+Saved 161000 jet...
+[INFO]   Seed 071: finished with 990 jets 
+	(phi [-0.3917, 0.3763], 
+	eta [-1.493, 1.541], 
+	pT [0.005446, 103.3]) 
+
+[INFO]   Reading jetmod_72_final_state_hadrons.dat
+Saved 162000 jet...
+[INFO]   Seed 072: finished with 1005 jets 
+	(phi [-0.395, 0.3916], 
+	eta [-2.022, 2.176], 
+	pT [0.003489, 104]) 
+
+[INFO]   Reading jetmod_73_final_state_hadrons.dat
+Saved 163000 jet...
+[INFO]   Seed 073: finished with 1004 jets 
+	(phi [-0.3896, 0.3881], 
+	eta [-1.252, 1.766], 
+	pT [0.003515, 106.1]) 
+
+[INFO]   Reading jetmod_74_final_state_hadrons.dat
+Saved 164000 jet...
+[INFO]   Seed 074: finished with 934 jets 
+	(phi [-0.3918, 0.3909], 
+	eta [-2.64, 2.175], 
+	pT [0.004835, 97.18]) 
+
+[INFO]   Reading jetmod_75_final_state_hadrons.dat
+Saved 165000 jet...
+[INFO]   Seed 075: finished with 949 jets 
+	(phi [-0.3939, 0.3927], 
+	eta [-1.51, 1.411], 
+	pT [0.005646, 97.53]) 
+
+[INFO]   Reading jetmod_76_final_state_hadrons.dat
+Saved 166000 jet...
+[INFO]   Seed 076: finished with 971 jets 
+	(phi [-0.3844, 0.3911], 
+	eta [-1.384, 1.257], 
+	pT [0.003264, 100.4]) 
+
+[INFO]   Reading jetmod_77_final_state_hadrons.dat
+Saved 167000 jet...
+[INFO]   Seed 077: finished with 912 jets 
+	(phi [-0.3906, 0.3943], 
+	eta [-1.564, 2.446], 
+	pT [0.004335, 94.95]) 
+
+[INFO]   Reading jetmod_78_final_state_hadrons.dat
+Saved 168000 jet...
+[INFO]   Seed 078: finished with 948 jets 
+	(phi [-0.4126, 0.3866], 
+	eta [-1.641, 1.298], 
+	pT [0.00275, 97.41]) 
+
+[INFO]   Reading jetmod_79_final_state_hadrons.dat
+Saved 169000 jet...
+[INFO]   Seed 079: finished with 1010 jets 
+	(phi [-0.3922, 0.4107], 
+	eta [-2.309, 1.314], 
+	pT [0.003771, 103.1]) 
+
+[INFO]   Reading jetmod_7_final_state_hadrons.dat
+Saved 170000 jet...
+[INFO]   Seed 007: finished with 1000 jets 
+	(phi [-0.3886, 0.3927], 
+	eta [-1.33, 2.139], 
+	pT [0.005469, 104.4]) 
+
+[INFO]   Reading jetmod_80_final_state_hadrons.dat
+Saved 171000 jet...
+[INFO]   Seed 080: finished with 1009 jets 
+	(phi [-0.3889, 0.3881], 
+	eta [-1.239, 1.415], 
+	pT [0.003179, 101.4]) 
+
+[INFO]   Reading jetmod_81_final_state_hadrons.dat
+Saved 172000 jet...
+[INFO]   Seed 081: finished with 964 jets 
+	(phi [-0.3841, 0.3895], 
+	eta [-1.86, 1.188], 
+	pT [0.001464, 97.95]) 
+
+[INFO]   Reading jetmod_82_final_state_hadrons.dat
+Saved 173000 jet...
+[INFO]   Seed 082: finished with 972 jets 
+	(phi [-0.3895, 3.107], 
+	eta [-5.472, 2.973], 
+	pT [0.003563, 97.98]) 
+
+[INFO]   Reading jetmod_83_final_state_hadrons.dat
+Saved 174000 jet...
+[INFO]   Seed 083: finished with 912 jets 
+	(phi [-0.3856, 0.3879], 
+	eta [-2.327, 2.266], 
+	pT [0.002646, 99.77]) 
+
+[INFO]   Reading jetmod_84_final_state_hadrons.dat
+Saved 175000 jet...
+[INFO]   Seed 084: finished with 952 jets 
+	(phi [-0.4553, 0.4641], 
+	eta [-1.963, 1.55], 
+	pT [0.004724, 102.9]) 
+
+[INFO]   Reading jetmod_85_final_state_hadrons.dat
+Saved 176000 jet...
+[INFO]   Seed 085: finished with 915 jets 
+	(phi [-0.3846, 0.3836], 
+	eta [-2.226, 1.363], 
+	pT [0.005581, 81.33]) 
+
+[INFO]   Reading jetmod_86_final_state_hadrons.dat
+Saved 177000 jet...
+[INFO]   Seed 086: finished with 936 jets 
+	(phi [-0.3932, 0.4488], 
+	eta [-1.55, 1.571], 
+	pT [0.004339, 107.8]) 
+
+[INFO]   Reading jetmod_87_final_state_hadrons.dat
+Saved 178000 jet...
+[INFO]   Seed 087: finished with 956 jets 
+	(phi [-0.3849, 0.452], 
+	eta [-1.552, 1.816], 
+	pT [0.0009276, 104.4]) 
+
+[INFO]   Reading jetmod_88_final_state_hadrons.dat
+[INFO]   Seed 088: finished with 958 jets 
+	(phi [-0.3949, 0.388], 
+	eta [-1.636, 2.263], 
+	pT [0.002873, 106.9]) 
+
+[INFO]   Reading jetmod_89_final_state_hadrons.dat
+Saved 179000 jet...
+[INFO]   Seed 089: finished with 1001 jets 
+	(phi [-0.394, 0.3873], 
+	eta [-1.315, 2.51], 
+	pT [0.001115, 92.66]) 
+
+[INFO]   Reading jetmod_8_final_state_hadrons.dat
+Saved 180000 jet...
+[INFO]   Seed 008: finished with 976 jets 
+	(phi [-0.3964, 0.3892], 
+	eta [-1.457, 1.482], 
+	pT [0.004371, 97.77]) 
+
+[INFO]   Reading jetmod_90_final_state_hadrons.dat
+Saved 181000 jet...
+[INFO]   Seed 090: finished with 1007 jets 
+	(phi [-0.4534, 0.3895], 
+	eta [-1.231, 1.829], 
+	pT [0.002921, 93.84]) 
+
+[INFO]   Reading jetmod_91_final_state_hadrons.dat
+Saved 182000 jet...
+[INFO]   Seed 091: finished with 990 jets 
+	(phi [-0.4068, 0.3929], 
+	eta [-1.512, 1.363], 
+	pT [0.004355, 91.38]) 
+
+[INFO]   Reading jetmod_92_final_state_hadrons.dat
+Saved 183000 jet...
+[INFO]   Seed 092: finished with 975 jets 
+	(phi [-0.4103, 0.3895], 
+	eta [-1.756, 2.069], 
+	pT [0.002459, 81.8]) 
+
+[INFO]   Reading jetmod_93_final_state_hadrons.dat
+Saved 184000 jet...
+[INFO]   Seed 093: finished with 937 jets 
+	(phi [-0.4536, 0.4894], 
+	eta [-1.346, 1.653], 
+	pT [0.007494, 96.58]) 
+
+[INFO]   Reading jetmod_94_final_state_hadrons.dat
+Saved 185000 jet...
+[INFO]   Seed 094: finished with 905 jets 
+	(phi [-0.3867, 0.3865], 
+	eta [-1.249, 1.529], 
+	pT [0.001165, 89.19]) 
+
+[INFO]   Reading jetmod_95_final_state_hadrons.dat
+Saved 186000 jet...
+[INFO]   Seed 095: finished with 1003 jets 
+	(phi [-0.3843, 0.3942], 
+	eta [-1.857, 1.566], 
+	pT [0.006336, 109.3]) 
+
+[INFO]   Reading jetmod_96_final_state_hadrons.dat
+Saved 187000 jet...
+[INFO]   Seed 096: finished with 976 jets 
+	(phi [-0.392, 1.291], 
+	eta [-1.321, 3.392], 
+	pT [0.004002, 93.38]) 
+
+[INFO]   Reading jetmod_97_final_state_hadrons.dat
+Saved 188000 jet...
+[INFO]   Seed 097: finished with 984 jets 
+	(phi [-0.3813, 0.3921], 
+	eta [-1.671, 2.545], 
+	pT [0.003335, 104.9]) 
+
+[INFO]   Reading jetmod_98_final_state_hadrons.dat
+Saved 189000 jet...
+[INFO]   Seed 098: finished with 981 jets 
+	(phi [-0.4023, 0.3774], 
+	eta [-1.735, 4.099], 
+	pT [0.00337, 88.74]) 
+
+[INFO]   Reading jetmod_99_final_state_hadrons.dat
+Saved 190000 jet...
+[INFO]   Seed 099: finished with 973 jets 
+	(phi [-0.3819, 0.3892], 
+	eta [-1.158, 1.813], 
+	pT [0.001874, 101.4]) 
+
+[INFO]   Reading jetmod_9_final_state_hadrons.dat
+Saved 191000 jet...
+[INFO]   Seed 009: finished with 913 jets 
+	(phi [-0.3901, 0.3952], 
+	eta [-1.302, 1.969], 
+	pT [0.006286, 109]) 
+
+[INFO] Finished config c0005_alpha0p30_q_3p0_unfolded.
+[INFO]   Total jets saved: 191586
+[INFO]   Metadata CSV (per-jet): /.rs/volumes/rs_grp_mljet/rs_vol_mljet/0862345b-abd8-4592-9024-e242d4d45a54/ml-jet-ext/pTHat50-250_eCM5020_pTHat50-250_eCM5020_pT90-110_R0p4/metadata/c0005_alpha0p30_q_3p0_unfolded_jets.csv
+[Tue Nov 25 20:13:15 EST 2025] DONE RUN_DIR=c0005_alpha0p30_q_3p0

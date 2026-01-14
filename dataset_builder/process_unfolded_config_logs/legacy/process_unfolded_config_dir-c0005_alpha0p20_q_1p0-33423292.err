@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "process_unfolded_config.py", line 404, in <module>
+    main()
+  File "process_unfolded_config.py", line 400, in main
+    process_config_dir(config_dir, output_root, args.bin_count)
+  File "process_unfolded_config.py", line 357, in process_config_dir
+    writer.writerows(seed_rows)
+  File "/wsu/el7/pre-compiled/python/3.7/lib/python3.7/csv.py", line 158, in writerows
+    return self.writer.writerows(map(self._dict_to_list, rowdicts))
+  File "/wsu/el7/pre-compiled/python/3.7/lib/python3.7/csv.py", line 151, in _dict_to_list
+    + ", ".join([repr(x) for x in wrong_fields]))
+ValueError: dict contains fields not in fieldnames: 'file_paths'
