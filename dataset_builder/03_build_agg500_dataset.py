@@ -39,7 +39,7 @@ def build_agg500_for_config(
     max_pt: float = 110.0,
     epsilon: float = 1e-8,
     rng_seed: int = 0,
-):
+    ):
     """
     Build 500-jet aggregates for a single config.
 
@@ -63,21 +63,65 @@ def build_agg500_for_config(
     if "file_paths" not in df.columns:
         raise ValueError(f"'file_paths' column not found in {jets_csv}")
 
+    # n_total = len(df)
+    # required = n_agg * group_size
+    # if n_total < required:
+    #     raise ValueError(
+    #         f"{config_name}: need {required} jets (for {n_agg} groups of {group_size}), "
+    #         f"but only found {n_total}."
+    #     )
+
+    # print(f"[INFO] Config {config_name}: {n_total} jets, building {n_agg} groups of {group_size}")
+
+    # # Random permutation of all jet indices
+    # rng = np.random.RandomState(rng_seed)
+    # perm = rng.permutation(n_total)
+    # used_indices = perm[:required]
+    # groups = used_indices.reshape(n_agg, group_size)
+
     n_total = len(df)
-    required = n_agg * group_size
-    if n_total < required:
+
+    # Need at least one full group
+    if n_total < group_size:
         raise ValueError(
-            f"{config_name}: need {required} jets (for {n_agg} groups of {group_size}), "
+            f"{config_name}: need at least {group_size} jets to build one aggregate, "
             f"but only found {n_total}."
         )
 
-    print(f"[INFO] Config {config_name}: {n_total} jets, building {n_agg} groups of {group_size}")
-
-    # Random permutation of all jet indices
     rng = np.random.RandomState(rng_seed)
+
+    # First phase: use each jet at most once (disjoint groups)
+    max_disjoint_groups = n_total // group_size          # how many non-overlapping groups we can form
+    n_disjoint = min(max_disjoint_groups, n_agg)         # groups without reuse
+    remaining_groups = n_agg - n_disjoint                # groups we still need (with reuse)
+
+    print(
+        f"[INFO] Config {config_name}: {n_total} jets, "
+        f"building {n_disjoint} groups without reuse"
+        + (f" and {remaining_groups} groups with reuse" if remaining_groups > 0 else "")
+        + f", group_size={group_size}"
+    )
+
+    # Random permutation of all jet indices for the disjoint phase
     perm = rng.permutation(n_total)
-    used_indices = perm[:required]
-    groups = used_indices.reshape(n_agg, group_size)
+
+    groups = []
+
+    # --- Disjoint phase: each jet used at most once ---
+    for i in range(n_disjoint):
+        start = i * group_size
+        end = start + group_size
+        groups.append(perm[start:end])
+
+    # --- Reuse phase: sample additional groups from all jets ---
+    for _ in range(remaining_groups):
+        # sample group_size *distinct* jets within this group,
+        # but allow jets to be reused across different groups
+        grp_idx = rng.choice(n_total, size=group_size, replace=False)
+        groups.append(grp_idx)
+
+    groups = np.array(groups)
+
 
     # Original config dir (where source jets live)
     config_input_dir = input_root / f"{config_name}_unfolded"
@@ -117,7 +161,32 @@ def build_agg500_for_config(
             rel_path = row["file_paths"]
             img_path = input_root / rel_path
             if not img_path.exists():
-                raise FileNotFoundError(f"Missing jet .npy file: {img_path}")
+                # Try previous event in the same directory: event_XXXXXXX -> event_(XXXXXXX-1)
+                p = Path(rel_path)
+                stem = p.stem  # e.g. "event_0000012"
+                base, num_str = stem.rsplit("_", 1)
+
+                try:
+                    prev_idx = int(num_str) - 1
+                except ValueError:
+                    raise FileNotFoundError(f"Missing jet .npy file and cannot parse index: {img_path}")
+
+                if prev_idx < 0:
+                    raise FileNotFoundError(f"Missing jet .npy file and no previous index: {img_path}")
+
+                prev_stem = f"{base}_{prev_idx:07d}"
+                prev_rel_path = str(p.with_name(prev_stem + p.suffix))
+                prev_img_path = input_root / prev_rel_path
+
+                if not prev_img_path.exists():
+                    raise FileNotFoundError(
+                        f"Missing jet .npy file: {img_path} and fallback {prev_img_path} also missing"
+                    )
+
+                print(f"[WARN] {config_name}: missing {rel_path}, using {prev_rel_path} instead")
+                rel_path = prev_rel_path
+                img_path = prev_img_path
+
             arr = np.load(img_path).astype(np.float32)
             imgs.append(arr)
             src_paths.append(rel_path)
