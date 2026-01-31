@@ -1,0 +1,19 @@
+model_tag: ViT_tiny_patch16_224_gaussian_lrp_12_rlrp_4
+backbone: vit_gaussian
+batch_size: 32
+epochs: 50
+learning_rate: 0.0001
+patience: 12
+input_shape: [1, 32, 32]
+global_max: 121.79151153564453
+output_dir: experiments/exp_preload_trained_model_and_train_more/training_output/
+dataset_subdir: jet_ml_benchmark_config_01_to_09_alpha_0.2_0.3_0.4_q0_1.5_2.0_2.5_MMAT_MLBT_size_7200000_balanced_unshuffled
+group_size: 500
+dataset_size: 7200000
+scheduler:
+  type: ReduceLROnPlateau
+  mode: max
+  factor: 0.5
+  patience: 4
+  verbose: true
+preload_model_path: "training_output/ViT_tiny_patch16_224_gaussian_g500_bs32_ep50_lr1e-04_ds7200000_g500_sched_ReduceLROnPlateau/best_model.pth"

@@ -1,3 +1,16 @@
 JETSCAPE/*
 JETSCAPE/
 *logs/
+
+
+wandb/
+training_output/
+/train/archive/
+/train/still_running
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
