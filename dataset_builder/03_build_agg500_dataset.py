@@ -29,6 +29,111 @@ def log_normalize_image(img, epsilon=1e-8, img_max=1.0):
     I_log = num / den
     return np.clip(I_log, 0.0, 1.0)
 
+from typing import Tuple
+def find_prev_existing_event(rel_path: str, input_root: Path, config_name: str) -> Tuple[str, Path]:
+    """
+    Given a relative path like '.../seed_000/event_0000012.npy', recursively step
+    backwards in the event index until we find an existing file.
+
+    Returns (new_rel_path, new_img_path).
+
+    Raises FileNotFoundError if no previous existing event is found.
+    """
+    p = Path(rel_path)
+    stem = p.stem  # e.g. "event_0000012"
+    base, num_str = stem.rsplit("_", 1)
+
+    try:
+        idx = int(num_str)
+    except ValueError:
+        raise FileNotFoundError(
+            f"[{config_name}] Missing jet .npy file and cannot parse index from: {rel_path}"
+        )
+
+    idx -= 1
+    if idx < 0:
+        raise FileNotFoundError(
+            f"[{config_name}] Missing jet .npy file and no previous index for: {rel_path}"
+        )
+
+    prev_stem = f"{base}_{idx:07d}"
+    prev_rel_path = str(p.with_name(prev_stem + p.suffix))
+    prev_img_path = input_root / prev_rel_path
+
+    if prev_img_path.exists():
+        print(f"[WARN] {config_name}: missing {rel_path}, using {prev_rel_path} instead")
+        return prev_rel_path, prev_img_path
+    else:
+        # Recursive step: try the previous one again
+        return find_prev_existing_event(prev_rel_path, input_root, config_name)
+
+from pathlib import Path
+import numpy as np
+
+def resolve_missing_event(rel_path, input_root, config_name, rng):
+    """
+    When the file for rel_path does not exist:
+      1) Try a random event index between 50 and 900.
+      2) If that also fails, walk backwards in index (event_XXXXXXX-1, -2, …)
+         until a valid file is found.
+
+    Returns (new_rel_path, new_img_path).
+    Raises FileNotFoundError if no replacement can be found.
+    """
+    p = Path(rel_path)
+    stem = p.stem  # e.g. "event_0000012"
+
+    try:
+        base, num_str = stem.rsplit("_", 1)
+    except ValueError:
+        raise FileNotFoundError(
+            f"[{config_name}] Missing jet .npy file and cannot parse index from: {rel_path}"
+        )
+
+    try:
+        orig_idx = int(num_str)
+    except ValueError:
+        raise FileNotFoundError(
+            f"[{config_name}] Missing jet .npy file and cannot parse index from: {rel_path}"
+        )
+
+    # --------------------------------------------------
+    # 1) Try a random index in [50, 900]
+    # --------------------------------------------------
+    rand_idx = rng.randint(50, 901)  # upper bound is exclusive
+    rand_stem = f"{base}_{rand_idx:07d}"
+    rand_rel = str(p.with_name(rand_stem + p.suffix))
+    rand_path = input_root / rand_rel
+
+    if rand_path.exists():
+        print(
+            f"[WARN] {config_name}: missing {rel_path}, "
+            f"using random {rand_rel} instead"
+        )
+        return rand_rel, rand_path
+
+    # --------------------------------------------------
+    # 2) Walk backwards from the original index
+    # --------------------------------------------------
+    idx = orig_idx - 1
+    while idx >= 0:
+        prev_stem = f"{base}_{idx:07d}"
+        prev_rel = str(p.with_name(prev_stem + p.suffix))
+        prev_path = input_root / prev_rel
+
+        if prev_path.exists():
+            print(
+                f"[WARN] {config_name}: missing {rel_path}, "
+                f"using previous {prev_rel} instead"
+            )
+            return prev_rel, prev_path
+
+        idx -= 1
+
+    # If we get here, nothing worked
+    raise FileNotFoundError(
+        f"[{config_name}] Missing jet .npy file {rel_path} and no replacement found"
+    )
 
 def build_agg500_for_config(
     config_name: str,
@@ -161,31 +266,40 @@ def build_agg500_for_config(
             rel_path = row["file_paths"]
             img_path = input_root / rel_path
             if not img_path.exists():
-                # Try previous event in the same directory: event_XXXXXXX -> event_(XXXXXXX-1)
-                p = Path(rel_path)
-                stem = p.stem  # e.g. "event_0000012"
-                base, num_str = stem.rsplit("_", 1)
+                # Use random [50, 900] first; if that fails, walk backwards
+                rel_path, img_path = resolve_missing_event(
+                    rel_path=rel_path,
+                    input_root=input_root,
+                    config_name=config_name,
+                    rng=rng,
+                )
+                # Recursively walk backwards until we find an existing event
+                # rel_path, img_path = find_prev_existing_event(rel_path, input_root, config_name)
+                # # Try previous event in the same directory: event_XXXXXXX -> event_(XXXXXXX-1)
+                # p = Path(rel_path)
+                # stem = p.stem  # e.g. "event_0000012"
+                # base, num_str = stem.rsplit("_", 1)
 
-                try:
-                    prev_idx = int(num_str) - 1
-                except ValueError:
-                    raise FileNotFoundError(f"Missing jet .npy file and cannot parse index: {img_path}")
+                # try:
+                #     prev_idx = int(num_str) - 1
+                # except ValueError:
+                #     raise FileNotFoundError(f"Missing jet .npy file and cannot parse index: {img_path}")
 
-                if prev_idx < 0:
-                    raise FileNotFoundError(f"Missing jet .npy file and no previous index: {img_path}")
+                # if prev_idx < 0:
+                #     raise FileNotFoundError(f"Missing jet .npy file and no previous index: {img_path}")
 
-                prev_stem = f"{base}_{prev_idx:07d}"
-                prev_rel_path = str(p.with_name(prev_stem + p.suffix))
-                prev_img_path = input_root / prev_rel_path
+                # prev_stem = f"{base}_{prev_idx:07d}"
+                # prev_rel_path = str(p.with_name(prev_stem + p.suffix))
+                # prev_img_path = input_root / prev_rel_path
 
-                if not prev_img_path.exists():
-                    raise FileNotFoundError(
-                        f"Missing jet .npy file: {img_path} and fallback {prev_img_path} also missing"
-                    )
+                # if not prev_img_path.exists():
+                #     raise FileNotFoundError(
+                #         f"Missing jet .npy file: {img_path} and fallback {prev_img_path} also missing"
+                #     )
 
-                print(f"[WARN] {config_name}: missing {rel_path}, using {prev_rel_path} instead")
-                rel_path = prev_rel_path
-                img_path = prev_img_path
+                # print(f"[WARN] {config_name}: missing {rel_path}, using {prev_rel_path} instead")
+                # rel_path = prev_rel_path
+                # img_path = prev_img_path
 
             arr = np.load(img_path).astype(np.float32)
             imgs.append(arr)

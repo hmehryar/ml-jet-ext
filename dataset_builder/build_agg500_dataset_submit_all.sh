@@ -14,7 +14,7 @@ mkdir -p logs
 DIRS=(
 # # c0005_alpha0p20_q_1p0  c0005_alpha0p20_q_1p5  c0005_alpha0p20_q_2p0  c0005_alpha0p20_q_2p5  c0005_alpha0p20_q_3p0
 # # c0005_alpha0p25_q_1p0  c0005_alpha0p25_q_1p5  
-# c0005_alpha0p25_q_2p0  
+c0005_alpha0p25_q_2p0  
 # # c0005_alpha0p25_q_2p5  c0005_alpha0p25_q_3p0
 # # c0005_alpha0p30_q_1p0  c0005_alpha0p30_q_1p5  
 # c0005_alpha0p30_q_2p0  c0005_alpha0p30_q_2p5  c0005_alpha0p30_q_3p0
@@ -25,7 +25,7 @@ DIRS=(
 # # c0005_alpha0p45_q_2p0  
 # c0005_alpha0p45_q_2p5  c0005_alpha0p45_q_3p0
 # c0005_alpha0p50_q_1p0  c0005_alpha0p50_q_1p5  
-c0005_alpha0p50_q_2p0  c0005_alpha0p50_q_2p5  c0005_alpha0p50_q_3p0
+# c0005_alpha0p50_q_2p0  c0005_alpha0p50_q_2p5  c0005_alpha0p50_q_3p0
 )
 
 for d in "${DIRS[@]}"; do
