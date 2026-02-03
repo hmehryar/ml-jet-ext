@@ -124,7 +124,11 @@ class JetDataset(Dataset):
         file_path, label = self.file_label_list[idx]
         
         # Load the event image from .npy file and normalize
-        event = np.load(file_path).astype(np.float32) / self.global_max
+        if np.isfinite(self.global_max) and self.global_max>0 :
+            event = np.load(file_path).astype(np.float32) / self.global_max
+        else:
+            event = np.load(file_path).astype(np.float32)
+            # print(f"[WARNING] global_max <=0 or NaN, no normalization applied")
         event = np.expand_dims(event, axis=0)  # Shape: (1, 32, 32) for PyTorch
         
         # Convert labels to tensors

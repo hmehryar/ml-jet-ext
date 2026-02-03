@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=jext-vit-f1
+#SBATCH --job-name=jext-vit-f0-e400-lr3-lrp100
 
 #SBATCH --partition=ecscp
 #SBATCH --gres=gpu:nvidia_a100_80gb_pcie_1g.10gb:1
@@ -36,8 +36,9 @@ MODEL_TAG=$(get_yaml_value model_tag)
 BATCH_SIZE=$(get_yaml_value batch_size)
 EPOCHS=$(get_yaml_value epochs)
 LEARNING_RATE=$(get_yaml_value learning_rate)
+FOLD=$(get_yaml_value fold_index)
 
-RUN_TAG="${MODEL_TAG}_bs${BATCH_SIZE}_ep${EPOCHS}_lr$(printf %.0e $LEARNING_RATE)"
+RUN_TAG="${MODEL_TAG}_bs${BATCH_SIZE}_ep${EPOCHS}_lr$(printf %.0e $LEARNING_RATE)_fold${FOLD}"
 LOGS_DIR="logs"
 mkdir -p $LOGS_DIR
 LOG_FILE="${LOGS_DIR}/train_${RUN_TAG}_${SLURM_JOB_ID}.out"
@@ -52,8 +53,8 @@ conda init
 conda activate pytorch
 
 START_TIME=$(date +%s)
-jupyter nbconvert --to script train.ipynb --output train_${MODEL_TAG}_${SLURM_JOB_ID}
-python train_${MODEL_TAG}_${SLURM_JOB_ID}.py --config "$CONFIG_PATH"
+jupyter nbconvert --to script train.ipynb --output train_${RUN_TAG}_${SLURM_JOB_ID}
+python train_${RUN_TAG}_${SLURM_JOB_ID}.py --config "$CONFIG_PATH"
 
 END_TIME=$(date +%s)
 DURATION=$((END_TIME - START_TIME))

@@ -1,11 +1,15 @@
 JETSCAPE/*
 JETSCAPE/
 *logs/
+experiments/*/logs/
 
+slurm-*.out
+train_*.py
 
 wandb/
 training_output/
 /train/archive/
+/experiments/*/train/archive/
 /train/still_running
 
 # Python cache

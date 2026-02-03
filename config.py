@@ -43,7 +43,8 @@ def get_config(config_path=None):
         # base_path = "/home/arsalan/wsu-grid/hm_jetscapeml_source/data/"
         print("[INFO] Detected native Ubuntu host: DS044955")
     elif system == "Linux" and "gy4065" in user:
-        base_path = "/wsu/home/gy/gy40/gy4065/hm_jetscapeml_source/data"
+        base_path = "/rs/rs_grp_mljet/ml-jet-ext/" 
+        #in previous research it was /wsu/home/gy/gy40/gy4065/hm_jetscapeml_source/data
         print("[INFO] Detected WSU Grid environment (user: gy4065)")
     else:
         raise RuntimeError("\u274c Unknown system. Please define the dataset path for this host.")
@@ -74,7 +75,7 @@ def get_config(config_path=None):
     epochs = cfg_dict.get("epochs", 50)
     learning_rate = cfg_dict.get("learning_rate", 1e-4)
     patience = cfg_dict.get("patience", 5)
-    global_max = cfg_dict.get("global_max", 121.79151153564453)
+    global_max = cfg_dict.get("global_max", float('nan'))
     output_base = cfg_dict.get("output_dir", "training_output/")
     group_size    = cfg_dict.get("group_size", 1)
 

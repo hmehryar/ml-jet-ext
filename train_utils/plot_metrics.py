@@ -131,8 +131,8 @@ def plot_confusion_matrices(metrics_dict, output_dir,color_map="Oranges"):
     
     tasks = {
         "energy": ["MATTER", "MATTER-LBT"],
-        "alpha": ["0.2", "0.3", "0.4"],
-        "q0": ["1.0", "1.5", "2.0", "2.5"]
+        "alpha": ["0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5"],
+        "q0": ["1.0", "1.5", "2.0", "2.5", "3.0"]
     }
 
     for task, labels in tasks.items():
