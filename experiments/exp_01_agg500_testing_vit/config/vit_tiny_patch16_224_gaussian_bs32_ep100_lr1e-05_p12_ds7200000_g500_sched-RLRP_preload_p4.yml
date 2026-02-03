@@ -1,11 +1,11 @@
 model_tag: ViT_tiny_patch16_224_gaussian_lrp_12_rlrp_4
 backbone: vit_gaussian
 batch_size: 32
-epochs: 50
-learning_rate: 0.0001
+epochs: 100
+learning_rate: 0.00001
 patience: 12
 input_shape: [1, 32, 32]
-global_max: 121.79151153564453
+# global_max: 121.79151153564453
 output_dir: experiments/exp_01_agg500_testing_vit/training_output/
 dataset_subdir: pTHat50-250_eCM5020_c0005_pT90-110_R0p4_agg500/
 group_size: 1
