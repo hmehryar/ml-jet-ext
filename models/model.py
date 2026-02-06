@@ -133,7 +133,8 @@ def weights_init_normal(m):
             nn.init.constant_(m.bias, 0)
 
 # from models.model_convnext import ConvNeXtClassifier
-from models.model_vit import ViTClassifier
+
+
 # from models.model_mamba import MambaClassifier
 # ---------------------------
 # Model Creation Helper
@@ -142,7 +143,17 @@ def create_model(backbone='efficientnet',
                 input_shape=(1, 32, 32),
                 learning_rate=0.001, 
                 d_model=512,
-                init_weights='imagenet'):# 'imagenet', 'cifar', or 'gaussian'
+                init_weights='imagenet',# 'imagenet', 'cifar', or 'gaussian'
+                # ---- legacy adapter args (Config 1.b)
+                legacy_ckpt_path=None,
+                legacy_model_name='vit_tiny_patch16_224',
+                alpha_classes=7,
+                q0_classes=5,
+                eloss_dim=1,
+                branch_hidden_dim=128,
+                branch_dropout=0.1,
+                use_eloss_branch=True
+                ):
     """
     Helper function to create and compile a MultiHeadClassifier.
     """
@@ -173,6 +184,38 @@ def create_model(backbone='efficientnet',
 
         if suffix == 'gaussian':
             model.apply(weights_init_normal)
+    # ---------------------------------------------------------
+    # Config 1.b: Frozen legacy ViT + task-specific branches
+    # ---------------------------------------------------------
+    elif backbone == 'vit_legacy_branch_1b':
+        from models.model_vit_legacy import ViTClassifier
+        from models.model_vit_legacy_branch import ViTLegacyBranchedAdapter, load_legacy_checkpoint
+        if legacy_ckpt_path is None:
+            raise ValueError("legacy_ckpt_path must be provided for backbone='vit_legacy_branch_1b'")
+
+        # Build legacy model (must match the architecture used to create the checkpoint)
+        legacy = ViTClassifier(input_shape=input_shape, pretrained=False, model_name=legacy_model_name)
+
+        # Load weights
+        legacy = load_legacy_checkpoint(legacy, legacy_ckpt_path, map_location="cpu", strict=True)
+
+        # Wrap with branched adapter (legacy frozen inside)
+        model = ViTLegacyBranchedAdapter(
+            legacy_model=legacy,
+            alpha_classes=alpha_classes,
+            q0_classes=q0_classes,
+            eloss_dim=eloss_dim,
+            branch_hidden_dim=branch_hidden_dim,
+            branch_dropout=branch_dropout,
+            use_eloss_branch=use_eloss_branch,
+        )
+
+        # Optimizer should see ONLY trainable params (branches)
+        optimizer = torch.optim.Adam(
+            filter(lambda p: p.requires_grad, model.parameters()),
+            lr=learning_rate
+        )
+        return model, optimizer
     # Handle ViT Variants
     elif backbone.startswith('vit'):
         suffix = backbone[len('vit_'):]
@@ -197,6 +240,8 @@ def create_model(backbone='efficientnet',
             model.apply(weights_init_normal)
         optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
         return model, optimizer
+    
+
     elif backbone.startswith('mambaout'):
         suffix = backbone[len('mambaout_'):]
 

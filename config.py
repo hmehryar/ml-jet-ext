@@ -37,11 +37,16 @@ def get_config(config_path=None):
     if system == "Linux" and "hm-srv1" in hostname and "arsalan" in user and "wsl" in release :
         base_path = "/mnt/d/Projects/110_JetscapeML/hm_jetscapeml_source/data"
         print("[INFO] Detected WSL environment")
-    elif system == "Linux" and "ds044955" in hostname and "arsalan" in user:
+    elif system == "Linux" and "ds044955"  in hostname and "arsalan" in user:
         base_path = "/home/arsalan/wsu_grid_rs_grp_mljet/"
         # base_path = "/home/arsalan/Projects/110_JetscapeML/hm_jetscapeml_source/data"
         # base_path = "/home/arsalan/wsu-grid/hm_jetscapeml_source/data/"
         print("[INFO] Detected native Ubuntu host: DS044955")
+    elif system == "Linux" and "ds028160" in hostname and "arsalan" in user:
+        base_path = "/mnt/Research/arsalan/wsu_grid_rs_grp_mljet/ml-jet-ext/"
+        # base_path = "/home/arsalan/Projects/110_JetscapeML/hm_jetscapeml_source/data"
+        # base_path = "/home/arsalan/wsu-grid/hm_jetscapeml_source/data/"
+        print("[INFO] Detected native Mint host: DS028160")
     elif system == "Linux" and "gy4065" in user:
         base_path = "/rs/rs_grp_mljet/ml-jet-ext/" 
         #in previous research it was /wsu/home/gy/gy40/gy4065/hm_jetscapeml_source/data

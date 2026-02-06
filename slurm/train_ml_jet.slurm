@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=jext-vit-f0-e400-lr3-lrp100
+#SBATCH --job-name=vit-leg-1b-f0-e400-lr6-lrp100
 
 #SBATCH --partition=ecscp
 #SBATCH --gres=gpu:nvidia_a100_80gb_pcie_1g.10gb:1
