@@ -1,0 +1,28 @@
+model_tag: vit_legacy_2b_parallel_lrp_1000_rlrp_4
+backbone: vit_legacy_2b_parallel
+batch_size: 32
+epochs: 1000
+learning_rate: 0.0001
+patience: 1000
+input_shape: [1, 32, 32]
+global_max: 1.0
+output_dir: experiments/exp_02_transfer_learning_with_vit_backbone/training_output/
+dataset_subdir: pTHat50-250_eCM5020_c0005_pT90-110_R0p4_agg500/
+group_size: 1
+dataset_size: 14000
+use_val_folds: true
+fold_index: 0
+test_csv_same_as_val_fold: true
+scheduler:
+  type: ReduceLROnPlateau
+  mode: max
+  factor: 0.5
+  patience: 4
+  verbose: true
+preload_model_path: "experiments/exp_preload_trained_model_and_train_more_best_model_so_far/training_output/ViT_tiny_patch16_224_gaussian_lrp_12_rlrp_4_bs32_ep50_lr1e-04_ds7200000_g500_sched_ReduceLROnPlateau_preloaded/last_model.pth"
+loss:
+  weights:
+    energy_loss_output: 1.0
+    alpha_output: 1.0
+    q0_output: 1.0
+freeze_backbone: True

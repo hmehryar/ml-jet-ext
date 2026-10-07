@@ -1,11 +1,11 @@
-model_tag: vit_legacy_branch_1b_lrp_12_rlrp_4
+model_tag: vit_legacy_branch_1b_lrp_400_rlrp_4
 backbone: vit_legacy_branch_1b
 batch_size: 32
 epochs: 400
 learning_rate: 0.000001
 patience: 400
 input_shape: [1, 32, 32]
-# global_max: 121.79151153564453
+global_max: 1.0
 output_dir: experiments/exp_02_transfer_learning_with_vit_backbone/training_output/
 dataset_subdir: pTHat50-250_eCM5020_c0005_pT90-110_R0p4_agg500/
 group_size: 1

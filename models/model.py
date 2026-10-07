@@ -152,7 +152,11 @@ def create_model(backbone='efficientnet',
                 eloss_dim=1,
                 branch_hidden_dim=128,
                 branch_dropout=0.1,
-                use_eloss_branch=True
+                use_eloss_branch=True,
+                legacy_head_hidden_dim=256,
+                legacy_head_dropout=0.1,
+                freeze_backbone=True,
+                initialization=None,
                 ):
     """
     Helper function to create and compile a MultiHeadClassifier.
@@ -215,6 +219,59 @@ def create_model(backbone='efficientnet',
             filter(lambda p: p.requires_grad, model.parameters()),
             lr=learning_rate
         )
+        return model, optimizer
+    # ---------------------------------------------------------
+    # Config 2.b: pretrained legacy ViT backbone + fresh parallel heads
+    # ---------------------------------------------------------
+    elif backbone == 'vit_legacy_2b_parallel':
+        from models.model_vit_legacy import ViTClassifier
+        from models.model_vit_legacy_2b_parallel import ViTLegacyParallelHeads, load_legacy_checkpoint
+
+        # Build the exact same legacy architecture used for the checkpoint
+        legacy = ViTClassifier(
+            input_shape=input_shape,
+            pretrained=False,
+            model_name=legacy_model_name
+        )
+
+        if legacy_ckpt_path is not None:
+            # raise ValueError("legacy_ckpt_path must be provided for backbone='vit_legacy_2b_parallel'")
+        
+            # Load checkpoint
+            legacy = load_legacy_checkpoint(
+                legacy_model=legacy,
+                ckpt_path=legacy_ckpt_path,
+                map_location="cpu",
+                strict=True
+            )
+        
+            
+        print("legacy features:", type(legacy.features))
+        print("patch img_size:", legacy.features.patch_embed.img_size)
+        print("patch size:", legacy.features.patch_embed.patch_size)
+        print("strict_img_size:", legacy.features.patch_embed.strict_img_size)
+
+        # Wrap with fresh parallel heads
+        model = ViTLegacyParallelHeads(
+            legacy_model=legacy,
+            alpha_classes=alpha_classes,
+            q0_classes=q0_classes,
+            eloss_dim=eloss_dim,
+            head_hidden_dim=legacy_head_hidden_dim,
+            head_dropout=legacy_head_dropout,
+            freeze_backbone=freeze_backbone,
+        )
+        if initialization is not None and initialization['type'] == 'gaussian':
+            model.apply(weights_init_normal)
+        optimizer = torch.optim.Adam(
+            filter(lambda p: p.requires_grad, model.parameters()),
+            lr=learning_rate
+        )
+        # quick checks
+        trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        frozen    = sum(p.numel() for p in model.parameters() if not p.requires_grad)
+        print("trainable params:", trainable)
+        print("frozen params:", frozen)
         return model, optimizer
     # Handle ViT Variants
     elif backbone.startswith('vit'):

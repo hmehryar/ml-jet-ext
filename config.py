@@ -93,11 +93,29 @@ def get_config(config_path=None):
         'verbose': True
     }
     scheduler=cfg_dict.get('scheduler', scheduler_defaults)
+
     preloaded = ""
     preload_model_path = cfg_dict.get("preload_model_path")
     if preload_model_path:
         preloaded="_preloaded"
 
+    freeze_backbone = cfg_dict.get("freeze_backbone", False)
+    frozen_backbone_tag=""
+    if freeze_backbone == True:
+        frozen_backbone_tag="_frozen"
+    else:
+        frozen_backbone_tag="_unfrozen"
+
+    initialization_defaults = {
+        'type': 'gaussian',
+        'mean': 0.0,
+        'std': 0.02
+    }
+    initialization = cfg_dict.get("initialization", initialization_defaults)
+    init_tag=""
+    if freeze_backbone == False and preloaded=="":
+        init_tag = f"_{initialization['type']}"
+    
     # after scheduler / preload_model_path parsing
     loss_cfg = cfg_dict.get("loss", {}) or {}
     loss_weights = (loss_cfg.get("weights") or {
@@ -148,7 +166,7 @@ def get_config(config_path=None):
             test_csv=""
 
     scheduler_type = scheduler.get('type', 'NoScheduler')
-    run_tag = f"{model_tag}_bs{batch_size}_ep{epochs}_lr{learning_rate:.0e}_ds{dataset_size}_g{group_size}_sched_{scheduler_type}{preloaded}{weighted_loss}"
+    run_tag = f"{model_tag}_bs{batch_size}_ep{epochs}_lr{learning_rate:.0e}_ds{dataset_size}_g{group_size}_sched_{scheduler_type}{preloaded}{frozen_backbone_tag}{init_tag}{weighted_loss}"
     output_dir = os.path.join(output_base, run_tag)
     # Add fold suffix if using CV folds
     if use_val_folds and fold_index is not None:
@@ -173,7 +191,8 @@ def get_config(config_path=None):
         "dataset_size": dataset_size,
         "preload_model_path": preload_model_path,
         "loss_weights": loss_weights,
-
+        "freeze_backbone": freeze_backbone,
+        "initialization": initialization,
     })
 
 if __name__ == "__main__":

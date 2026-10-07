@@ -13,7 +13,7 @@ class ViTClassifier(nn.Module):
             model_name,
             pretrained=pretrained,
             in_chans=3,  # Use 3 channels, replicate grayscale input if needed
-            num_classes=0
+            num_classes=0,
         )
         self.features = self.backbone
         self.features.num_features = self.backbone.num_features  # Get embedding dim
