@@ -120,7 +120,13 @@ from train_utils.prob_utils import plot_alpha_histograms, plot_alpha_avgprob_his
 def evaluate(loader, model, criterion, device, loss_weights=None,*,
               make_alpha_fig=False, alpha_fig_path=None, alpha_class_names=("0.2","0.3","0.4"),
               make_alpha_avgprob_fig=False, alpha_avgprob_fig_path=None,
-              make_q0_avgprob_fig=False, q0_avgprob_fig_path=None, q0_class_names=("1.0","1.5","2.0","2.5")):
+              make_q0_avgprob_fig=False, q0_avgprob_fig_path=None, q0_class_names=("1.0","1.5","2.0","2.5"),
+              dataset_type="legacy"):
+    if dataset_type == "moment":
+        from train_utils.moment_training import evaluate_moment
+        return evaluate_moment(loader, model, criterion, device, loss_weights)
+    if dataset_type != "legacy":
+        raise ValueError(f"Unsupported dataset_type: {dataset_type}")
     model.eval()
     y_true = {'energy': [], 'alpha': [], 'q0': []}
     y_pred = {'energy': [], 'alpha': [], 'q0': []}

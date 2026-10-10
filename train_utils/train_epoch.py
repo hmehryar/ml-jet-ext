@@ -1,7 +1,12 @@
 import torch
 from tqdm import tqdm
 
-def train_one_epoch(loader, model, criterion, optimizer, device, loss_weights=None):
+def train_one_epoch(loader, model, criterion, optimizer, device, loss_weights=None, dataset_type="legacy"):
+    if dataset_type == "moment":
+        from train_utils.moment_training import train_moment_epoch
+        return train_moment_epoch(loader, model, criterion, optimizer, device, loss_weights)
+    if dataset_type != "legacy":
+        raise ValueError(f"Unsupported dataset_type: {dataset_type}")
     model.train()
     total_loss = 0.0
     loss_energy_total = 0.0

@@ -27,6 +27,12 @@ def run_training_loop(cfg,train_loader,val_loader,
                         val_acc_alpha_list,
                         val_acc_q0_list,
                         all_epoch_metrics):
+    if getattr(cfg, "dataset_type", "legacy") == "moment":
+        from train_utils.moment_training import run_moment_training_loop
+        return run_moment_training_loop(
+            cfg, train_loader, val_loader, device, model, criterion,
+            optimizer, scheduler=scheduler, start_epoch=start_epoch,
+        )
     for epoch in range(start_epoch, cfg.epochs):
         print(f"[INFO] Epoch {epoch+1}/{cfg.epochs}")
         train_metrics={}
@@ -214,7 +220,10 @@ def build_loaders_from_cfg(cfg):
 from models.model_vit import create_model
 from torch import nn
 def build_model_optimizer_and_criterion_from_cfg(cfg, device):
-    model, optimizer = create_model(cfg.backbone, cfg.input_shape, cfg.learning_rate)
+    model, optimizer = create_model(
+        cfg.backbone, cfg.input_shape, cfg.learning_rate,
+        **({"dataset_type": "moment"} if getattr(cfg, "dataset_type", "legacy") == "moment" else {})
+    )
     model.to(device)
     if torch.cuda.device_count() > 1:
         print(f"Parallelizing model across {torch.cuda.device_count()} GPUs")
@@ -230,6 +239,8 @@ def build_model_optimizer_and_criterion_from_cfg(cfg, device):
         'alpha_output': nn.CrossEntropyLoss(),
         'q0_output': nn.CrossEntropyLoss()
     }
+    if getattr(cfg, "dataset_type", "legacy") == "moment":
+        criterion.pop("energy_loss_output")
     print(f"[INFO] Loss functions:{criterion}")
     return model, criterion, optimizer
     """Replace this stub with your actual model + criterion creation."""
