@@ -320,117 +320,164 @@ def is_valid_moment_file(path, expected_shape=(5, 32, 32)):
         return False
     
 def atomic_save_npy(path: Path, arr: np.ndarray):
-    tmp_path = Path(str(path) + ".tmp")
-    np.save(tmp_path, arr)
-    tmp_path.replace(path)
+    """Atomically replace a completed NPY file (np.save adds .npy to strings)."""
+    import os
+    import tempfile
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, temp_name = tempfile.mkstemp(prefix=path.name + '.', suffix='.npy', dir=path.parent)
+    try:
+        with os.fdopen(fd, 'wb') as f:
+            np.save(f, arr)
+        os.replace(temp_name, path)
+    finally:
+        if os.path.exists(temp_name):
+            os.unlink(temp_name)
+
+
+def prepare_metadata(df, colmap, run_dir):
+    """Validate and deduplicate source aggregate membership, preserving row order."""
+    agg_col = colmap["agg_col"]
+    file_col = colmap["file_col"]
+    config_col = colmap["config_col"]
+    alpha_col = colmap["alpha_col"]
+    q0_col = colmap["q0_col"]
+
+    required = [agg_col, file_col, alpha_col, q0_col]
+    if df[required].isna().any().any():
+        raise ValueError('Input metadata has missing paths or physics labels')
+    if config_col is not None and (df[config_col].astype(str) != run_dir).any():
+        raise ValueError(f'Input metadata contains a different configuration than {run_dir}')
+
+    retained = []
+    seen_paths = {}
+    seen_groups = {}
+    for idx, row in df.iterrows():
+        path = str(row[agg_col]).strip()
+        relative = Path(path)
+        if not path or relative.is_absolute() or '..' in relative.parts:
+            raise ValueError(f'Row {idx}: unsafe aggregate path: {path}')
+        if relative.parts[0] != run_dir:
+            raise ValueError(f'Row {idx}: aggregate path does not match {run_dir}: {path}')
+
+        members = parse_src_paths(row[file_col])
+        if len(members) != 500 or len(set(members)) != 500:
+            raise ValueError(f'Row {idx}: expected 500 distinct source files, got {len(members)}')
+        signature = tuple(sorted(members))
+        labels = (float(row[alpha_col]), float(row[q0_col]))
+
+        if path in seen_paths:
+            if seen_paths[path] != (signature, labels):
+                raise ValueError(f'Conflicting metadata for aggregate path: {path}')
+            continue
+        if signature in seen_groups:
+            raise ValueError(f'Same 500-source group mapped to two output paths: {seen_groups[signature]} and {path}')
+        seen_paths[path] = (signature, labels)
+        seen_groups[signature] = path
+        retained.append(idx)
+
+    result = df.loc[retained].copy().reset_index(drop=True)
+    print(f'[INFO] Source metadata: {len(df)} rows -> {len(result)} unique aggregates')
+    return result
+
 
 def main():
-    
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"[INFO] Using device: {device}")
-
     args = parse_args()
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(f'[INFO] Using device: {device}')
 
     base_root = Path(args.base_root)
     unfolded_root = base_root / args.unfolded_dir_name
-    if not unfolded_root.exists():
-        raise FileNotFoundError(f"Unfolded dataset root not found: {unfolded_root}")
-    
     old_agg_root = base_root / args.old_agg_dir_name
-    if not old_agg_root.exists():
-        raise FileNotFoundError(f"Old agg500 dataset root not found: {old_agg_root}")
-    
     new_agg_root = base_root / args.new_agg_dir_name
-    if not new_agg_root.exists():
-        print(f"New agg500 dataset root does not exist, will create: {new_agg_root}")
+    if not unfolded_root.is_dir():
+        raise FileNotFoundError(f'Unfolded dataset root not found: {unfolded_root}')
+    if not old_agg_root.is_dir():
+        raise FileNotFoundError(f'Old agg500 dataset root not found: {old_agg_root}')
+    if old_agg_root.resolve() == new_agg_root.resolve():
+        raise ValueError('Old and new aggregate roots must differ')
 
-    new_meta_dir = new_agg_root / "metadata"
-    if not new_meta_dir.exists():
-        print(f"New metadata directory does not exist, will create: {new_meta_dir}")
+    csv_name = f'{args.run_dir}_agg500_metadata.csv'
+    # Always load the source aggregation manifest, never the output manifest.
+    input_csv = old_agg_root / 'metadata' / csv_name
+    output_csv = new_agg_root / 'metadata' / csv_name
+    if not input_csv.is_file():
+        raise FileNotFoundError(f'Source metadata CSV not found: {input_csv}')
+    print(f'[INFO] Reading SOURCE metadata: {input_csv}')
+    df = pd.read_csv(input_csv)
+    colmap = infer_metadata_columns(df)
+    df = prepare_metadata(df, colmap, args.run_dir)
+
+    # A destination may already contain normalized tensors. Reruns must use
+    # the same --normalize_moments setting that originally generated them.
+    if (not args.overwrite) and output_csv.exists():
+        previous = pd.read_csv(output_csv)
+        if colmap['agg_col'] in previous.columns:
+            existing = previous.drop_duplicates(colmap['agg_col'])
+            if len(existing) and not set(existing[colmap['agg_col']]).issubset(set(df[colmap['agg_col']])):
+                raise ValueError('Output metadata contains paths absent from source metadata')
 
     new_agg_root.mkdir(parents=True, exist_ok=True)
-    new_meta_dir.mkdir(parents=True, exist_ok=True)
+    output_csv.parent.mkdir(parents=True, exist_ok=True)
+    output_rows = []
+    computed = skipped = 0
 
-    csv_name = f"{args.run_dir}_agg500_metadata.csv"
-    cfg_csv = new_meta_dir / csv_name
+    for idx, row in tqdm(df.iterrows(), total=len(df), desc=args.run_dir):
+        relative = str(row[colmap['agg_col']]).strip()
+        destination = new_agg_root / relative
+        if not args.overwrite and is_valid_moment_file(destination):
+            skipped += 1
+        else:
+            sources = parse_src_paths(row[colmap['file_col']])
+            stack_np = np.stack(
+                [load_single_image(unfolded_root, p) for p in sources], axis=0
+            ).astype(np.float32)
+            if stack_np.shape != (500, 32, 32):
+                raise ValueError(f'Row {idx}: unexpected source stack shape {stack_np.shape}')
 
-    if not cfg_csv.exists():
-        raise FileNotFoundError(f"Metadata CSV not found: {cfg_csv}")
+            stack = torch.from_numpy(stack_np).to(device)
+            with torch.no_grad():
+                moments = compute_moments_1_to_5_torch(stack)
+                if args.normalize_moments:
+                    moments = normalize_moments_1_to_5_torch(moments)
+                values = moments.cpu().numpy().astype(np.float32)
 
-    print(f"[INFO] Reading config metadata: {cfg_csv}")
-    df = pd.read_csv(cfg_csv)
-    colmap = infer_metadata_columns(df)
+            if not np.isfinite(values).all():
+                raise ValueError(f'Row {idx}: nonfinite moments for {relative}')
 
-    print("[INFO] Column mapping:")
-    for k, v in colmap.items():
-        print(f"  {k}: {v}")
+            if args.check_mean_consistency and not args.normalize_moments:
+                old_mean_path = old_agg_root / relative
+                if not old_mean_path.is_file():
+                    raise FileNotFoundError(f'Missing old mean: {old_mean_path}')
+                old_mean = np.load(old_mean_path, allow_pickle=False).astype(np.float32)
+                if not np.allclose(old_mean, values[0], atol=1e-6):
+                    error = np.max(np.abs(old_mean - values[0]))
+                    raise ValueError(f'Mean mismatch for {relative}: max error {error}')
 
-    out_rows = []
-    n_rows = len(df)
+            atomic_save_npy(destination, values)
+            computed += 1
 
-    for idx, row in tqdm(df.iterrows(), total=n_rows, desc=args.run_dir):
-        
-        old_rel = str(row[colmap["agg_col"]]).strip()
-        new_rel = old_rel  # preserve same relative layout as agg500 mean dataset
-        new_abs = new_agg_root / new_rel
-        new_abs.parent.mkdir(parents=True, exist_ok=True)
+        # Exactly one metadata row per unique source aggregate, including skips.
+        output_rows.append(row.to_dict())
 
-        if (not args.overwrite) and is_valid_moment_file(new_abs):
-            out_row = row.to_dict()
-            out_row[colmap["agg_col"]] = new_rel
-            out_rows.append(out_row)
-            continue
+    out_df = pd.DataFrame(output_rows, columns=df.columns)
+    if out_df[colmap['agg_col']].duplicated().any():
+        raise AssertionError('Internal error: duplicate output aggregate paths')
+    # Atomic CSV write; a failed run leaves the previous metadata unchanged.
+    import os
+    import tempfile
+    fd, temp_name = tempfile.mkstemp(prefix=csv_name + '.', suffix='.tmp', dir=output_csv.parent)
+    try:
+        with os.fdopen(fd, 'w', newline='') as f:
+            out_df.to_csv(f, index=False)
+        os.replace(temp_name, output_csv)
+    finally:
+        if os.path.exists(temp_name):
+            os.unlink(temp_name)
 
-        src_paths = parse_src_paths(row[colmap["file_col"]])
-        if len(src_paths) != 500:
-            raise ValueError(
-                f"Row {idx}: expected 500 source paths, got {len(src_paths)}"
-            )
-
-        # stack = np.stack(
-        #     [load_single_image(unfolded_root, p) for p in src_paths],
-        #     axis=0
-        # )
-
-        # moments = compute_moments_1_to_5(stack)
-
-        imgs = [load_single_image(unfolded_root, p) for p in src_paths]   # still loaded from disk via numpy
-        stack_np = np.stack(imgs, axis=0).astype(np.float32)              # [500, 32, 32]
-
-        stack = torch.from_numpy(stack_np).to(device)                     # move to GPU
-        moments = compute_moments_1_to_5_torch(stack)  
-        if args.normalize_moments:
-            moments = normalize_moments_1_to_5_torch(moments)                   # compute on GPU
-        moments_np = moments.detach().cpu().numpy().astype(np.float32)                # move back to CPU for saving
-        # atomic_save_npy(new_abs, moments_np)
-        np.save(new_abs, moments_np)
-
-        out_row = row.to_dict()
-        out_row[colmap["agg_col"]] = new_rel
-        out_rows.append(out_row)
-
-        if args.check_mean_consistency and (not args.normalize_moments):
-            old_mean_path = old_agg_root / old_rel
-            if old_mean_path.exists():
-                old_mean = np.load(old_mean_path).astype(np.float32)
-                max_abs_diff = np.max(np.abs(old_mean - moments[0]))
-                if not np.allclose(old_mean, moments[0], atol=1e-6):
-                    raise ValueError(
-                        f"Mean mismatch for {old_rel}; max abs diff={max_abs_diff}"
-                    )
-
-        out_row = row.to_dict()
-        out_row[colmap["agg_col"]] = new_rel
-        out_rows.append(out_row)
-
-    out_df = pd.DataFrame(out_rows)
-    out_csv = new_meta_dir / csv_name
-    out_df.to_csv(out_csv, index=False)
-
-    print(f"[INFO] Wrote updated metadata: {out_csv}")
-    print(f"[INFO] Done building 5-moment aggregates for {args.run_dir}")
-    print(f"[INFO] Total rows processed: {len(out_df)}")
+    print(f'[INFO] Saved metadata: {output_csv}')
+    print(f'[INFO] Unique rows: {len(out_df)}; computed: {computed}; reused: {skipped}')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
