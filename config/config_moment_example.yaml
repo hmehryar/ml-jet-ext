@@ -1,0 +1,21 @@
+# T02.2: precomputed normalized M1–M5 aggregates
+# Override on each host via: export DATASET_ROOT=/absolute/path/to/dataset
+# Or supply `dataset_root: /absolute/path/to/dataset` directly.
+dataset_type: moment
+dataset_subdir: pTHat50-250_eCM5020_c0005_pT90-110_R0p4_agg500_m1-5_normalized
+moments: [1, 2]
+moment_fold: null   # set to 0..4 for cross-validation
+seed: 42
+batch_size: 32
+num_workers: 16
+pin_memory: true
+model_tag: ViT
+backbone: vit
+learning_rate: 0.0001
+epochs: 50
+patience: 5
+output_dir: training_output/
+loss:
+  weights:
+    alpha_output: 1.0
+    q0_output: 1.0

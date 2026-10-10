@@ -207,6 +207,22 @@ def get_dataloaders(cfg, device='cuda'):
     Create DataLoader objects for training, validation, and testing datasets.
     If cfg.group_size > 1, uses AggregatedJetDataset; otherwise uses JetDataset.
     """
+    # Opt-in T02 route. Leave the original legacy loading behavior untouched.
+    dataset_type = getattr(cfg, "dataset_type", "legacy")
+    if dataset_type == "moment":
+        from data.moment_loader import get_moment_dataloaders
+        return get_moment_dataloaders(
+            dataset_root=cfg.dataset_root_dir,
+            moments=cfg.moments,
+            batch_size=cfg.batch_size,
+            num_workers=getattr(cfg, "num_workers", 0),
+            seed=getattr(cfg, "seed", 42),
+            fold=getattr(cfg, "moment_fold", None),
+            pin_memory=getattr(cfg, "pin_memory", None),
+        )
+    if dataset_type != "legacy":
+        raise ValueError(f"Unknown dataset_type: {dataset_type!r}")
+
     # Choose dataset class based on whether we're aggregating
     if cfg.group_size> 1:
         # Aggregated splits are CSVs with columns: agg_id, file_paths, energy_loss, alpha, q0

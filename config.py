@@ -27,6 +27,20 @@ def get_config(config_path=None):
     with open(config_path, 'r') as f:
         cfg_dict = yaml.safe_load(f)
 
+    # T02: preserve legacy mode by default. Moment mode reads precomputed splits.
+    dataset_type = cfg_dict.get("dataset_type", "legacy")
+    if dataset_type not in ("legacy", "moment"):
+        raise ValueError(f"Unknown dataset_type: {dataset_type!r}")
+    moments = cfg_dict.get("moments", [1, 2]) if dataset_type == "moment" else None
+    if dataset_type == "moment":
+        if not isinstance(moments, list) or not moments or any(type(m) is not int or m not in range(1, 6) for m in moments) or len(set(moments)) != len(moments):
+            raise ValueError("moments must be a list of distinct integers between 1 and 5")
+    moment_fold = cfg_dict.get("moment_fold", None)
+    if dataset_type == "moment" and (moment_fold is not None and (type(moment_fold) is not int or moment_fold not in range(5))):
+        raise ValueError("moment_fold must be null or 0..4")
+    if dataset_type == "moment" and cfg_dict.get("use_val_folds", False):
+        raise ValueError("Use moment_fold (not use_val_folds) for moment dataset mode")
+
     # --- System/User Info ---
     system = platform.system()
     release = platform.release().lower()
@@ -34,7 +48,9 @@ def get_config(config_path=None):
     user = getpass.getuser().lower()
 
     # --- Dataset Path Based on System ---
-    if system == "Linux" and "hm-srv1" in hostname and "arsalan" in user and "wsl" in release :
+    if cfg_dict.get("dataset_root") or (dataset_type == "moment" and os.environ.get("DATASET_ROOT")):
+        base_path = ""
+    elif system == "Linux" and "hm-srv1" in hostname and "arsalan" in user and "wsl" in release :
         base_path = "/mnt/d/Projects/110_JetscapeML/hm_jetscapeml_source/data"
         print("[INFO] Detected WSL environment")
     elif system == "Linux" and "ds044955"  in hostname and "arsalan" in user:
@@ -56,7 +72,8 @@ def get_config(config_path=None):
 
     # --- Dataset Subdir ---
     dataset_subdir = cfg_dict.get("dataset_subdir")
-    dataset_root_dir = os.path.join(base_path, dataset_subdir)
+    dataset_root_override = cfg_dict.get("dataset_root") or (os.environ.get("DATASET_ROOT") if dataset_type == "moment" else None)
+    dataset_root_dir = os.path.abspath(os.path.expanduser(str(dataset_root_override))) if dataset_root_override else os.path.join(base_path, dataset_subdir)
     print(f"[INFO] Using dataset root: {dataset_root_dir}")
 
     # --- Dataset Size ---
@@ -76,6 +93,11 @@ def get_config(config_path=None):
     model_tag = cfg_dict.get("model_tag")
     backbone = cfg_dict.get("backbone")
     input_shape = tuple(cfg_dict.get("input_shape", [1, 32, 32]))
+    if dataset_type == "moment":
+        expected_shape = (len(moments), 32, 32)
+        if "input_shape" in cfg_dict and input_shape != expected_shape:
+            raise ValueError(f"Moment input_shape should be {expected_shape}; got {input_shape}")
+        input_shape = expected_shape
     batch_size = cfg_dict.get("batch_size", 512)
     epochs = cfg_dict.get("epochs", 50)
     learning_rate = cfg_dict.get("learning_rate", 1e-4)
@@ -140,7 +162,7 @@ def get_config(config_path=None):
     # Optional: fold-aware routing over the OLD validation set
     use_val_folds = bool(cfg_dict.get("use_val_folds", False))
     test_csv_same_as_val_fold = bool(cfg_dict.get("test_csv_same_as_val_fold", False))
-    if use_val_folds:
+    if use_val_folds and dataset_type == "legacy":
         fold_index = cfg_dict.get("fold_index", None)
         if fold_index is None:
             raise ValueError("use_val_folds=True requires 'fold_index' (0..n_splits-1) in the config.")
@@ -165,14 +187,34 @@ def get_config(config_path=None):
         else:
             test_csv=""
 
+    if dataset_type == "moment":
+        split_root = os.path.join(dataset_root_dir, "splits")
+        train_csv = os.path.join(split_root, "train.csv" if moment_fold is None else f"five_fold/fold_{moment_fold}_train.csv")
+        val_csv = os.path.join(split_root, "val.csv" if moment_fold is None else f"five_fold/fold_{moment_fold}_val.csv")
+        test_csv = os.path.join(split_root, "test.csv")
+        loss_weights = {"alpha_output": 1.0, "q0_output": 1.0} if not loss_cfg.get("weights") else loss_weights
+        if "energy_loss_output" in loss_weights:
+            raise ValueError("Moment dataset has no energy_loss_output target")
+
     scheduler_type = scheduler.get('type', 'NoScheduler')
     run_tag = f"{model_tag}_bs{batch_size}_ep{epochs}_lr{learning_rate:.0e}_ds{dataset_size}_g{group_size}_sched_{scheduler_type}{preloaded}{frozen_backbone_tag}{init_tag}{weighted_loss}"
+    if dataset_type == "moment":
+        run_tag += "_moments_" + "-".join(map(str, moments))
     output_dir = os.path.join(output_base, run_tag)
     # Add fold suffix if using CV folds
-    if use_val_folds and fold_index is not None:
+    if use_val_folds and dataset_type == "legacy" and fold_index is not None:
         output_dir = os.path.join(output_dir, f"fold_{fold_index}")
         
+    if dataset_type == "moment" and moment_fold is not None:
+        output_dir = os.path.join(output_dir, f"fold_{moment_fold}")
+
     return SimpleNamespace(**{
+        "dataset_type": dataset_type,
+        "moments": moments,
+        "moment_fold": moment_fold,
+        "num_workers": int(cfg_dict.get("num_workers", 0)),
+        "pin_memory": cfg_dict.get("pin_memory", None),
+        "seed": int(cfg_dict.get("seed", 42)),
         "model_tag": model_tag,
         "backbone": backbone,
         "batch_size": batch_size,
