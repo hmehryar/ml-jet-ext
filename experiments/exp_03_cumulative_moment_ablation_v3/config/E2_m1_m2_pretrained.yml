@@ -1,0 +1,34 @@
+model_tag: E2_m1_m2_pretrained
+backbone: vit_gaussian
+dataset_type: moment
+moments:
+- 1
+- 2
+moment_fold: null
+dataset_root: /rs/rs_grp_mljet/ml-jet-ext/pTHat50-250_eCM5020_c0005_pT90-110_R0p4_agg500_m1-5_normalized
+dataset_size: 14000
+group_size: 1
+batch_size: 32
+num_workers: 1
+pin_memory: true
+seed: 42
+epochs: 1000
+learning_rate: 0.0001
+patience: 100
+initialization:
+  type: gaussian
+  mean: 0.0
+  std: 0.02
+transfer_mode: jetbench_full
+checkpoint_path: /wsu/home/gy/gy40/gy4065/ml-jet-param-predictor/training_output/ViT_tiny_patch16_224_gaussian_g500_bs32_ep50_lr1e-04_ds7200000_g500_sched_ReduceLROnPlateau/best_model.pth
+output_dir: experiments/exp_03_cumulative_moment_ablation_v3/training_output
+scheduler:
+  type: ReduceLROnPlateau
+  mode: min
+  factor: 0.5
+  patience: 15
+  min_lr: 1.0e-07
+loss:
+  weights:
+    alpha_output: 1.0
+    q0_output: 1.0

@@ -93,7 +93,7 @@ def run_moment_training_loop(cfg, train_loader, val_loader, device, model, crite
     best_acc, best_epoch, best_metrics, stagnant = -1.0, -1, None, 0
     csv_file = out / "moment_epoch_metrics.csv"
     cols = ["epoch", "train_loss", "train_alpha_accuracy", "train_q0_accuracy",
-            "train_joint_accuracy", "val_loss", "val_alpha_accuracy",
+            "train_joint_accuracy", "train_alpha_loss", "train_q0_loss", "val_loss", "val_alpha_loss", "val_q0_loss", "val_alpha_accuracy",
             "val_q0_accuracy", "val_joint_accuracy", "val_alpha_macro_f1", "val_q0_macro_f1", "lr"]
     for epoch in range(start_epoch, cfg.epochs):
         train = train_moment_epoch(train_loader, model, criterion, optimizer, device, weights)
@@ -108,7 +108,9 @@ def run_moment_training_loop(cfg, train_loader, val_loader, device, model, crite
                       train_alpha_accuracy=train["alpha"]["accuracy"],
                       train_q0_accuracy=train["q0"]["accuracy"],
                       train_joint_accuracy=train["accuracy"],
-                      val_loss=val["loss"], val_alpha_accuracy=val["alpha"]["accuracy"],
+                      train_alpha_loss=train["loss_alpha"], train_q0_loss=train["loss_q0"],
+                      val_loss=val["loss"], val_alpha_loss=val["loss_alpha"],
+                      val_q0_loss=val["loss_q0"], val_alpha_accuracy=val["alpha"]["accuracy"],
                       val_q0_accuracy=val["q0"]["accuracy"],
                       val_joint_accuracy=val["accuracy"],
                       val_alpha_macro_f1=val["alpha"]["f1"],
