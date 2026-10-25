@@ -18,3 +18,34 @@ __pycache__/
 
 # Jupyter notebooks checkpoints
 .ipynb_checkpoints/
+
+logs/
+slurm-*.out
+slurm-*.err
+core
+core.*
+*.core
+
+# Generated scripts from Slurm notebook conversion
+/train_t03_E*_*.py
+
+# Model checkpoints
+*.pth
+*.pt
+*.ckpt
+
+# Training outputs
+experiments/**/training_output/
+
+# Local backups
+*.backup
+*.bak
+*.pre_t02_4
+
+# Python artifacts
+__pycache__/
+.pytest_cache/
+*.pyc
+
+# Notebook checkpoints
+.ipynb_checkpoints/
