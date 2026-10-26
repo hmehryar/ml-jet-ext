@@ -35,6 +35,14 @@ def get_config(config_path=None, overrides=None):
     dataset_type = cfg_dict.get("dataset_type", "legacy")
     if dataset_type not in ("legacy", "moment"):
         raise ValueError(f"Unknown dataset_type: {dataset_type!r}")
+    # Opt-in machine override for moment data. Keep YAML > DATASET_ROOT and
+    # all legacy defaults unchanged when MLJET_DATASET_ROOT is absent.
+    if dataset_type == "moment" and os.environ.get("MLJET_DATASET_ROOT"):
+        if not (overrides or {}).get("dataset_root"):
+            cfg_dict["dataset_root"] = os.environ["MLJET_DATASET_ROOT"]
+    if dataset_type == "moment" and os.environ.get("MLJET_OUTPUT_ROOT"):
+        if not (overrides or {}).get("output_dir"):
+            cfg_dict["output_dir"] = os.environ["MLJET_OUTPUT_ROOT"]
     moments = cfg_dict.get("moments", [1, 2]) if dataset_type == "moment" else None
     if dataset_type == "moment":
         if not isinstance(moments, list) or not moments or any(type(m) is not int or m not in range(1, 6) for m in moments) or len(set(moments)) != len(moments):

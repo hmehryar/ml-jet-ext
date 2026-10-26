@@ -10,8 +10,18 @@ No launcher submits other jobs automatically.
 YAML values remain defaults. Explicit flags override YAML before configuration
 resolution: `--dataset-root`, `--checkpoint`, `--output-root`, `--workers`,
 `--device`, and `--epochs`. The existing `get_config(path)` interface and legacy
-training notebook retain their behavior. YAML dataset_root still takes precedence
-over DATASET_ROOT unless an explicit CLI override is supplied.
+training notebook retain their behavior.
+
+For moment data, root precedence is explicit CLI/API override,
+`MLJET_DATASET_ROOT`, YAML `dataset_root`, existing `DATASET_ROOT` fallback,
+then the existing hostname fallback. With the new variable unset, old defaults
+are unchanged. Legacy dataset mode ignores `MLJET_DATASET_ROOT`.
+
+Output root precedence is `--output-root` (or API `output_dir` override),
+`MLJET_OUTPUT_ROOT`, YAML `output_dir`. The environment override also applies
+to direct moment-mode configuration calls; legacy configuration is unchanged.
+These variables contain machine settings; keep their values in private shell
+activation files rather than editing published experiment YAMLs.
 
 The new runner intentionally uses fresh output paths:
 `ROOT/{local,hpc}/EXPERIMENT/seed-SEED/UTC-UUID/`.
@@ -19,6 +29,25 @@ ROOT defaults to the YAML output_dir; `--output-root` changes it.
 `--run-id` can name a run explicitly; an occupied directory is always rejected.
 Preparation failures leave a reserved directory as evidence; choose a new ID.
 There is no automatic resume or retry into an existing run.
+
+On this workstation, activate the private settings from the repository root:
+
+```bash
+source .local/env.local.sh
+```
+
+Start Python/Jupyter from that terminal so it inherits the settings. Existing
+notebook kernels need the variables set in their own environment. The private
+`.local/env.hpc.sh` selects the HPC dataset and restores YAML output roots; source
+it on HPC before preparation and use `--profile hpc`. Activation starts no jobs
+and creates no output directories. Generic shared code contains no workstation
+dataset paths. The .local/ activation files stay excluded from Git and snapshots.
+
+When a split manifest is present, preparation checks all selected train/validation/
+test CSV hashes against its `split_file_sha256` map, including fold-specific paths.
+A missing entry or mismatch stops preparation before training. Older datasets
+without a manifest remain supported and record verification as unavailable.
+The manifest's historical `dataset_root` is provenance, not a path override.
 
 ## Scheduler
 

@@ -42,6 +42,30 @@ def archive_metadata(path, target):
     return digest.hexdigest()
 
 
+def verify_split_checksums(dataset_root, input_records, manifest_path=None):
+    """Compare selected split hashes to the published manifest, without resplitting.
+
+    Older datasets without a manifest remain supported. A present but incomplete
+    or inconsistent manifest is an error, rather than a reason to skip checks.
+    input_records contains the hashes already computed while archiving metadata.
+    """
+    split_root = Path(dataset_root).resolve() / 'splits'
+    manifest_path = Path(manifest_path) if manifest_path else split_root / 'split_manifest.json'
+    if not manifest_path.is_file():
+        return {'status': 'not_available', 'verified_files': []}
+    expected = json.loads(manifest_path.read_text()).get('split_file_sha256')
+    if not isinstance(expected, dict):
+        raise ValueError('Split manifest is missing split_file_sha256')
+    verified = []
+    for key in ('train_split', 'validation_split', 'test_split'):
+        item = input_records[key]
+        name = Path(item['path']).resolve().relative_to(split_root).as_posix()
+        if name not in expected or item['sha256'] != expected[name]:
+            raise ValueError(f'Published split checksum mismatch: {name}; do not regenerate splits')
+        verified.append(name)
+    return {'status': 'verified', 'verified_files': verified}
+
+
 def resolve_scheduler(spec):
     resolved = dict(spec)
     if resolved.get('type', 'ReduceLROnPlateau') != 'ReduceLROnPlateau':
@@ -131,9 +155,9 @@ def verify_source(out):
 def parser():
     p = argparse.ArgumentParser(description='Prepare or execute an isolated T03 run')
     p.add_argument('--config', required=True, type=Path)
-    p.add_argument('--dataset-root', type=Path)
+    p.add_argument('--dataset-root', type=Path, help='Override MLJET_DATASET_ROOT and YAML dataset_root')
     p.add_argument('--checkpoint', type=Path)
-    p.add_argument('--output-root', type=Path)
+    p.add_argument('--output-root', type=Path, help='Override MLJET_OUTPUT_ROOT and YAML output_dir')
     p.add_argument('--workers', type=int)
     p.add_argument('--device', default='auto', help='auto (CUDA required), cpu, cuda, cuda:N')
     p.add_argument('--profile', choices=('local', 'hpc'), default='local')
@@ -190,7 +214,8 @@ def prepare(args, repo=REPO_ROOT):
     run_id = args.run_id or (datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ') + '-' + uuid.uuid4().hex[:12])
     if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*', name) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*', run_id):
         raise ValueError('model_tag and run-id must be safe single path components')
-    root = args.output_root or Path(original.get('output_dir', 'training_output'))
+    root = Path(args.output_root or os.environ.get('MLJET_OUTPUT_ROOT')
+                or original.get('output_dir', 'training_output'))
     out = root.expanduser().resolve() / args.profile / name / ('seed-' + str(cfg.seed)) / run_id
     reserve_run(out)
     archived_inputs = out / 'input_metadata'
@@ -200,6 +225,9 @@ def prepare(args, repo=REPO_ROOT):
         digest = (sha256(path) if key == 'checkpoint' else
                   archive_metadata(path, archived_inputs / path.name))
         input_records[key] = {'path': str(path.resolve()), 'sha256': digest}
+    split_verification = verify_split_checksums(
+        cfg.dataset_root_dir, input_records,
+        manifest_path=archived_inputs / 'split_manifest.json')
     cfg.output_dir = str(out)
     resolved = dict(vars(cfg), checkpoint_path=str(checkpoint), device=args.device,
                     profile=args.profile, run_id=run_id, transfer_mode='jetbench_full',
@@ -218,7 +246,7 @@ def prepare(args, repo=REPO_ROOT):
     provenance = {'schema_version': 1, 'status': 'prepared', 'git': git,
                   'created_utc': datetime.now(timezone.utc).isoformat(),
                   'resolved': resolved, 'source_hashes': hashes,
-                  'inputs': input_records,
+                  'inputs': input_records, 'split_verification': split_verification,
                   'selection': {'monitor': 'val_joint_accuracy', 'mode': 'max'},
                   'scheduler': scheduler, 'held_out_test_evaluated': False}
     (out / 'run_manifest.json').write_text(json.dumps(provenance, indent=2))

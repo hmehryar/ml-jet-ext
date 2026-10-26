@@ -13,7 +13,8 @@ import yaml
 
 from config import get_config
 from train_utils import moment_training
-from train_utils.t03_runtime import parser, prepare, reserve_run, resolve_scheduler, verify_source
+from train_utils.t03_runtime import (parser, prepare, reserve_run, resolve_scheduler,
+                                     verify_source, verify_split_checksums, sha256)
 
 
 @pytest.fixture(autouse=True)
@@ -155,3 +156,80 @@ def test_hpc_execution_requires_allocation(monkeypatch):
     monkeypatch.delenv('SLURM_JOB_ID', raising=False)
     with pytest.raises(RuntimeError, match='Slurm'):
         check_execution_host('hpc')
+
+
+def test_output_environment_and_explicit_precedence(tmp_path, monkeypatch):
+    config, raw = fixture_config(tmp_path)
+    root = tmp_path / 'environment_outputs'
+    monkeypatch.setenv('MLJET_OUTPUT_ROOT', str(root))
+    # Snapshot isolation is covered above; this test exercises path reservation.
+    monkeypatch.setattr('train_utils.t03_runtime.freeze_source', lambda *args: {})
+    args = parser().parse_args(['--config',str(config),'--prepare-only','--run-id','local'])
+    out = prepare(args)
+    assert out == root / 'local/E2/seed-42/local'
+    args = parser().parse_args(['--config',str(config),'--prepare-only','--profile','hpc',
+                               '--output-root',str(tmp_path / 'explicit'),'--run-id','hpc'])
+    out = prepare(args)
+    assert out == tmp_path / 'explicit/hpc/E2/seed-42/hpc'
+
+
+def published_records(config, raw):
+    root = Path(raw['dataset_root'])
+    mapping = {'train_split':'train.csv','validation_split':'val.csv','test_split':'test.csv'}
+    records = {key:{'path':str(root / 'splits' / name),
+                    'sha256':sha256(root / 'splits' / name)} for key,name in mapping.items()}
+    path = root / 'splits/split_manifest.json'
+    path.write_text(json.dumps({'split_file_sha256':{
+        mapping[key]:value['sha256'] for key,value in records.items()}}))
+    return root, records, path
+
+
+def test_published_split_verification(tmp_path):
+    config, raw = fixture_config(tmp_path)
+    root, records, manifest = published_records(config, raw)
+    result = verify_split_checksums(root, records)
+    assert result['status'] == 'verified'
+    assert result['verified_files'] == ['train.csv','val.csv','test.csv']
+    records['train_split']['sha256'] = '0' * 64
+    with pytest.raises(ValueError, match='checksum mismatch: train.csv'):
+        verify_split_checksums(root, records)
+    manifest.write_text('{}')
+    with pytest.raises(ValueError, match='missing split_file_sha256'):
+        verify_split_checksums(root, records)
+    manifest.unlink()
+    assert verify_split_checksums(root, records)['status'] == 'not_available'
+
+
+def test_cv_manifest_names(tmp_path):
+    root = tmp_path / 'dataset'
+    (root / 'splits').mkdir(parents=True)
+    names = ['five_fold/fold_2_train.csv','five_fold/fold_2_val.csv','test.csv']
+    records = {key:{'path':str(root / 'splits' / name),'sha256':'a' * 64}
+               for key,name in zip(('train_split','validation_split','test_split'),names)}
+    (root / 'splits/split_manifest.json').write_text(json.dumps({
+        'split_file_sha256':{name:'a' * 64 for name in names}}))
+    assert verify_split_checksums(root, records)['verified_files'] == names
+
+
+def test_prepare_rejects_modified_published_split(tmp_path, monkeypatch):
+    config, raw = fixture_config(tmp_path)
+    root, records, manifest = published_records(config, raw)
+    train = root / 'splits/train.csv'
+    train.write_text(train.read_text() + 'changed after publication\n')
+    before = train.read_bytes()
+    def unexpected_snapshot(*args):
+        pytest.fail('Invalid split must be rejected before source preparation')
+    monkeypatch.setattr('train_utils.t03_runtime.freeze_source', unexpected_snapshot)
+    args = parser().parse_args(['--config',str(config),'--prepare-only'])
+    with pytest.raises(ValueError, match='checksum mismatch: train.csv'):
+        prepare(args)
+    assert train.read_bytes() == before
+
+
+def test_prepare_records_published_verification(tmp_path, monkeypatch):
+    config, raw = fixture_config(tmp_path)
+    published_records(config, raw)
+    monkeypatch.setattr('train_utils.t03_runtime.freeze_source', lambda *args: {})
+    out = prepare(parser().parse_args(['--config',str(config),'--prepare-only']))
+    result = json.loads((out / 'run_manifest.json').read_text())
+    assert result['split_verification']['status'] == 'verified'

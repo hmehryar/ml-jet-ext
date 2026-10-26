@@ -43,3 +43,40 @@ def test_config_and_dispatch(tmp_path):
 def test_legacy_dispatch_rejects_unknown_mode():
     with pytest.raises(ValueError, match="Unknown dataset_type"):
         get_dataloaders(SimpleNamespace(dataset_type="bad"), device="cpu")
+
+
+def test_moment_environment_override_precedence(tmp_path, monkeypatch):
+    path = tmp_path / 'config.yml'
+    raw = dict(dataset_type='moment', dataset_root=str(tmp_path / 'yaml'),
+               model_tag='test', backbone='vit_gaussian')
+    path.write_text(yaml.safe_dump(raw))
+    monkeypatch.setenv('DATASET_ROOT', str(tmp_path / 'old_environment'))
+    monkeypatch.setenv('MLJET_DATASET_ROOT', str(tmp_path / 'local'))
+    assert get_config(path).dataset_root_dir == str(tmp_path / 'local')
+    assert get_config(path, overrides={'dataset_root':str(tmp_path / 'explicit')}).dataset_root_dir == str(tmp_path / 'explicit')
+    monkeypatch.delenv('MLJET_DATASET_ROOT')
+    assert get_config(path).dataset_root_dir == raw['dataset_root']
+    del raw['dataset_root']
+    path.write_text(yaml.safe_dump(raw))
+    assert get_config(path).dataset_root_dir == str(tmp_path / 'old_environment')
+
+
+def test_legacy_ignores_moment_environment_override(tmp_path, monkeypatch):
+    path = tmp_path / 'legacy.yml'
+    path.write_text(yaml.safe_dump(dict(dataset_root=str(tmp_path / 'legacy'),
+                                      model_tag='legacy', backbone='vit_gaussian')))
+    monkeypatch.setenv('MLJET_DATASET_ROOT', str(tmp_path / 'moment'))
+    monkeypatch.setenv('MLJET_OUTPUT_ROOT', str(tmp_path / 'moment_outputs'))
+    assert get_config(path).dataset_type == 'legacy'
+    assert get_config(path).dataset_root_dir == str(tmp_path / 'legacy')
+    assert not get_config(path).output_dir.startswith(str(tmp_path / 'moment_outputs'))
+
+
+def test_moment_output_environment_precedence(tmp_path, monkeypatch):
+    path = tmp_path / 'config.yml'
+    path.write_text(yaml.safe_dump(dict(dataset_type='moment', dataset_root=str(tmp_path / 'data'),
+                                      model_tag='test', backbone='vit_gaussian',
+                                      output_dir=str(tmp_path / 'yaml_outputs'))))
+    monkeypatch.setenv('MLJET_OUTPUT_ROOT', str(tmp_path / 'local_outputs'))
+    assert get_config(path).output_dir.startswith(str(tmp_path / 'local_outputs'))
+    assert get_config(path, overrides={'output_dir':str(tmp_path / 'explicit')}).output_dir.startswith(str(tmp_path / 'explicit'))
