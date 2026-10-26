@@ -89,6 +89,19 @@ def run_moment_training_loop(cfg, train_loader, val_loader, device, model, crite
         raise ValueError("OneCycleLR requires per-batch scheduling; not supported by moment epoch loop")
     out = Path(cfg.output_dir)
     out.mkdir(parents=True, exist_ok=True)
+    # A loop invocation owns its training artifacts exclusively. Existing callers
+    # may supply an empty directory; prepared runs also contain provenance files.
+    if any((out / name).exists() for name in
+           ('best_model.pth', 'last_model.pth', 'moment_epoch_metrics.csv')):
+        raise FileExistsError(f'Existing training outputs at {out}; choose a fresh run')
+    with (out / '.training.lock').open('x') as lock:
+        lock.write('fresh training; automatic resume is not supported\n')
+    scheduler_settings = None
+    if isinstance(scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
+        from train_utils.t03_runtime import resolve_scheduler
+        scheduler_settings = resolve_scheduler(getattr(cfg, 'scheduler', {}) or {})
+        if scheduler.mode != scheduler_settings['mode']:
+            raise ValueError('Scheduler object direction differs from resolved configuration')
     weights = getattr(cfg, "loss_weights", None)
     best_acc, best_epoch, best_metrics, stagnant = -1.0, -1, None, 0
     csv_file = out / "moment_epoch_metrics.csv"
@@ -100,7 +113,8 @@ def run_moment_training_loop(cfg, train_loader, val_loader, device, model, crite
         val = evaluate_moment(val_loader, model, criterion, device, weights)
         if scheduler is not None:
             if isinstance(scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
-                scheduler.step(val["accuracy"])
+                monitor = scheduler_settings['monitor']
+                scheduler.step(val['loss'] if monitor == 'val_loss' else val['accuracy'])
             else:
                 scheduler.step()
         lr = optimizer.param_groups[0]["lr"]
@@ -122,7 +136,9 @@ def run_moment_training_loop(cfg, train_loader, val_loader, device, model, crite
             writer.writerow(record)
         state = {"epoch": epoch + 1, "model_state_dict": model.state_dict(),
                  "optimizer_state_dict": optimizer.state_dict(), "metrics": val,
-                 "dataset_type": "moment", "moments": getattr(cfg, "moments", None)}
+                 "dataset_type": "moment", "moments": getattr(cfg, "moments", None),
+                 "scheduler_state_dict": scheduler.state_dict() if scheduler is not None else None,
+                 "scheduler_settings": scheduler_settings}
         torch.save(state, out / "last_model.pth")
         if val["accuracy"] > best_acc:
             best_acc, best_epoch, best_metrics, stagnant = val["accuracy"], epoch + 1, val, 0

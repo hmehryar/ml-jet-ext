@@ -7,6 +7,25 @@ from pathlib import Path
 import numpy as np
 import torch
 from torch import nn
+try:  # NumPy moved this historical pickle constructor in 2.0.
+    from numpy._core.multiarray import scalar as _numpy_scalar
+except ImportError:
+    from numpy.core.multiarray import scalar as _numpy_scalar
+
+
+def _legacy_numpy_scalar(*args):
+    """Restricted constructor for NumPy 1.x checkpoint scalar metadata.
+
+    NumPy 2 moved the callable to numpy._core. Torch 2.5 derives safe-global
+    names from __module__/__name__, so allowing the current callable alone does
+    not allow the historical pickle spelling. This shim allows only that scalar
+    constructor; it never enables unrestricted pickle loading.
+    """
+    return _numpy_scalar(*args)
+
+
+_legacy_numpy_scalar.__module__ = 'numpy.core.multiarray'
+_legacy_numpy_scalar.__name__ = 'scalar'
 
 
 class MomentInputAdapter(nn.Module):
@@ -36,7 +55,8 @@ class AdaptedMomentViT(nn.Module):
 
 def read_trusted_jetbench_checkpoint(path):
     """Read a locally-authored historical checkpoint using restricted loading."""
-    safe = [np.core.multiarray.scalar, np.dtype, type(np.dtype('float64'))]
+    safe = [_numpy_scalar, _legacy_numpy_scalar,
+            np.dtype, type(np.dtype('float64'))]
     with torch.serialization.safe_globals(safe):
         checkpoint = torch.load(str(Path(path)), map_location='cpu', weights_only=True)
     if not isinstance(checkpoint, dict):

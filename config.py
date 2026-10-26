@@ -8,7 +8,7 @@ import argparse
 import yaml
 from types import SimpleNamespace
 
-def get_config(config_path=None):
+def get_config(config_path=None, overrides=None):
     # --- Parse command-line args only if not running in notebook ---
     if config_path is None:
         try:
@@ -26,6 +26,10 @@ def get_config(config_path=None):
 
     with open(config_path, 'r') as f:
         cfg_dict = yaml.safe_load(f)
+    # Explicit callers can override host-dependent values without editing YAML.
+    # Existing CLI and positional callers retain their original behavior.
+    if overrides:
+        cfg_dict.update({key: value for key, value in overrides.items() if value is not None})
 
     # T02: preserve legacy mode by default. Moment mode reads precomputed splits.
     dataset_type = cfg_dict.get("dataset_type", "legacy")
