@@ -207,6 +207,10 @@ def get_config(config_path=None, overrides=None):
         loss_weights = {"alpha_output": 1.0, "q0_output": 1.0} if not loss_cfg.get("weights") else loss_weights
         if "energy_loss_output" in loss_weights:
             raise ValueError("Moment dataset has no energy_loss_output target")
+    moment_loss = None
+    if dataset_type == "moment":
+        from train_utils.loss_config import resolve_moment_loss
+        moment_loss = resolve_moment_loss(loss_cfg)
 
     scheduler_type = scheduler.get('type', 'NoScheduler')
     run_tag = f"{model_tag}_bs{batch_size}_ep{epochs}_lr{learning_rate:.0e}_ds{dataset_size}_g{group_size}_sched_{scheduler_type}{preloaded}{frozen_backbone_tag}{init_tag}{weighted_loss}"
@@ -245,6 +249,7 @@ def get_config(config_path=None, overrides=None):
         "dataset_size": dataset_size,
         "preload_model_path": preload_model_path,
         "loss_weights": loss_weights,
+        "moment_loss": moment_loss,
         "freeze_backbone": freeze_backbone,
         "initialization": initialization,
     })

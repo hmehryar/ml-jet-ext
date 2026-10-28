@@ -14,6 +14,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from sklearn.metrics import confusion_matrix, accuracy_score, f1_score
+from data.moment_loader import ALPHA_VALUES, Q0_VALUES
+from train_utils.ordinal_loss import physical_class_metrics
 
 HEADS = {"alpha_output": ("alpha", ["0.20", "0.25", "0.30", "0.35", "0.40", "0.45", "0.50"]),
          "q0_output": ("q0", ["1.0", "1.5", "2.0", "2.5", "3.0"])}
@@ -71,7 +73,7 @@ def plot_epoch_metrics(metrics_path, plot_dir):
     made = []
     defs = [
         ("train_val_loss", [("train_loss", "Train"), ("val_loss", "Validation")],
-         "Total cross-entropy loss", "Loss"),
+         "Total training objective", "Loss"),
         ("train_val_accuracy", [("train_joint_accuracy", "Train joint"), ("val_joint_accuracy", "Validation joint"),
                                 ("train_alpha_accuracy", "Train alpha"), ("val_alpha_accuracy", "Validation alpha"),
                                 ("train_q0_accuracy", "Train Q0"), ("val_q0_accuracy", "Validation Q0")],
@@ -88,6 +90,15 @@ def plot_epoch_metrics(metrics_path, plot_dir):
          "Validation macro-F1", "Macro-F1"),
         ("learning_rate", [("lr", "Learning rate")], "Learning-rate schedule", "Learning rate"),
     ]
+    for tag, unit in (('alpha', 'alpha'), ('q0', 'GeV')):
+        defs.append((f'{tag}_physical_mae',
+                     [(f'train_{tag}_mae', 'Train'), (f'val_{tag}_mae', 'Validation')],
+                     f'{tag} physical class error', f'MAE ({unit})'))
+        defs.append((f'{tag}_loss_components',
+                     [(f'train_{tag}_ce_loss', 'Train CE'), (f'val_{tag}_ce_loss', 'Validation CE'),
+                      (f'train_{tag}_ordinal_loss', 'Train ordinal'),
+                      (f'val_{tag}_ordinal_loss', 'Validation ordinal')],
+                     f'{tag} loss components (ordinal before lambda weighting)', 'Loss'))
     for stem, cols, title, ylabel in defs:
         if _curve(rows, cols, title, ylabel, dest / stem):
             made.append(stem)
@@ -173,6 +184,8 @@ def generate_t03_report(model, validation_loader, device, output_dir, expected_s
     summary = {"best_epoch": int(checkpoint["epoch"]), "split": "validation",
                "num_validation_samples": int(expected_samples), "moments": checkpoint.get("moments"),
                "metric_plots": created}
+    summary['loss_config'] = checkpoint.get('loss_config')
+    summary['criterion_settings'] = checkpoint.get('criterion_settings')
     predictions = {}
     for key, (label, class_names) in HEADS.items():
         truth, probs = data[key]
@@ -186,6 +199,8 @@ def generate_t03_report(model, validation_loader, device, output_dir, expected_s
         summary[label] = {"accuracy": float(accuracy_score(truth, pred)),
                           "macro_f1": float(f1_score(truth, pred, average="macro", labels=list(range(len(class_names))), zero_division=0)),
                           "confusion_matrix": mat}
+        values = ALPHA_VALUES if key == 'alpha_output' else Q0_VALUES
+        summary[label].update(physical_class_metrics(truth.tolist(), pred.tolist(), values))
     ta = data["alpha_output"][0]
     tq = data["q0_output"][0]
     summary["joint_accuracy"] = float(np.mean((predictions["alpha_output"] == ta) &

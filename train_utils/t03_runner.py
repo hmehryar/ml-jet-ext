@@ -92,11 +92,11 @@ def run(out):
         verify_inputs(manifest)
         import numpy as np
         import torch
-        from torch import nn
         from data.loader import get_dataloaders
         from models.model_vit import create_model
         from models.jetbench_transfer import AdaptedMomentViT, read_trusted_jetbench_checkpoint, transfer_backbone
         from train_utils.moment_training import run_moment_training_loop
+        from train_utils.ordinal_loss import build_moment_criterion
         if cfg.device != 'auto' and cfg.device != 'cpu' and not cfg.device.startswith('cuda'):
             raise ValueError('Device must be auto, cpu, cuda, or cuda:N')
         if cfg.device == 'auto' and not torch.cuda.is_available():
@@ -127,7 +127,8 @@ def run(out):
                 probe = AdaptedMomentViT(base, channels).to(device).train()
                 opt = torch.optim.Adam(probe.parameters(), lr=cfg.learning_rate)
                 outputs = probe(torch.rand(2, channels, 32, 32, device=device))
-                loss = sum(nn.functional.cross_entropy(outputs[key], torch.zeros(2, dtype=torch.long, device=device))
+                probe_criterion = build_moment_criterion(getattr(cfg, 'moment_loss', None), device)
+                loss = sum(probe_criterion[key](outputs[key], torch.zeros(2, dtype=torch.long, device=device))
                            for key in ('alpha_output', 'q0_output'))
                 opt.zero_grad(set_to_none=True)
                 loss.backward()
@@ -135,7 +136,7 @@ def run(out):
                     raise RuntimeError('Missing adapter gradient')
                 opt.step()
                 transfer_checks.append(dict(channels=channels, **report))
-                del probe, opt, outputs, loss, base, unused
+                del probe, opt, outputs, loss, base, unused, probe_criterion
             update_manifest(out, checkpoint_transfer_validation=transfer_checks)
             # Keep the full-epoch initialization independent of the probes.
             random.seed(cfg.seed); np.random.seed(cfg.seed); torch.manual_seed(cfg.seed)
@@ -145,7 +146,7 @@ def run(out):
         report = transfer_backbone(base, state, min_coverage=0.99)
         model = AdaptedMomentViT(base, len(cfg.moments)).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=cfg.learning_rate)
-        criterion = {key: nn.CrossEntropyLoss() for key in ('alpha_output', 'q0_output')}
+        criterion = build_moment_criterion(getattr(cfg, 'moment_loss', None), device)
         spec = cfg.scheduler
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer,
             mode=spec['mode'], factor=float(spec['factor']), patience=int(spec['patience']),

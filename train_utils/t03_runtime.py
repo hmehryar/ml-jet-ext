@@ -249,6 +249,7 @@ def prepare(args, repo=REPO_ROOT):
                   'inputs': input_records, 'split_verification': split_verification,
                   'selection': {'monitor': 'val_joint_accuracy', 'mode': 'max'},
                   'scheduler': scheduler, 'held_out_test_evaluated': False}
+    provenance['loss'] = cfg.moment_loss
     (out / 'run_manifest.json').write_text(json.dumps(provenance, indent=2))
     print('Prepared run:', out, flush=True)
     return out
