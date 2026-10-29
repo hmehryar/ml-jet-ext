@@ -8,7 +8,7 @@ class CLIPClassifier(MomentVisionClassifier):
     def __init__(self, input_shape=(5, 32, 32), checkpoint=DEFAULT_CHECKPOINT,
                  freeze_backbone=True, pretrained=True):
         from transformers import CLIPVisionConfig, CLIPVisionModel
-        backbone = (CLIPVisionModel.from_pretrained(checkpoint) if pretrained
+        backbone = (CLIPVisionModel.from_pretrained(checkpoint, use_safetensors=True) if pretrained
                     else CLIPVisionModel(CLIPVisionConfig()))
         super().__init__(backbone, input_shape=input_shape,
                          freeze_backbone=freeze_backbone)

@@ -8,7 +8,7 @@ class SigLIPClassifier(MomentVisionClassifier):
     def __init__(self, input_shape=(5, 32, 32), checkpoint=DEFAULT_CHECKPOINT,
                  freeze_backbone=True, pretrained=True):
         from transformers import SiglipVisionConfig, SiglipVisionModel
-        backbone = (SiglipVisionModel.from_pretrained(checkpoint) if pretrained
+        backbone = (SiglipVisionModel.from_pretrained(checkpoint,use_safetensors=True) if pretrained
                     else SiglipVisionModel(SiglipVisionConfig()))
         super().__init__(backbone, input_shape=input_shape,
                          freeze_backbone=freeze_backbone)
