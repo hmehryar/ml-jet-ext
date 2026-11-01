@@ -66,18 +66,21 @@ class T04Config:
     gpu_profile: str
     source_audit_report: str
     fold: int | None = None
+    split_protocol: str = 'source_disjoint'
 
 
 def parse_config(path: Path) -> T04Config:
     raw = yaml.safe_load(Path(path).read_text())
     if not isinstance(raw, dict):
         raise ValueError('Expected YAML mapping')
-    required = set(T04Config.__dataclass_fields__) - {'fold'}
+    required = set(T04Config.__dataclass_fields__) - {'fold', 'split_protocol'}
     missing = required - raw.keys()
     unknown = raw.keys() - set(T04Config.__dataclass_fields__)
     if missing or unknown:
         raise ValueError(f'Missing fields {sorted(missing)}; unknown fields {sorted(unknown)}')
     c = T04Config(**raw)
+    if c.split_protocol not in ('aggregate_disjoint', 'source_disjoint'):
+        raise ValueError('split_protocol must be aggregate_disjoint or source_disjoint')
     if c.model not in ('clip', 'siglip') or c.strategy not in STRATEGIES:
         raise ValueError('Invalid model or adaptation strategy')
     if not isinstance(c.checkpoint, str) or not c.checkpoint.strip() or not isinstance(c.checkpoint_revision, str) or not c.checkpoint_revision.strip():
@@ -167,22 +170,38 @@ def inspect_inputs(c):
     audit = Path(c.source_audit_report).expanduser().resolve()
     records['source_audit'] = _file_digest(audit)
     report = json.loads(audit.read_text())
-    # This is a strict contract for an independently generated, verified report,
-    # not a claim that T04 itself reanalyzed source-jet membership.
-    if report.get('global_cross_split_overlap') != 0:
-        raise ValueError('Audit does not confirm globally zero source overlap')
-    per_config = report.get('per_configuration_cross_split_overlap')
-    configurations = set(published.get('configurations', {}))
-    if not isinstance(per_config, dict) or len(per_config) != 35 or any(type(v) is not int or v != 0 for v in per_config.values()) or (configurations and set(per_config) != configurations):
-        raise ValueError('Audit must confirm zero overlap for all 35 configurations')
+    # Source membership is reported, not presumed independent from distinct
+    # aggregate file paths. Both protocols demand actual hash-bound evidence.
+    audited_hashes = report.get('split_sha256')
+    if not isinstance(audited_hashes, dict) or any(
+            audited_hashes.get(name + '.csv') != records[name]['sha256']
+            for name in COUNTS):
+        raise ValueError('Audit does not match current split CSV hashes')
+    if report.get('published_split_manifest_sha256') not in (None, records['split_manifest']['sha256']):
+        raise ValueError('Audit does not match published split manifest hash')
     if not isinstance(report.get('source_id_method'), str) or not report['source_id_method'].strip():
         raise ValueError('Audit missing source-ID methodology')
-    # Require the report to explicitly bind itself to the split files it audited.
-    audited_hashes = report.get('split_sha256')
-    if not isinstance(audited_hashes, dict) or any(audited_hashes.get(name + '.csv') != records[name]['sha256'] for name in COUNTS):
-        raise ValueError('Audit does not match current split CSV hashes')
-    return {'dataset_root': str(root), 'counts': counts, 'input_records': records,
-            'source_audit_status': 'reported_zero_and_hash_bound'}
+    overlap = report.get('global_cross_split_overlap')
+    per_config = report.get('per_configuration_cross_split_overlap')
+    configurations = set(published.get('configurations', {}))
+    if type(overlap) is not int or overlap < 0:
+        raise ValueError('Audit missing valid global overlap count')
+    if not isinstance(per_config, dict) or len(per_config) != 35 or any(
+            type(v) is not int or v < 0 for v in per_config.values()
+    ) or (configurations and set(per_config) != configurations):
+        raise ValueError('Audit missing valid per-configuration counts')
+    if sum(per_config.values()) != overlap:
+        raise ValueError('Audit global/per-configuration overlap mismatch')
+    if c.split_protocol == 'source_disjoint' and overlap != 0:
+        raise ValueError('Source-disjoint protocol requires zero cross-split overlap')
+    return {
+        'dataset_root': str(root), 'counts': counts, 'input_records': records,
+        'split_protocol': c.split_protocol,
+        'global_cross_split_overlap': overlap,
+        'per_configuration_cross_split_overlap': per_config,
+        'source_audit_status': ('verified_zero' if overlap == 0 else 'verified_overlap_disclosed'),
+        'source_overlap_independence_claim': overlap == 0,
+    }
 
 
 def _package_version(name):

@@ -79,5 +79,45 @@ def test_audit_requires_zero_per_config(tmp_path,monkeypatch):
     obj = json.loads(audit.read_text())
     obj['per_configuration_cross_split_overlap']['c1'] = 1
     audit.write_text(json.dumps(obj))
-    with pytest.raises(ValueError,match='zero overlap'):
+    with pytest.raises(ValueError,match='overlap mismatch'):
+        p.preflight(config)
+
+
+def test_aggregate_disjoint_accepts_reported_source_reuse(tmp_path, monkeypatch):
+    config, cfg, _, audit = fixture(tmp_path, monkeypatch)
+    cfg['split_protocol'] = 'aggregate_disjoint'
+    config.write_text(yaml.safe_dump(cfg))
+    report = json.loads(audit.read_text())
+    report['global_cross_split_overlap'] = 3
+    report['per_configuration_cross_split_overlap']['c1'] = 3
+    audit.write_text(json.dumps(report))
+    _, details = p.preflight(config)
+    assert details['source_audit_status'] == 'verified_overlap_disclosed'
+    assert details['global_cross_split_overlap'] == 3
+    assert not details['source_overlap_independence_claim']
+    run = p.prepare(config, 'aggregate-overlap')
+    manifest = json.loads((run / 'run_manifest.json').read_text())
+    assert manifest['configuration']['split_protocol'] == 'aggregate_disjoint'
+    assert manifest['inputs']['global_cross_split_overlap'] == 3
+    assert p.verify(run)
+
+def test_aggregate_disjoint_rejects_unbound_audit(tmp_path, monkeypatch):
+    config, cfg, _, audit = fixture(tmp_path, monkeypatch)
+    cfg['split_protocol'] = 'aggregate_disjoint'
+    config.write_text(yaml.safe_dump(cfg))
+    report = json.loads(audit.read_text())
+    report['global_cross_split_overlap'] = 3
+    report['per_configuration_cross_split_overlap']['c1'] = 3
+    report['split_sha256']['val.csv'] = '0'*64
+    audit.write_text(json.dumps(report))
+    with pytest.raises(ValueError,match='Audit does not match'):
+        p.preflight(config)
+
+def test_source_disjoint_still_rejects_overlap(tmp_path, monkeypatch):
+    config, cfg, _, audit = fixture(tmp_path, monkeypatch)
+    report = json.loads(audit.read_text())
+    report['global_cross_split_overlap'] = 3
+    report['per_configuration_cross_split_overlap']['c1'] = 3
+    audit.write_text(json.dumps(report))
+    with pytest.raises(ValueError,match='Source-disjoint'):
         p.preflight(config)
