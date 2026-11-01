@@ -19,6 +19,45 @@ from train_utils.t03_runtime import resolve_scheduler
 from train_utils.t04_session_training import train_session
 
 
+
+def validate_strategy_settings(cfg):
+    """Fail closed on unsupported training options before allocating model memory."""
+    strategy = cfg.get('strategy')
+    if strategy not in ('S1', 'S2', 'S3', 'S4'):
+        raise ValueError('Unknown T04 adaptation strategy')
+    if cfg.get('gradient_accumulation') != 1 or cfg.get('precision') != 'fp32':
+        raise NotImplementedError('Accumulation and AMP belong to T04-04')
+    if cfg.get('moment_loss', {}).get('type') != 'cross_entropy':
+        raise NotImplementedError('Additional losses belong to T04-07')
+    rates = cfg.get('learning_rates', {})
+    if rates.get('adapter') != rates.get('heads'):
+        raise NotImplementedError('Separate adapter/head learning rates belong to T04-04')
+    if strategy != 'S1' and rates.get('backbone') != rates.get('heads'):
+        raise NotImplementedError('Separate backbone learning rates belong to T04-04')
+    # The optimizer is Adam with one rate across all trainable parameters.
+    return strategy
+
+
+def build_strategy_model(cfg, factories):
+    """Create trainability mask before the optimizer; enforce S4 scratch."""
+    strategy = validate_strategy_settings(cfg)
+    factory, backbone = factories[cfg['model']]
+    model, optimizer = factory(
+        backbone=backbone, input_shape=(len(cfg['moments']), 32, 32),
+        dataset_type='moment', freeze_backbone=(strategy == 'S1'),
+        pretrained=(strategy != 'S4'), strategy=strategy,
+        learning_rate=float(cfg['learning_rates']['heads']),
+        checkpoint=cfg['checkpoint'], revision=cfg['checkpoint_revision'])
+    if getattr(model, 'strategy', None) != strategy:
+        raise RuntimeError('Factory failed to apply configured strategy')
+    if getattr(model, 'pretrained_backbone', None) is not (strategy != 'S4'):
+        raise RuntimeError('Factory initialization source disagrees with strategy')
+    expected = {id(p) for p in model.parameters() if p.requires_grad}
+    used = [id(p) for group in optimizer.param_groups for p in group['params']]
+    if not expected or len(used) != len(set(used)) or set(used) != expected:
+        raise RuntimeError('Optimizer parameters do not match adaptation mask')
+    return model, optimizer
+
 def execute(run, session, mode, target_epochs):
     run, session = Path(run).resolve(), Path(session).resolve()
     verify(run)
@@ -27,17 +66,11 @@ def execute(run, session, mode, target_epochs):
     if session.parent != run / 'sessions' or not (session / 'session_manifest.json').is_file():
         raise RuntimeError('Unknown session')
     cfg = json.loads((run / 'config.resolved.json').read_text())
-    if cfg['strategy'] != 'S1' or cfg['gradient_accumulation'] != 1 or cfg['precision'] != 'fp32':
-        raise NotImplementedError('T04-02 supports only S1 FP32 accumulation=1')
-    if cfg['moment_loss']['type'] != 'cross_entropy' or cfg['learning_rates']['adapter'] != cfg['learning_rates']['heads']:
-        raise NotImplementedError('T04-02 supports only equal adapter/head LR and cross entropy')
-    settings = {'_strategy': cfg['strategy'], 'model': cfg['model'], 'seed': cfg['seed'],
+    validate_strategy_settings(cfg)
+    settings = {'model': cfg['model'], 'seed': cfg['seed'],
         'dataset_root': cfg['dataset_root'], 'moments': cfg['moments'],
         'batch_size': cfg['batch_size'], 'num_workers': cfg['num_workers'],
-        'learning_rate': cfg['learning_rates']['heads'], 'moment_loss': cfg['moment_loss'],
-        '_checkpoint': cfg['checkpoint'], '_checkpoint_revision': cfg['checkpoint_revision']}
-    if settings['_strategy'] != 'S1' or cfg['precision'] != 'fp32':
-        raise NotImplementedError('Only S1 FP32 prepared runs are currently supported')
+        'moment_loss': cfg['moment_loss']}
     if cfg['min_epochs'] > target_epochs:
         raise ValueError('target_epochs must be >= min_epochs')
     if cfg['min_epochs'] > 1 and cfg['min_epochs'] > cfg['epochs']:
@@ -54,19 +87,21 @@ def execute(run, session, mode, target_epochs):
         dataset_root=settings['dataset_root'], moments=settings['moments'],
         batch_size=settings['batch_size'], num_workers=settings['num_workers'],
         seed=seed, validate_files=True, check_normalization=True)
-    factory, backbone = FACTORIES[settings['model']]
-    model, optimizer = factory(backbone=backbone,
-        input_shape=(len(settings['moments']), 32, 32), dataset_type='moment',
-        freeze_backbone=True, pretrained=True,
-        learning_rate=float(settings['learning_rate']),
-        checkpoint=settings['_checkpoint'], revision=settings['_checkpoint_revision'])
+    model, optimizer = build_strategy_model(cfg, FACTORIES)
     model = model.to(device)
     spec = resolve_scheduler(cfg['scheduler'])
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, mode=spec['mode'], factor=spec['factor'],
         patience=spec['patience'], min_lr=spec['min_lr'])
     criterion = build_moment_criterion(settings['moment_loss'], device=device)
-    (session / 'runtime_environment.json').write_text(json.dumps(_runtime_details(model, device), indent=2))
+    runtime = _runtime_details(model, device)
+    runtime['adaptation'] = {
+        'strategy': cfg['strategy'], 'pretrained_backbone': cfg['strategy'] != 'S4',
+        'trainable_transformer_indices': model.unfrozen_transformer_indices,
+        'frozen_backbone': cfg['strategy'] == 'S1',
+        'optimizer_trainable_parameter_count': sum(
+            p.numel() for group in optimizer.param_groups for p in group['params'])}
+    (session / 'runtime_environment.json').write_text(json.dumps(runtime, indent=2))
     retention = os.environ.get('T04_CHECKPOINT_RETENTION', 'last_best')
     if retention not in ('last_best', 'all'):
         raise ValueError('Invalid T04_CHECKPOINT_RETENTION: use last_best or all')
