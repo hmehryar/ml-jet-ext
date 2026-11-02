@@ -17,6 +17,8 @@ from train_utils.t04_runner import FACTORIES, _runtime_details
 from train_utils.ordinal_loss import build_moment_criterion
 from train_utils.t03_runtime import resolve_scheduler
 from train_utils.t04_session_training import train_session
+from train_utils.t04_precision import make_scaler
+from train_utils.t04_optimizers import build_t04_optimizer, learning_rate_summary
 
 
 
@@ -25,16 +27,17 @@ def validate_strategy_settings(cfg):
     strategy = cfg.get('strategy')
     if strategy not in ('S1', 'S2', 'S3', 'S4'):
         raise ValueError('Unknown T04 adaptation strategy')
-    if cfg.get('gradient_accumulation') != 1 or cfg.get('precision') != 'fp32':
-        raise NotImplementedError('Accumulation and AMP belong to T04-04')
+    if cfg.get('precision') not in ('fp32','bf16','fp16') or type(cfg.get('gradient_accumulation')) is not int or cfg['gradient_accumulation'] < 1:
+        raise ValueError('Invalid precision or gradient accumulation')
     if cfg.get('moment_loss', {}).get('type') != 'cross_entropy':
         raise NotImplementedError('Additional losses belong to T04-07')
     rates = cfg.get('learning_rates', {})
-    if rates.get('adapter') != rates.get('heads'):
-        raise NotImplementedError('Separate adapter/head learning rates belong to T04-04')
-    if strategy != 'S1' and rates.get('backbone') != rates.get('heads'):
-        raise NotImplementedError('Separate backbone learning rates belong to T04-04')
-    # The optimizer is Adam with one rate across all trainable parameters.
+    if cfg.get('optimizer') is None:
+        # Historical T04-03 behavior remains unchanged for old manifests.
+        if rates.get('adapter') != rates.get('heads'):
+            raise NotImplementedError('Separate adapter/head learning rates require optimizer configuration')
+        if strategy != 'S1' and rates.get('backbone') != rates.get('heads'):
+            raise NotImplementedError('Separate backbone learning rates require optimizer configuration')
     return strategy
 
 
@@ -48,6 +51,11 @@ def build_strategy_model(cfg, factories):
         pretrained=(strategy != 'S4'), strategy=strategy,
         learning_rate=float(cfg['learning_rates']['heads']),
         checkpoint=cfg['checkpoint'], revision=cfg['checkpoint_revision'])
+    if cfg.get('optimizer') is not None:
+        spec = cfg['optimizer']
+        optimizer = build_t04_optimizer(
+            model, cfg['learning_rates'], optimizer_type=spec['type'],
+            weight_decay=spec['weight_decay'])
     if getattr(model, 'strategy', None) != strategy:
         raise RuntimeError('Factory failed to apply configured strategy')
     if getattr(model, 'pretrained_backbone', None) is not (strategy != 'S4'):
@@ -94,13 +102,17 @@ def execute(run, session, mode, target_epochs):
         optimizer, mode=spec['mode'], factor=spec['factor'],
         patience=spec['patience'], min_lr=spec['min_lr'])
     criterion = build_moment_criterion(settings['moment_loss'], device=device)
+    scaler = make_scaler(device, cfg['precision'])
     runtime = _runtime_details(model, device)
     runtime['adaptation'] = {
         'strategy': cfg['strategy'], 'pretrained_backbone': cfg['strategy'] != 'S4',
         'trainable_transformer_indices': model.unfrozen_transformer_indices,
         'frozen_backbone': cfg['strategy'] == 'S1',
         'optimizer_trainable_parameter_count': sum(
-            p.numel() for group in optimizer.param_groups for p in group['params'])}
+            p.numel() for group in optimizer.param_groups for p in group['params']),
+        'optimizer_type': cfg.get('optimizer', {}).get('type', 'adam') if cfg.get('optimizer') else 'adam',
+        'optimizer_learning_rates': learning_rate_summary(optimizer) if cfg.get('optimizer') else
+            {'legacy': float(optimizer.param_groups[0]['lr'])}}
     (session / 'runtime_environment.json').write_text(json.dumps(runtime, indent=2))
     retention = os.environ.get('T04_CHECKPOINT_RETENTION', 'last_best')
     if retention not in ('last_best', 'all'):
@@ -110,7 +122,9 @@ def execute(run, session, mode, target_epochs):
         patience=cfg['patience'], train_loader=train_loader, val_loader=val_loader,
         model=model, optimizer=optimizer, scheduler=scheduler, criterion=criterion,
         device=device, loss_weights={'alpha_output':1.0,'q0_output':1.0},
-        checkpoint_retention=retention)
+        checkpoint_retention=retention, scaler=scaler,
+        precision=cfg['precision'], accumulation=cfg['gradient_accumulation'],
+        microbatch_size=cfg['batch_size'])
     (session / 'result.json').write_text(json.dumps(outcome, indent=2))
     print('T04-02 session completed:', session.name, outcome, flush=True)
 

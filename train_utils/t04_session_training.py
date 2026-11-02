@@ -15,6 +15,8 @@ from pathlib import Path
 import torch
 
 from train_utils.moment_training import train_moment_epoch, evaluate_moment
+from train_utils.t04_telemetry import cuda_reset, epoch_telemetry, save_session_epoch_telemetry
+from train_utils.t04_precision import run_epoch
 from train_utils.t04_resume_state import (atomic_torch_save, checkpoint_state,
     load_checkpoint, restore_training, reconcile_epoch_csv, seed_loader_epoch,
     ResumeError, sha256)
@@ -101,7 +103,8 @@ def _retain_checkpoints(run, session, checkpoint, *, improved, retention):
 
 def train_session(*, run, session, mode, target_epochs, seed, min_epochs, patience,
                   train_loader, val_loader, model, optimizer, scheduler, criterion,
-                  device, scaler=None, loss_weights=None, checkpoint_retention='last_best'):
+                  device, scaler=None, loss_weights=None, checkpoint_retention='last_best',
+                  precision='fp32', accumulation=1, microbatch_size=None):
     run, session = Path(run).resolve(), Path(session).resolve()
     if checkpoint_retention not in ('last_best', 'all'):
         raise ValueError('checkpoint_retention must be last_best or all')
@@ -141,8 +144,15 @@ def train_session(*, run, session, mode, target_epochs, seed, min_epochs, patien
     stop = False
     for epoch in range(start_epoch + 1, target_epochs + 1):
         seed_loader_epoch(train_loader, seed, epoch)
-        tr = train_moment_epoch(train_loader, model, criterion, optimizer, device, loss_weights)
-        va = evaluate_moment(val_loader, model, criterion, device, loss_weights)
+        telemetry_start = cuda_reset(device)
+        if precision == 'fp32' and accumulation == 1:
+            tr = train_moment_epoch(train_loader, model, criterion, optimizer, device, loss_weights)
+            va = evaluate_moment(val_loader, model, criterion, device, loss_weights)
+        else:
+            tr = run_epoch(train_loader, model, criterion, device, loss_weights,
+                           optimizer, precision=precision, accumulation=accumulation, scaler=scaler)
+            va = run_epoch(val_loader, model, criterion, device, loss_weights,
+                           precision=precision)
         if scheduler is not None:
             scheduler_settings = json.loads((run / 'config.resolved.json').read_text())['scheduler']
             scheduler.step(va['loss'] if scheduler_settings['monitor'] == 'val_loss' else va['accuracy'])
@@ -169,6 +179,10 @@ def train_session(*, run, session, mode, target_epochs, seed, min_epochs, patien
         # Pointer is the commit; CSV may be reconstructed after a crash.
         publish_checkpoint(run, session, checkpoint, epoch=epoch)
         _append_csv(history, row)
+        telemetry = epoch_telemetry(telemetry_start, device, optimizer, tr, va,
+                                    microbatch_size, accumulation)
+        save_session_epoch_telemetry(session, epoch, telemetry)
+        print('[T04-04] epoch telemetry: ' + json.dumps(telemetry, sort_keys=True), flush=True)
         _retain_checkpoints(run, session, checkpoint, improved=improved,
                             retention=checkpoint_retention)
         print('[T04-02] Epoch %d / %d: val joint %.5f (best %.5f @ %d)' %

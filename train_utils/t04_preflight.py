@@ -67,13 +67,14 @@ class T04Config:
     source_audit_report: str
     fold: int | None = None
     split_protocol: str = 'source_disjoint'
+    optimizer: dict | None = None
 
 
 def parse_config(path: Path) -> T04Config:
     raw = yaml.safe_load(Path(path).read_text())
     if not isinstance(raw, dict):
         raise ValueError('Expected YAML mapping')
-    required = set(T04Config.__dataclass_fields__) - {'fold', 'split_protocol'}
+    required = set(T04Config.__dataclass_fields__) - {'fold', 'split_protocol', 'optimizer'}
     missing = required - raw.keys()
     unknown = raw.keys() - set(T04Config.__dataclass_fields__)
     if missing or unknown:
@@ -103,6 +104,17 @@ def parse_config(path: Path) -> T04Config:
         raise ValueError('learning_rates must define backbone, adapter and heads')
     for key, value in c.learning_rates.items():
         _positive(value, f'learning_rates.{key}')
+    if c.optimizer is not None:
+        if not isinstance(c.optimizer, dict) or set(c.optimizer) != {'type', 'weight_decay'}:
+            raise ValueError('optimizer must contain exactly type and weight_decay')
+        if c.optimizer['type'] not in ('adam', 'adamw'):
+            raise ValueError('optimizer.type must be adam or adamw')
+        import math
+        decay = c.optimizer['weight_decay']
+        if isinstance(decay, bool) or not isinstance(decay, (int, float)) or not math.isfinite(decay) or decay < 0:
+            raise ValueError('optimizer.weight_decay must be finite and nonnegative')
+        if c.optimizer['type'] == 'adam' and decay != 0:
+            raise ValueError('Legacy Adam requires weight_decay=0')
     for key in ('seed', 'epochs', 'min_epochs', 'patience', 'batch_size', 'gradient_accumulation', 'num_workers'):
         value = getattr(c, key)
         if type(value) is not int or value < (0 if key in ('seed', 'num_workers') else 1):

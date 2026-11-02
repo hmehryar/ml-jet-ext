@@ -36,7 +36,10 @@ def test_build_strategy_factory_and_optimizer(strategy):
 
 
 @pytest.mark.parametrize('change', [
-    {'strategy': 'S9'}, {'precision': 'bf16'}, {'gradient_accumulation': 2},
+    {'strategy': 'S9'},
+    {'precision': 'invalid'},
+    {'gradient_accumulation': 0},
+    {'gradient_accumulation': -1},
     {'moment_loss': {'type': 'ce_ordinal'}},
     {'learning_rates': {'adapter': .0001, 'heads': .0002, 'backbone': .0002}},
 ])
@@ -60,3 +63,12 @@ def test_reject_mismatched_optimizer_mask():
         return m, torch.optim.Adam([m.p], lr=.0001)
     with pytest.raises(RuntimeError, match='Optimizer parameters'):
         build_strategy_model(cfg('S3'), {'clip': (bad_factory, 'clip_vit_b16')})
+
+@pytest.mark.parametrize('precision', ['fp32', 'bf16', 'fp16'])
+@pytest.mark.parametrize('accumulation', [1, 2, 4])
+def test_accept_supported_precision_and_accumulation(precision, accumulation):
+    c = cfg('S2')
+    c['precision'] = precision
+    c['gradient_accumulation'] = accumulation
+
+    assert validate_strategy_settings(c) == 'S2'
