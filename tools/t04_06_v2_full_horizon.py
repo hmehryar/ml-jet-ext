@@ -177,6 +177,56 @@ def active_count(doc):
     return len(active)
 
 
+def _unallocated_active_entries(doc):
+    """Reserve Slurm PENDING jobs, not RUNNING allocations already in csc1 TRES.
+
+    Require one unambiguous Slurm row per active registry entry. Any missing,
+    unexpected or non-csc1 running job prevents additional submissions.
+    Read job state first; node capacity is inspected after this snapshot.
+    """
+    active = [e for e in doc['entries'].values()
+              if e['status'] in ('submitted', 'running', 'resumed')]
+    if not active:
+        return []
+    jobs = {}
+    for entry in active:
+        attempts = entry.get('attempts') or []
+        if not attempts or not attempts[-1].get('slurm_job_id'):
+            raise RuntimeError('Active registry entry without Slurm job ID')
+        job_id = str(attempts[-1]['slurm_job_id'])
+        if not re.fullmatch(r'[0-9]+', job_id) or job_id in jobs:
+            raise RuntimeError('Invalid or duplicate active Slurm job ID: ' + job_id)
+        jobs[job_id] = entry
+
+    result = subprocess.run(
+        ['squeue', '-h', '-j', ','.join(jobs), '-o', '%i|%T|%N'],
+        text=True, capture_output=True, check=True, timeout=15)
+    seen = {}
+    for raw in result.stdout.splitlines():
+        row = raw.strip().split('|')
+        if len(row) != 3:
+            raise RuntimeError('Malformed Slurm state row: ' + raw)
+        job_id, state, node = (x.strip() for x in row)
+        if job_id not in jobs or job_id in seen:
+            raise RuntimeError('Unexpected or repeated Slurm job: ' + job_id)
+        if state == 'RUNNING':
+            if node != 'csc1':
+                raise RuntimeError('RUNNING job not allocated on csc1: ' + job_id)
+        elif state == 'PENDING':
+            # If the job is still held/queued, its TRES are not in AllocTRES.
+            # Reject a surprising allocated node rather than guessing.
+            if node not in ('(null)', 'N/A', 'None', ''):
+                raise RuntimeError('PENDING job has unexpected node: ' + job_id)
+        else:
+            raise RuntimeError('Ambiguous Slurm state for active job '
+                               + job_id + ': ' + state)
+        seen[job_id] = state
+    if set(seen) != set(jobs):
+        raise RuntimeError('Missing active Slurm jobs; reconcile before admission: '
+                           + ','.join(sorted(set(jobs) - set(seen))))
+    return [entry for job_id, entry in jobs.items() if seen[job_id] == 'PENDING']
+
+
 def _require_v2(doc, runtime):
     repo = Path(doc['repo']).resolve()
     if Path(doc['plan_path']).resolve() != (repo / PLAN).resolve():
@@ -195,13 +245,16 @@ def plan(runtime, *, scope='e5', count=4, segment_epochs=80):
     doc = read(runtime)
     _require_v2(doc, runtime)
     active = active_count(doc)
+    # Query registry-active jobs before inspecting node allocations. Jobs that
+    # Slurm reports RUNNING on csc1 are already accounted for in CPUAlloc,
+    # AllocMem and AllocTRES; reserve only PENDING jobs again. Unknown states,
+    # missing job IDs and scheduler inconsistencies fail closed.
+    reserve_entries = _unallocated_active_entries(doc)
     capacity = inspect_capacity(cpus_per_job=1, mem_gib=12)
     resources=[capacity['free_cpus'],capacity['free_memory_mib'],capacity['free_mig_gpus']]
-    # Conservative reservation of registered jobs, including held jobs.
-    for e in doc['entries'].values():
-        if e['status'] in ('submitted','running','resumed'):
-            cost=_cost(_active_profile(e))
-            for i in range(3): resources[i] -= cost[i]
+    for entry in reserve_entries:
+        cost=_cost(_active_profile(entry))
+        for i in range(3): resources[i] -= cost[i]
     slots = min(count, MAX_ACTIVE-active)
     candidates = sorted((e for e in doc['entries'].values() if _eligible(e,scope)),key=_order)
     items = []
