@@ -66,6 +66,35 @@ def build_strategy_model(cfg, factories):
         raise RuntimeError('Optimizer parameters do not match adaptation mask')
     return model, optimizer
 
+
+def resolve_dataloader_workers(cfg, *, env=None):
+    """Resolve the effective worker count without mutating the frozen config.
+
+    Only the explicit T04 v2 execution profile may override DataLoader
+    workers. All other experiments retain their configured value.
+    """
+    env = os.environ if env is None else env
+    configured = cfg["num_workers"]
+    profile = env.get("T04_EXECUTION_PROFILE")
+
+    if profile is None:
+        return configured, "frozen_config"
+
+    if profile != "cpu1_workers0_v1":
+        raise ValueError("Unknown T04 execution profile")
+
+    if cfg.get("training_protocol") != "fixed_budget_v2":
+        raise ValueError("Execution profile requires fixed_budget_v2")
+
+    if env.get("SLURM_CPUS_PER_TASK") != "1":
+        raise ValueError("Execution profile requires exactly one Slurm CPU")
+
+    if env.get("T04_DATALOADER_WORKERS") != "0":
+        raise ValueError("Execution profile requires zero DataLoader workers")
+
+    return 0, profile
+
+
 def execute(run, session, mode, target_epochs):
     run, session = Path(run).resolve(), Path(session).resolve()
     verify(run)
@@ -84,6 +113,21 @@ def execute(run, session, mode, target_epochs):
         'dataset_root': cfg['dataset_root'], 'moments': cfg['moments'],
         'batch_size': cfg['batch_size'], 'num_workers': cfg['num_workers'],
         'moment_loss': cfg['moment_loss']}
+
+    effective_workers, execution_profile = resolve_dataloader_workers(cfg)
+    settings['num_workers'] = effective_workers
+
+    # Append-only execution metadata; never modify frozen configuration.
+    execution_record = {
+        'execution_profile': execution_profile,
+        'configured_num_workers': cfg['num_workers'],
+        'effective_num_workers': effective_workers,
+        'slurm_cpus_per_task': os.environ.get('SLURM_CPUS_PER_TASK'),
+        'slurm_job_id': os.environ.get('SLURM_JOB_ID'),
+    }
+    with (session / 'execution_profile.json').open('x') as stream:
+        json.dump(execution_record, stream, indent=2, sort_keys=True)
+
     # min_epochs controls only legacy early-stopping eligibility.
     # Fixed-budget v2 can stop a Slurm segment before min_epochs.
     if cfg.get('training_protocol', 'early_stop_v1') != 'fixed_budget_v2' and cfg['min_epochs'] > target_epochs:

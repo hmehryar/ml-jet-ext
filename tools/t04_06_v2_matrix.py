@@ -84,9 +84,8 @@ def verify(repo, registry):
     for path, payload in files.items():
         if not path.is_file() or path.read_bytes()!=payload:
             raise ValueError(f'v2 config changed/missing: {path}')
-    for row in doc['entries']:
-        if Path(row['run']).exists():
-            raise ValueError(f'v2 planned run unexpectedly reserved: {row["run"]}')
+    # Existing prepared runs are valid during production.
+    # Operational state and run provenance are checked separately.
     return doc['entries']
 
 

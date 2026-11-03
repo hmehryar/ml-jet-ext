@@ -107,3 +107,17 @@ def test_schema_patcher_idempotence_guard(tmp_path):
     assert patch(root, apply=True) == 0  # Already applied is a safe no-op.
     assert patch(root, apply=True) == 0
     assert before == {name: (root / name).read_bytes() for name in (PREFLIGHT, REGISTRY)}
+
+
+def test_verify_accepts_existing_prepared_run_directory(tmp_path):
+    """Immutable matrix verification remains valid after execution begins."""
+    p = repo(tmp_path)
+    generate(p)
+
+    doc = json.loads((p / PLAN).read_text())
+    run = Path(doc["entries"][0]["run"])
+    run.mkdir(parents=True)
+    (run / "checkpoint.marker").write_text("preserved")
+
+    assert len(verify(p, p / PLAN)) == 120
+    assert (run / "checkpoint.marker").read_text() == "preserved"
