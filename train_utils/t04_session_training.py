@@ -104,7 +104,11 @@ def _retain_checkpoints(run, session, checkpoint, *, improved, retention):
 def train_session(*, run, session, mode, target_epochs, seed, min_epochs, patience,
                   train_loader, val_loader, model, optimizer, scheduler, criterion,
                   device, scaler=None, loss_weights=None, checkpoint_retention='last_best',
-                  precision='fp32', accumulation=1, microbatch_size=None):
+                  precision='fp32', accumulation=1, microbatch_size=None,
+                   protocol_id='early_stop_v1', protocol_hash=None, configured_epochs=None):
+    from train_utils.t04_training_termination import (
+        validate_protocol, may_resume, should_stop)
+    validate_protocol(protocol_id, protocol_hash, configured_epochs)
     run, session = Path(run).resolve(), Path(session).resolve()
     if checkpoint_retention not in ('last_best', 'all'):
         raise ValueError('checkpoint_retention must be last_best or all')
@@ -128,7 +132,8 @@ def train_session(*, run, session, mode, target_epochs, seed, min_epochs, patien
             manifest_sha256=manifest_hash, config_sha256=config_hash)
         if state['epoch'] != pointer['epoch']:
             raise ResumeError('Checkpoint/pointer epoch disagreement')
-        if state.get('stopped'):
+        if not may_resume(protocol_id=protocol_id, protocol_hash=protocol_hash,
+                          epochs=configured_epochs, stopped=bool(state.get('stopped'))):
             raise ResumeError('Cannot resume a training trajectory terminated by early stopping')
         start_epoch, best_metric, best_epoch, stagnant = restore_training(state,
             model=model, optimizer=optimizer, scheduler=scheduler, scaler=scaler)
@@ -136,6 +141,8 @@ def train_session(*, run, session, mode, target_epochs, seed, min_epochs, patien
     elif history.exists() or latest_checkpoint(run) is not None:
         raise SessionError('Fresh session refuses existing training history')
 
+    if protocol_id == 'fixed_budget_v2' and target_epochs > configured_epochs:
+        raise ResumeError('fixed_budget_v2 target exceeds configured epochs')
     if start_epoch >= target_epochs:
         raise ResumeError('Target epoch count must exceed last completed epoch')
     if scheduler is not None and not isinstance(scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
@@ -162,7 +169,9 @@ def train_session(*, run, session, mode, target_epochs, seed, min_epochs, patien
             best_metric, best_epoch, stagnant = metric, epoch, 0
         else:
             stagnant += 1
-        stop = epoch >= min_epochs and stagnant >= patience
+        stop = should_stop(protocol_id=protocol_id, protocol_hash=protocol_hash,
+                           epoch=epoch, min_epochs=min_epochs, stagnant=stagnant,
+                           patience=patience, epochs=configured_epochs)
         row = _record(epoch, tr, va, optimizer)
         state = checkpoint_state(epoch=epoch, model=model, optimizer=optimizer,
             scheduler=scheduler, scaler=scaler, best_metric=best_metric,

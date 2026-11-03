@@ -74,12 +74,19 @@ def execute(run, session, mode, target_epochs):
     if session.parent != run / 'sessions' or not (session / 'session_manifest.json').is_file():
         raise RuntimeError('Unknown session')
     cfg = json.loads((run / 'config.resolved.json').read_text())
+    from train_utils.t04_training_termination import validate_protocol
+    protocol_id = cfg.get('training_protocol', 'early_stop_v1')
+    protocol_hash = cfg.get('training_protocol_hash')
+    configured_epochs = cfg['epochs']
+    validate_protocol(protocol_id, protocol_hash, configured_epochs)
     validate_strategy_settings(cfg)
     settings = {'model': cfg['model'], 'seed': cfg['seed'],
         'dataset_root': cfg['dataset_root'], 'moments': cfg['moments'],
         'batch_size': cfg['batch_size'], 'num_workers': cfg['num_workers'],
         'moment_loss': cfg['moment_loss']}
-    if cfg['min_epochs'] > target_epochs:
+    # min_epochs controls only legacy early-stopping eligibility.
+    # Fixed-budget v2 can stop a Slurm segment before min_epochs.
+    if cfg.get('training_protocol', 'early_stop_v1') != 'fixed_budget_v2' and cfg['min_epochs'] > target_epochs:
         raise ValueError('target_epochs must be >= min_epochs')
     if cfg['min_epochs'] > 1 and cfg['min_epochs'] > cfg['epochs']:
         raise ValueError('invalid config epoch constraints')
@@ -119,7 +126,9 @@ def execute(run, session, mode, target_epochs):
         raise ValueError('Invalid T04_CHECKPOINT_RETENTION: use last_best or all')
     outcome = train_session(run=run, session=session, mode=mode,
         target_epochs=target_epochs, seed=seed, min_epochs=cfg['min_epochs'],
-        patience=cfg['patience'], train_loader=train_loader, val_loader=val_loader,
+        patience=cfg['patience'], protocol_id=protocol_id, protocol_hash=protocol_hash,
+        configured_epochs=configured_epochs,
+        train_loader=train_loader, val_loader=val_loader,
         model=model, optimizer=optimizer, scheduler=scheduler, criterion=criterion,
         device=device, loss_weights={'alpha_output':1.0,'q0_output':1.0},
         checkpoint_retention=retention, scaler=scaler,

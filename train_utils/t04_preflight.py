@@ -68,13 +68,15 @@ class T04Config:
     fold: int | None = None
     split_protocol: str = 'source_disjoint'
     optimizer: dict | None = None
+    training_protocol: str | None = None
+    training_protocol_hash: str | None = None
 
 
 def parse_config(path: Path) -> T04Config:
     raw = yaml.safe_load(Path(path).read_text())
     if not isinstance(raw, dict):
         raise ValueError('Expected YAML mapping')
-    required = set(T04Config.__dataclass_fields__) - {'fold', 'split_protocol', 'optimizer'}
+    required = set(T04Config.__dataclass_fields__) - {'fold', 'split_protocol', 'optimizer', 'training_protocol', 'training_protocol_hash'}
     missing = required - raw.keys()
     unknown = raw.keys() - set(T04Config.__dataclass_fields__)
     if missing or unknown:
@@ -121,6 +123,9 @@ def parse_config(path: Path) -> T04Config:
             raise ValueError(f'{key} must be an integer in range')
     if c.min_epochs > c.epochs:
         raise ValueError('min_epochs exceeds epochs')
+    if c.training_protocol is not None or c.training_protocol_hash is not None:
+        from train_utils.t04_training_termination import validate_protocol
+        validate_protocol(c.training_protocol, c.training_protocol_hash, c.epochs)
     if c.fold is not None and (type(c.fold) is not int or c.fold not in range(5)):
         raise ValueError('fold must be null or 0..4')
     if not isinstance(c.scheduler, dict) or c.scheduler.get('type') != 'ReduceLROnPlateau':
