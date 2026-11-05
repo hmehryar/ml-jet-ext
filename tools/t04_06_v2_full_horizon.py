@@ -23,7 +23,7 @@ LEGACY_RUNTIME = Path('training_output/T04/t04_06/registry.runtime.json')
 from train_utils.t04_training_termination import validate_protocol
 
 DEFAULT = RUNTIME
-MAX_ACTIVE = 13
+MAX_ACTIVE = 120
 MAX_SEGMENT = 80
 SAFE_ID = re.compile(r'^[a-z0-9_]+$')
 
@@ -238,7 +238,7 @@ def _require_v2(doc, runtime):
         raise RuntimeError('Refusing noncanonical v2 runtime path')
 
 def plan(runtime, *, scope='e5', count=4, segment_epochs=80):
-    if scope not in ('e5','all') or type(count) is not int or not 1 <= count <= MAX_ACTIVE:
+    if scope not in ('e5','all') or type(count) is not int or not 1 <= count <= 13:
         raise ValueError('Invalid scope/count; maximum concurrent jobs is 13')
     if type(segment_epochs) is not int or not 1 <= segment_epochs <= MAX_SEGMENT:
         raise ValueError('segment_epochs must be 1..80')
@@ -255,7 +255,7 @@ def plan(runtime, *, scope='e5', count=4, segment_epochs=80):
     for entry in reserve_entries:
         cost=_cost(_active_profile(entry))
         for i in range(3): resources[i] -= cost[i]
-    slots = min(count, MAX_ACTIVE-active)
+    slots = min(count, 13, MAX_ACTIVE-active)
     candidates = sorted((e for e in doc['entries'].values() if _eligible(e,scope)),key=_order)
     items = []
     for entry in candidates:

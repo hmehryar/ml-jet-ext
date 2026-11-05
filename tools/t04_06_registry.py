@@ -176,7 +176,14 @@ def transition(runtime_path, identity, state, *, attempt_id=None, job_id=None,
             if not job_id or not JOB.fullmatch(job_id):
                 raise ValueError('Submission requires Slurm job ID')
             if state == 'resumed' and not checkpoint_sha256:
-                raise ValueError('Resume requires verified checkpoint SHA-256')
+                # Recovery of a pre-execution failure, explicitly marked as fresh.
+                # The CLI separately verifies the frozen run has no session or checkpoint.
+                if not (prior == 'failed' and note and
+                        note.startswith('T04-06 fresh-retry-no-checkpoint ') and
+                        entry['attempts'] and
+                        entry['attempts'][-1].get('checkpoint_sha256') is None and
+                        entry['attempts'][-1].get('parent_checkpoint_sha256') is None):
+                    raise ValueError('Resume requires verified checkpoint SHA-256')
             if checkpoint_sha256 and not SHA.fullmatch(checkpoint_sha256):
                 raise ValueError('Invalid checkpoint SHA')
             if any(a['slurm_job_id'] == job_id for e in doc['entries'].values() for a in e['attempts']):
