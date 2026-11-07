@@ -15,6 +15,7 @@ import subprocess
 from tools.t04_06_registry import read, locked, atomic_replace, transition, sha
 from tools.t04_06_v2_matrix import RUNTIME, PLAN, OUTPUT
 from train_utils.t04_preflight import prepare, verify
+from train_utils.t04_storage import slurm_log_options
 from train_utils.t04_sessions import latest_checkpoint
 
 SAFE = re.compile(r'^[a-z0-9][a-z0-9_-]{0,79}$')
@@ -235,6 +236,7 @@ def submit_held(repo, batch_id):
                 import os
                 os.fsync(stream.fileno())
             args=['sbatch','--parsable','--hold',
+                  *slurm_log_options(ident, pool=batch['gpu']),
                   '--export=ALL,T04_06_RUN='+run+',T04_06_MODE=fresh,T04_06_TARGET=80',str(script)]
             try:
                 result=subprocess.run(args,cwd=repo,text=True,capture_output=True,check=True,timeout=60)

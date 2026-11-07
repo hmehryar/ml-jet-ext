@@ -15,6 +15,7 @@ from pathlib import Path
 import re
 import tempfile
 import uuid
+from train_utils.t04_v2_relocation import matches_original_digest
 
 VALID = {'planned', 'submitted', 'running', 'completed', 'failed', 'resumed', 'ready_to_resume'}
 TRANSITIONS = {
@@ -153,7 +154,7 @@ def read(runtime_path):
         raise ValueError('Planning registry hash changed')
     for entry in doc['entries'].values():
         cfg = Path(doc['repo']) / entry['config']
-        if sha(cfg) != entry['config_sha256']:
+        if not matches_original_digest(cfg, entry['config_sha256']):
             raise ValueError('Config changed: ' + str(cfg))
     return doc
 

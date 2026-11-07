@@ -1,0 +1,6 @@
+schema_version: 1
+storage:
+  research_root: /rs/rs_grp_mljet/ml-jet-ext
+  output_root: /rs/rs_grp_mljet/ml-jet-ext/training_output
+  slurm_log_root: /rs/rs_grp_mljet/ml-jet-ext/slurm_logs
+  historical_t04_06_v2: /rs/rs_grp_mljet/ml-jet-ext/training_output/T04/t04_06_v2_production

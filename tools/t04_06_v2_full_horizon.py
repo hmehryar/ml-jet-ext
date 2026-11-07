@@ -19,6 +19,7 @@ from train_utils.t04_sessions import latest_checkpoint
 
 from tools.t04_06_v2_matrix import PLAN, RUNTIME, OUTPUT, KIND
 from tools.t04_06_slurm_capacity import inspect as inspect_capacity
+from train_utils.t04_storage import slurm_log_options
 LEGACY_RUNTIME = Path('training_output/T04/t04_06/registry.runtime.json')
 from train_utils.t04_training_termination import validate_protocol
 
@@ -323,6 +324,7 @@ def submit_wave(runtime,scope,count,segment_epochs,script):
             # Fence is persisted BEFORE any external scheduler side effect.
             atomic_replace(path, {'schema':1,'phase':'before_sbatch',**item,'job_id':None})
             command=['sbatch','--parsable','--hold',
+                *slurm_log_options(item['id'], pool='a100'),
                 '--export=ALL,T04_06_RUN='+item['run']+',T04_06_MODE='+item['mode']+',T04_06_TARGET='+str(item['target']),
                 str(selected_script)]
             try:

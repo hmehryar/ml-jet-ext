@@ -17,6 +17,7 @@ from tools.t04_06_v2_multi_queue import (
     POOLS, JOB, _scontrol,
 )
 from tools.t04_06_v2_matrix import RUNTIME
+from train_utils.t04_storage import slurm_log_options
 
 RECOVERY_PREFIX = 'stage3f_v2.retry.'
 SCHEMA = 1
@@ -147,6 +148,7 @@ def submit(repo,batch_id,gpu,count=None,experiment=None):
                   'job_id':None}
             _create_intent(journal,base)
             args=['sbatch','--parsable','--hold',
+                  *slurm_log_options(ident, pool=gpu),
                   '--export=ALL,T04_06_RUN='+str(run)+',T04_06_MODE=fresh,T04_06_TARGET=80',
                   str(script)]
             try:

@@ -10,6 +10,7 @@ import yaml
 
 from tools.t04_06_matrix import MODELS, STRATEGIES, SEEDS, canonical, digest, stable_yaml
 from train_utils.t04_training_policy import policy, PROTOCOL_ID
+from train_utils.t04_v2_relocation import equivalent_config_bytes
 
 SCHEMA = 1
 KIND = 'T04-06-v2-plan'
@@ -82,7 +83,7 @@ def verify(repo, registry):
     if doc != expected:
         raise ValueError('v2 plan differs from immutable template-derived matrix')
     for path, payload in files.items():
-        if not path.is_file() or path.read_bytes()!=payload:
+        if not path.is_file() or not equivalent_config_bytes(path.read_bytes(), payload):
             raise ValueError(f'v2 config changed/missing: {path}')
     # Existing prepared runs are valid during production.
     # Operational state and run provenance are checked separately.

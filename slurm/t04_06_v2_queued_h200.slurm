@@ -8,8 +8,8 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=10G
 #SBATCH --time=06:00:00
-#SBATCH --output=slurm-h200q-%j.out
-#SBATCH --error=slurm-h200q-%j.err
+#SBATCH --output=/rs/rs_grp_mljet/ml-jet-ext/slurm_logs/T04/h200/%j.out
+#SBATCH --error=/rs/rs_grp_mljet/ml-jet-ext/slurm_logs/T04/h200/%j.err
 set -euo pipefail
 : "${T04_06_RUN:?}"
 : "${T04_06_MODE:?}"
