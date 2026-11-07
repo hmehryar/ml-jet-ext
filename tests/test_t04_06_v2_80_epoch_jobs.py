@@ -15,7 +15,7 @@ def config():
 
 def test_full_budget_enabled():
     assert launcher.MAX_SEGMENT==80
-    assert launcher.MAX_ACTIVE==13
+    assert launcher.MAX_ACTIVE==120  # registry bound; plan() caps a wave at 13
 
 
 def test_fresh_target_is_80(tmp_path):

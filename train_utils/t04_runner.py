@@ -89,8 +89,8 @@ def _from_prepared(path):
         raise NotImplementedError('S2/S3/S4 training is implemented in T04-03, not T04-01')
     if cfg['precision'] != 'fp32' or cfg['gradient_accumulation'] != 1:
         raise NotImplementedError('Mixed precision/accumulation belong to T04-04')
-    if cfg['moment_loss'].get('type') != 'cross_entropy':
-        raise NotImplementedError('Additional losses belong to T04-07')
+    from train_utils.loss_config import resolve_moment_loss
+    resolve_moment_loss(cfg['moment_loss'])
     rates = cfg['learning_rates']
     if rates['adapter'] != rates['heads']:
         raise NotImplementedError('Parameter-group LR belongs to T04-04')

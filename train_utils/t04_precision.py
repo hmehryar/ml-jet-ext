@@ -6,7 +6,7 @@ from contextlib import nullcontext
 import torch
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, confusion_matrix
 from train_utils.moment_training import HEADS, _check_batch
-from train_utils.ordinal_loss import CEOrdinalLoss, physical_class_metrics
+from train_utils.ordinal_loss import CEOrdinalLoss, PhysicalMAELoss, physical_class_metrics
 
 
 def autocast_context(device, precision):
@@ -42,6 +42,11 @@ def _losses(outputs, labels, criterion, weights):
             losses[key], ce, ordinal = criterion[key].components(outputs[key], labels[key])
             parts[f'loss_{tag}_ce'] = float(ce.detach())
             parts[f'loss_{tag}_ordinal'] = float(ordinal.detach())
+        elif isinstance(criterion[key], PhysicalMAELoss):
+            losses[key], ce, physical = criterion[key].components(outputs[key], labels[key])
+            parts[f'loss_{tag}_ce'] = float(ce.detach()) if ce is not None else 0.
+            parts[f'loss_{tag}_ordinal'] = 0.
+            parts[f'loss_{tag}_physical_mae'] = float(physical.detach())
         else:
             losses[key] = criterion[key](outputs[key], labels[key])
             if isinstance(criterion[key], torch.nn.CrossEntropyLoss):

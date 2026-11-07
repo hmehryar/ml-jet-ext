@@ -29,8 +29,8 @@ def validate_strategy_settings(cfg):
         raise ValueError('Unknown T04 adaptation strategy')
     if cfg.get('precision') not in ('fp32','bf16','fp16') or type(cfg.get('gradient_accumulation')) is not int or cfg['gradient_accumulation'] < 1:
         raise ValueError('Invalid precision or gradient accumulation')
-    if cfg.get('moment_loss', {}).get('type') != 'cross_entropy':
-        raise NotImplementedError('Additional losses belong to T04-07')
+    from train_utils.loss_config import resolve_moment_loss
+    resolve_moment_loss(cfg.get('moment_loss', {'type': 'cross_entropy'}))
     rates = cfg.get('learning_rates', {})
     if cfg.get('optimizer') is None:
         # Historical T04-03 behavior remains unchanged for old manifests.
@@ -155,6 +155,9 @@ def execute(run, session, mode, target_epochs):
     criterion = build_moment_criterion(settings['moment_loss'], device=device)
     scaler = make_scaler(device, cfg['precision'])
     runtime = _runtime_details(model, device)
+    from train_utils.ordinal_loss import criterion_settings
+    runtime['moment_loss'] = cfg['moment_loss']
+    runtime['criterion_settings'] = criterion_settings(criterion)
     runtime['adaptation'] = {
         'strategy': cfg['strategy'], 'pretrained_backbone': cfg['strategy'] != 'S4',
         'trainable_transformer_indices': model.unfrozen_transformer_indices,

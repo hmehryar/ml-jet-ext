@@ -5,7 +5,7 @@ from pathlib import Path
 import torch
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, confusion_matrix
 from tqdm import tqdm
-from train_utils.ordinal_loss import CEOrdinalLoss, physical_class_metrics, criterion_settings
+from train_utils.ordinal_loss import CEOrdinalLoss, PhysicalMAELoss, physical_class_metrics, criterion_settings
 
 HEADS = ("alpha_output", "q0_output")
 
@@ -49,6 +49,11 @@ def _run(loader, model, criterion, device, loss_weights=None, optimizer=None):
                     losses[key], ce, ordinal = criterion[key].components(outputs[key], labels[key])
                     batch_components[f'loss_{tag}_ce'] = ce.item()
                     batch_components[f'loss_{tag}_ordinal'] = ordinal.item()
+                elif isinstance(criterion[key], PhysicalMAELoss):
+                    losses[key], ce, physical = criterion[key].components(outputs[key], labels[key])
+                    batch_components[f'loss_{tag}_ce'] = float(ce.detach()) if ce is not None else 0.
+                    batch_components[f'loss_{tag}_ordinal'] = 0.
+                    batch_components[f'loss_{tag}_physical_mae'] = float(physical.detach())
                 else:
                     losses[key] = criterion[key](outputs[key], labels[key])
                     if isinstance(criterion[key], torch.nn.CrossEntropyLoss):

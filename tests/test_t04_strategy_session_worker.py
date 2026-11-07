@@ -40,7 +40,7 @@ def test_build_strategy_factory_and_optimizer(strategy):
     {'precision': 'invalid'},
     {'gradient_accumulation': 0},
     {'gradient_accumulation': -1},
-    {'moment_loss': {'type': 'ce_ordinal'}},
+    {'moment_loss': {'type': 'unknown_loss'}},
     {'learning_rates': {'adapter': .0001, 'heads': .0002, 'backbone': .0002}},
 ])
 def test_reject_unsupported_before_model_load(change):

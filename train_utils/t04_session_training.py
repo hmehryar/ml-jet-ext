@@ -29,6 +29,7 @@ COLUMNS = ['epoch','train_loss','train_alpha_accuracy','train_q0_accuracy',
            'val_joint_accuracy','val_alpha_macro_f1','val_q0_macro_f1','lr']
 COLUMNS += [f'{sp}_{tag}_{component}_loss' for sp in ('train','val')
             for tag in ('alpha','q0') for component in ('ce','ordinal')]
+COLUMNS += [f'{sp}_{tag}_physical_mae_loss' for sp in ('train','val') for tag in ('alpha','q0')]
 COLUMNS += [f'{sp}_{tag}_{metric}' for sp in ('train','val')
             for tag in ('alpha','q0') for metric in ('mae','rmse','normalized_mae')]
 
@@ -47,6 +48,7 @@ def _record(epoch, train, val, optimizer):
         for tag in ('alpha','q0'):
             for comp in ('ce','ordinal'):
                 row[f'{split}_{tag}_{comp}_loss'] = metrics.get(f'loss_{tag}_{comp}', '')
+            row[f'{split}_{tag}_physical_mae_loss'] = metrics.get(f'loss_{tag}_physical_mae', '')
             for metric in ('mae','rmse','normalized_mae'):
                 row[f'{split}_{tag}_{metric}'] = metrics[tag].get(metric, '')
     return row

@@ -24,7 +24,7 @@ import yaml
 REPO = Path(__file__).resolve().parents[1]
 COUNTS = {'train': 11200, 'val': 1400, 'test': 1400}
 STRATEGIES = {'S1', 'S2', 'S3', 'S4'}
-LOSSES = {'cross_entropy', 'ce_ordinal', 'ce_soft_mae'}
+LOSSES = {'cross_entropy', 'ce_ordinal', 'physical_mae', 'ce_physical_mae'}
 PRECISIONS = {'fp32', 'bf16', 'fp16'}
 SAFE = re.compile(r'^[A-Za-z0-9][A-Za-z0-9_.-]*$')
 
@@ -92,14 +92,12 @@ def parse_config(path: Path) -> T04Config:
         raise ValueError('Use a 40-character immutable checkpoint commit SHA')
     if not isinstance(c.moments, list) or c.moments not in [list(range(1, k + 1)) for k in range(1, 6)]:
         raise ValueError('T04 requires cumulative moments E1-E5')
+    from train_utils.loss_config import resolve_moment_loss
     if not isinstance(c.moment_loss, dict) or c.moment_loss.get('type') not in LOSSES:
         raise ValueError('Unsupported moment loss')
-    if set(c.moment_loss) - {'type', 'ordinal_weight', 'mae_weight'}:
-        raise ValueError('Unknown loss settings')
-    if c.moment_loss['type'] == 'ce_ordinal':
-        _positive(c.moment_loss.get('ordinal_weight'), 'ordinal_weight', allow_zero=True)
-    if c.moment_loss['type'] == 'ce_soft_mae':
-        _positive(c.moment_loss.get('mae_weight'), 'mae_weight', allow_zero=True)
+    # Centralized strict schema: wrong coefficient name, NaN, infinities and
+    # negative values fail before any new run directory is reserved.
+    resolve_moment_loss(c.moment_loss)
     if c.precision not in PRECISIONS:
         raise ValueError('Invalid precision')
     if not isinstance(c.learning_rates, dict) or set(c.learning_rates) != {'backbone', 'adapter', 'heads'}:
