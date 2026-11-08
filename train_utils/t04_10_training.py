@@ -5,15 +5,12 @@ Does not change train_utils.moment_training or train_utils.t04_precision.
 from __future__ import annotations
 
 from contextlib import nullcontext
-import math
 
 import torch
 from torch import nn
 
 from models.t04_10_single_head import TASK_CLASSES, TASK_OUTPUT, validate_task
-
-ALPHA_VALUES = (0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50)
-Q0_VALUES = (1.0, 1.5, 2.0, 2.5, 3.0)
+from train_utils.t04_10_metrics import ClassificationMetrics
 
 
 def _extract(batch, task, device):
@@ -36,7 +33,9 @@ def _extract(batch, task, device):
 
 
 def run_single_head_epoch(loader, model, *, task: str, device,
-                          optimizer=None, precision="fp32", criterion=None):
+                          optimizer=None, precision="fp32", criterion=None,
+                          prediction_export_path=None, sample_ids=None,
+                          export_metadata=None, split="val"):
     """Return selected-head metrics; no inactive-head or joint metrics.
 
     Metrics accumulated globally, not mean of per-batch percentages.
@@ -50,6 +49,16 @@ def run_single_head_epoch(loader, model, *, task: str, device,
     if criterion is None:
         criterion = nn.CrossEntropyLoss()
     training = optimizer is not None
+    if prediction_export_path is not None:
+        if training or split != "val":
+            raise ValueError("Prediction export is validation-only and evaluation-only")
+        if sample_ids is None:
+            raise ValueError("Stable sample_ids are required for export")
+        required = ("run_id", "architecture", "strategy", "moments", "checkpoint_sha256")
+        if not isinstance(export_metadata, dict) or any(k not in export_metadata for k in required):
+            raise ValueError(f"Export metadata requires {required}")
+        if export_metadata.get("split", "val") != "val":
+            raise ValueError("Export metadata must identify validation split")
     model.train(training)
     device = torch.device(device)
     context = (torch.autocast(device_type=device.type, dtype=torch.bfloat16)
@@ -57,9 +66,8 @@ def run_single_head_epoch(loader, model, *, task: str, device,
     n = 0
     loss_sum = 0.0
     confusion = torch.zeros((TASK_CLASSES[task], TASK_CLASSES[task]), dtype=torch.int64)
-    abs_sum = sq_sum = 0.0
-    values = torch.tensor(ALPHA_VALUES if task == "alpha_only" else Q0_VALUES,
-                          dtype=torch.float64)
+    ranking_metrics = ClassificationMetrics(task, collect_records=prediction_export_path is not None)
+    sample_offset = 0
     grad_context = torch.enable_grad() if training else torch.no_grad()
     with grad_context:
         for batch in loader:
@@ -90,9 +98,10 @@ def run_single_head_epoch(loader, model, *, task: str, device,
             loss_sum += float(loss.detach()) * count
             confusion += torch.bincount(truth * TASK_CLASSES[task] + pred,
                                         minlength=TASK_CLASSES[task] ** 2).reshape(confusion.shape)
-            difference = values[pred] - values[truth]
-            abs_sum += float(difference.abs().sum())
-            sq_sum += float((difference ** 2).sum())
+            batch_ids = (sample_ids[sample_offset:sample_offset + count]
+                         if sample_ids is not None else None)
+            ranking_metrics.update(logits.detach(), truth, sample_ids=batch_ids)
+            sample_offset += count
     if not n:
         raise ValueError("Empty loader")
     tp = confusion.diag().to(torch.float64)
@@ -100,7 +109,35 @@ def run_single_head_epoch(loader, model, *, task: str, device,
     actual = confusion.sum(1).to(torch.float64)
     denom = predicted + actual
     macro_f1 = torch.where(denom > 0, 2 * tp / denom.clamp_min(1), torch.zeros_like(tp)).mean()
-    return {"task": task, "n": n, "loss": loss_sum / n,
-            "accuracy": float(tp.sum() / n), "macro_f1": float(macro_f1),
-            "physical_mae": abs_sum / n, "physical_rmse": math.sqrt(sq_sum / n),
-            "confusion_matrix": confusion.tolist()}
+    metrics = {"task": task, "n": n, "loss": loss_sum / n,
+               "accuracy": float(tp.sum() / n), "macro_f1": float(macro_f1),
+               "confusion_matrix": confusion.tolist()}
+    metrics.update(ranking_metrics.compute())
+    if abs(metrics["accuracy"] - metrics["top1_accuracy"]) > 1e-12:
+        raise AssertionError("Top-1 and legacy accuracy disagree")
+    if prediction_export_path is not None:
+        if sample_offset != len(sample_ids) or len(set(sample_ids)) != len(sample_ids):
+            raise ValueError("Export requires one unique ID per evaluation sample")
+        from pathlib import Path
+        import json
+        import os
+        import tempfile
+        destination = Path(prediction_export_path)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        if destination.exists():
+            raise FileExistsError(f"Refusing to overwrite prediction export: {destination}")
+        metadata = dict(export_metadata or {})
+        if metadata.get("split", "val") != "val":
+            raise ValueError("Export metadata must identify validation split")
+        metadata["split"] = "val"
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf8", dir=destination.parent,
+                                         suffix=".tmp", delete=False) as handle:
+            tmp_name = handle.name
+            json.dump({"schema": 1, "task": task, "class_values": ranking_metrics.values.tolist(),
+                       "metadata": metadata, "metrics": metrics,
+                       "predictions": ranking_metrics.records}, handle)
+        try:
+            os.link(tmp_name, destination)  # no-clobber publish; do not overwrite on rerun
+        finally:
+            os.unlink(tmp_name)
+    return metrics
