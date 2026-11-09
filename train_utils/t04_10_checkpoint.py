@@ -28,9 +28,13 @@ def _rng_state():
 def _restore_rng(state):
     random.setstate(state["python"])
     np.random.set_state(state["numpy"])
-    torch.set_rng_state(state["torch"])
+    # torch.load(map_location="cuda") may move CPU RNG state to CUDA.
+    # torch.set_rng_state requires a CPU ByteTensor.
+    torch.set_rng_state(state["torch"].cpu())
     if state["cuda"] is not None and torch.cuda.is_available():
-        torch.cuda.set_rng_state_all(state["cuda"])
+        torch.cuda.set_rng_state_all(
+            [rng_state.cpu() for rng_state in state["cuda"]]
+        )
 
 
 def _atomic_save(obj, path):

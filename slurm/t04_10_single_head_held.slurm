@@ -2,7 +2,7 @@
 #SBATCH --job-name=T04_10_single
 #SBATCH --partition=ecscp
 #SBATCH --qos=express
-#SBATCH --gres=A100:1g.10gb:1
+#SBATCH --gres=gpu:nvidia_a100_80gb_pcie_1g.10gb:1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=12G
 #SBATCH --time=12:00:00
