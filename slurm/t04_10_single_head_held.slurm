@@ -9,6 +9,9 @@
 #SBATCH --output=/rs/rs_grp_mljet/ml-jet-ext/training_output/T04/t04_10_single_head/slurm_logs/T04_10_%j.out
 #SBATCH --error=/rs/rs_grp_mljet/ml-jet-ext/training_output/T04/t04_10_single_head/slurm_logs/T04_10_%j.err
 set -euo pipefail
+export PYTHONUNBUFFERED=1
+# Preserve the immutable source snapshot during Python imports.
+export PYTHONDONTWRITEBYTECODE=1
 : "${T04_10_PREPARED_RUN:?Must export the immutable prepared-run directory}"
 : "${T04_10_MODE:?Must export fresh or resume}"
 [[ "$T04_10_MODE" == fresh || "$T04_10_MODE" == resume ]] || exit 2

@@ -53,6 +53,7 @@ def execute(prepared_run, mode):
     if Path(__file__).resolve() != run / 'source/train_utils/t04_10_runner.py':
         raise RuntimeError('Run only from the source snapshot inside the prepared run')
     verify(run)
+    print('T04 manifest verification: PASS', flush=True)
     cfg = json.loads((run / 'config.resolved.json').read_text())
     if mode not in ('fresh', 'resume'):
         raise ValueError('Mode must be fresh or resume')
@@ -66,6 +67,7 @@ def execute(prepared_run, mode):
     try:
         with os.fdopen(fd, 'w') as handle:
             handle.write(f'pid={os.getpid()} mode={mode}\n')
+        print(f'EXECUTING {mode} {run} {run / "training"}', flush=True)
         train, val, model, optimizer, scheduler = build_run(cfg, device)
         # A separate loader generator is reseeded by epoch; resume does not
         # require reproducing prior DataLoader constructor RNG consumption.
@@ -78,8 +80,17 @@ def execute(prepared_run, mode):
             task=cfg['task'], output_dir=run / 'training',
             config_sha256=json.loads((run / 'run_manifest.json').read_text())['config_sha256'],
             epochs=cfg['epochs'], device=device, precision=cfg['precision'],
-            scheduler=scheduler, resume=(mode == 'resume'), reset_loader_seed=seed_epoch)
+            scheduler=scheduler, resume=(mode == 'resume'), reset_loader_seed=seed_epoch,
+            microbatch_size=cfg['batch_size'])
         (run / 'training_outcome.json').write_text(json.dumps(outcome, indent=2))
+        history = json.loads((run / 'training/history.json').read_text())
+        best = max(history, key=lambda row: row['val']['macro_f1'])
+        session_outcome = {
+            'epoch': outcome['epoch'], 'best_epoch': best['epoch'],
+            'best_metric': best['val']['macro_f1'], 'early_stopped': False,
+            'checkpoint': outcome['last_path']}
+        print('T04-10 session completed: training ' + str(session_outcome), flush=True)
+        print('SESSION_COMPLETED=' + str(run / 'training'), flush=True)
         print('T04-10 training complete:', json.dumps(outcome), flush=True)
         return outcome
     finally:

@@ -13,6 +13,8 @@ from pathlib import Path
 import random
 import tempfile
 
+from train_utils.t04_telemetry import cuda_reset, epoch_telemetry
+
 import numpy as np
 import torch
 
@@ -59,7 +61,7 @@ def _sha256(path):
 def fit_fixed_budget(*, model, train_loader, val_loader, optimizer,
                      task, output_dir, config_sha256, epochs=80, device="cpu",
                      precision="fp32", scheduler=None, resume=False,
-                     reset_loader_seed=None):
+                     reset_loader_seed=None, microbatch_size=None):
     """Train 80 epochs, select best by target macro-F1, exact state restore.
 
     `reset_loader_seed(epoch)` should re-seed the dataset shuffling sampler at
@@ -110,18 +112,30 @@ def fit_fixed_budget(*, model, train_loader, val_loader, optimizer,
         path.mkdir(parents=True, exist_ok=False)
         history, start, best_f1 = [], 0, -1.0
     model.to(device)
+    # Reconstruct best epoch from existing history; no checkpoint schema changes.
+    best_epoch = next((r['epoch'] for r in history
+                       if r['val']['macro_f1'] == best_f1), 0)
     for epoch in range(start + 1, epochs + 1):
         if reset_loader_seed is not None:
             reset_loader_seed(epoch)
+        epoch_start = cuda_reset(device)
+        step_counts = {}
         train = run_single_head_epoch(train_loader, model, task=task, device=device,
-                                      precision=precision, optimizer=optimizer)
+                                      precision=precision, optimizer=optimizer,
+                                      telemetry_counts=step_counts)
         val = run_single_head_epoch(val_loader, model, task=task, device=device,
                                     precision=precision)
+        # Same data keys as T04-04/T04-07, without mutating the checkpoint.
+        telemetry = epoch_telemetry(
+            epoch_start, device, optimizer,
+            {'samples': train['n'], **step_counts}, val,
+            microbatch_size=microbatch_size, accumulation=1)
         if scheduler is not None:
             scheduler.step(val["loss"])
         improved = val["macro_f1"] > best_f1
         if improved:
             best_f1 = val["macro_f1"]
+            best_epoch = epoch
         row = {"epoch": epoch, "train": train, "val": val,
                "best_val_macro_f1": best_f1}
         history.append(row)
@@ -139,6 +153,14 @@ def fit_fixed_budget(*, model, train_loader, val_loader, optimizer,
             temp_path = Path(temp.name)
             json.dump(history, temp, indent=2)
         os.replace(temp_path, history_path)
+        # Emit only after checkpoint and history are durable, with no
+        # modifications to RNG, optimizer, history, or checkpoint schemas.
+        print('[T04-04] epoch telemetry: ' +
+              json.dumps(telemetry, sort_keys=True, allow_nan=False), flush=True)
+        tag = 'alpha' if task == 'alpha_only' else 'q0'
+        print(f'[T04-10] Epoch {epoch} / {epochs}: '
+              f'val {tag} macro-F1 {val["macro_f1"]:.5f} '
+              f'(best {best_f1:.5f} @ {best_epoch})', flush=True)
     return {"epoch": epochs, "best_val_macro_f1": best_f1,
             "best_path": str(best), "last_path": str(latest),
             "last_sha256": _sha256(latest)}

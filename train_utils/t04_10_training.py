@@ -35,7 +35,7 @@ def _extract(batch, task, device):
 def run_single_head_epoch(loader, model, *, task: str, device,
                           optimizer=None, precision="fp32", criterion=None,
                           prediction_export_path=None, sample_ids=None,
-                          export_metadata=None, split="val"):
+                          export_metadata=None, split="val", telemetry_counts=None):
     """Return selected-head metrics; no inactive-head or joint metrics.
 
     Metrics accumulated globally, not mean of per-batch percentages.
@@ -49,6 +49,9 @@ def run_single_head_epoch(loader, model, *, task: str, device,
     if criterion is None:
         criterion = nn.CrossEntropyLoss()
     training = optimizer is not None
+    if telemetry_counts is not None:
+        telemetry_counts.update(optimizer_steps=0, optimizer_steps_completed=0,
+                                optimizer_steps_skipped=0)
     if prediction_export_path is not None:
         if training or split != "val":
             raise ValueError("Prediction export is validation-only and evaluation-only")
@@ -91,6 +94,9 @@ def run_single_head_epoch(loader, model, *, task: str, device,
             if training:
                 loss.backward()
                 optimizer.step()
+                if telemetry_counts is not None:
+                    telemetry_counts['optimizer_steps'] += 1
+                    telemetry_counts['optimizer_steps_completed'] += 1
             pred = logits.detach().argmax(1).cpu()
             truth = y.detach().cpu()
             count = int(y.numel())
