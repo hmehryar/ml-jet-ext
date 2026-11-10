@@ -3,7 +3,7 @@
 #SBATCH --partition=ecscp
 #SBATCH --qos=express
 #SBATCH --gres=gpu:nvidia_a100_80gb_pcie_1g.10gb:1
-#SBATCH --cpus-per-task=2
+#SBATCH --cpus-per-task=1
 #SBATCH --mem=12G
 #SBATCH --time=12:00:00
 #SBATCH --output=/rs/rs_grp_mljet/ml-jet-ext/training_output/T04/t04_10_single_head/slurm_logs/T04_10_%j.out
