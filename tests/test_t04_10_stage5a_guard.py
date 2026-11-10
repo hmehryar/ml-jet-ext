@@ -20,6 +20,14 @@ def fixture_run(tmp_path):
               'git_commit':'a'*40,'run_id':'pilot-a','test_set_evaluated':False,
               'inputs':{'source_overlap':103221}}
     (run/'config.resolved.json').write_text(json.dumps(cfg))
+    (run/'source/train_utils').mkdir(parents=True)
+    for module in ('t04_10_sessions.py', 't04_10_session_training.py'):
+        (run/'source/train_utils'/module).write_text('# fixture')
+    import hashlib
+    files = {str(f.relative_to(run/'source')): hashlib.sha256(f.read_bytes()).hexdigest() for f in (run/'source').rglob('*') if f.is_file()}
+    manifest['source_sha256'] = files
+    manifest['config_sha256'] = hashlib.sha256((run/'config.resolved.json').read_bytes()).hexdigest()
+    manifest['inputs']['inputs'] = {}
     (run/'run_manifest.json').write_text(json.dumps(manifest))
     return root,run,cfg,manifest
 
@@ -56,18 +64,19 @@ def test_reject_false_source_disjoint(tmp_path):
 def test_reject_fresh_collision(tmp_path):
     root,run,_,_=fixture_run(tmp_path)
     (run/'training').mkdir()
-    with pytest.raises(ValueError,match='Fresh mode forbidden'):
+    with pytest.raises(ValueError,match='Legacy flat-training'):
         guard(run,'fresh',root=root,verifier=lambda p: True)
 
 
-def test_resume_requires_checkpoint_history(tmp_path):
+def test_resume_requires_session_checkpoint(tmp_path):
     root,run,_,_=fixture_run(tmp_path)
     with pytest.raises(ValueError,match='Resume requires'):
         guard(run,'resume',root=root,verifier=lambda p: True)
     training=run/'training';training.mkdir()
-    (training/'last.pth').write_bytes(b'not used')
+    (training/'last.pth').write_bytes(b'legacy checkpoint')
     (training/'history.json').write_text('[]')
-    assert guard(run,'resume',root=root,verifier=lambda p: True)['mode']=='resume'
+    with pytest.raises(ValueError,match='Legacy flat-training'):
+        guard(run,'resume',root=root,verifier=lambda p: True)
 
 
 def test_reject_snapshot_failure(tmp_path):
@@ -87,3 +96,5 @@ def test_shell_scripts_safe_and_held():
     assert '/t04_10_single_head/slurm_logs/' in slurm
     assert 't04_07' not in slurm.lower()
     assert '#SBATCH --gres=gpu:nvidia_a100_80gb_pcie_1g.10gb:1' in slurm
+    assert '#SBATCH --cpus-per-task=1' in slurm
+    assert '#SBATCH --mem=12G' in slurm

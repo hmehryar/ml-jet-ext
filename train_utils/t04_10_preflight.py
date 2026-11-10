@@ -206,7 +206,8 @@ def verify(directory):
     _fail(manifest['schema'] == 1 and manifest['issue'] == 30, 'Unexpected T04-10 manifest')
     _fail(sha256(run / 'config.resolved.json') == manifest['config_sha256'], 'Config modified')
     source = run / 'source'
-    actual = {str(p.relative_to(source)): sha256(p) for p in source.rglob('*') if p.is_file()}
+    actual = {str(p.relative_to(source)): sha256(p) for p in source.rglob('*')
+              if p.is_file() and not ('__pycache__' in p.parts and p.suffix == '.pyc')}
     _fail(actual == manifest['source_sha256'], 'Snapshot sources modified')
     for record in manifest['inputs']['inputs'].values():
         _fail(sha256(record['path']) == record['sha256'], f'Input modified: {record["path"]}')

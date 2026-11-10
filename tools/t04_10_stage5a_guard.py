@@ -61,14 +61,21 @@ def guard(prepared_run, mode, *, root=T04_ROOT, verifier=None):
         verifier = verify
     _assert(verifier(run) is True, 'Immutable snapshot verifier failed')
 
-    training = run/'training'
+    # Reject legacy flat-run directories/snapshots; never convert a used run in place.
+    _assert((run/'source/train_utils/t04_10_sessions.py').is_file() and
+            (run/'source/train_utils/t04_10_session_training.py').is_file(),
+            'T04-10 session production source missing; prepare from Stage 6 commit')
+    _assert(not (run/'training').exists() and not (run/'training.lock').exists(),
+            'Legacy flat-training run is not eligible for Stage 6')
+    from train_utils.t04_10_sessions import latest_checkpoint
+    pointer = latest_checkpoint(run)
+    session_root = run/'sessions'
     if mode == 'fresh':
-        _assert(not training.exists(), 'Fresh mode forbidden: training directory exists')
-        _assert(not (run/'training.lock').exists(), 'Run has a training lock')
+        _assert(pointer is None and not session_root.exists(),
+                'Fresh mode refuses previously used session experiment')
     else:
-        _assert((training/'last.pth').is_file() and (training/'history.json').is_file(),
-                'Resume requires saved checkpoint and history')
-        _assert(not (run/'training.lock').exists(), 'Run has a training lock')
+        _assert(pointer is not None, 'Resume requires verified committed session checkpoint')
+        _assert(pointer['epoch'] < cfg['epochs'], 'Resume target must exceed checkpoint epoch')
     return {'status':'GUARD_PASS', 'run':str(run), 'mode':mode,
             'model':model, 'task':task, 'seed':seed, 'source_overlap':overlap,
             'git_commit':manifest['git_commit']}

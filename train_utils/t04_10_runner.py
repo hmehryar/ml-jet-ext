@@ -12,7 +12,8 @@ import torch
 
 from data.moment_loader import get_moment_dataloaders
 from models.t04_10_single_head import build_clip_siglip_single_head, build_trainable_optimizer
-from train_utils.t04_10_checkpoint import fit_fixed_budget
+from train_utils.t04_10_session_training import train_session, _recover_last_session
+from train_utils.t04_10_sessions import experiment_lock, start_session, finish_session, latest_checkpoint
 from train_utils.t04_10_preflight import verify
 
 
@@ -62,40 +63,39 @@ def execute(prepared_run, mode):
     device = torch.device('cuda')
     if cfg['precision'] == 'bf16' and not torch.cuda.is_bf16_supported():
         raise RuntimeError('CUDA device does not support BF16')
-    lock = run / 'training.lock'
-    fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
-    try:
-        with os.fdopen(fd, 'w') as handle:
-            handle.write(f'pid={os.getpid()} mode={mode}\n')
-        print(f'EXECUTING {mode} {run} {run / "training"}', flush=True)
-        train, val, model, optimizer, scheduler = build_run(cfg, device)
-        # A separate loader generator is reseeded by epoch; resume does not
-        # require reproducing prior DataLoader constructor RNG consumption.
-        def seed_epoch(epoch):
-            if train.generator is None:
-                raise RuntimeError('Deterministic training generator missing')
-            train.generator.manual_seed(int(cfg['seed']) + epoch)
-        outcome = fit_fixed_budget(
-            model=model, train_loader=train, val_loader=val, optimizer=optimizer,
-            task=cfg['task'], output_dir=run / 'training',
-            config_sha256=json.loads((run / 'run_manifest.json').read_text())['config_sha256'],
-            epochs=cfg['epochs'], device=device, precision=cfg['precision'],
-            scheduler=scheduler, resume=(mode == 'resume'), reset_loader_seed=seed_epoch,
-            microbatch_size=cfg['batch_size'])
-        (run / 'training_outcome.json').write_text(json.dumps(outcome, indent=2))
-        history = json.loads((run / 'training/history.json').read_text())
-        best = max(history, key=lambda row: row['val']['macro_f1'])
-        session_outcome = {
-            'epoch': outcome['epoch'], 'best_epoch': best['epoch'],
-            'best_metric': best['val']['macro_f1'], 'early_stopped': False,
-            'checkpoint': outcome['last_path']}
-        print('T04-10 session completed: training ' + str(session_outcome), flush=True)
-        print('SESSION_COMPLETED=' + str(run / 'training'), flush=True)
-        print('T04-10 training complete:', json.dumps(outcome), flush=True)
+    if (run / 'training').exists() or (run / 'training.lock').exists():
+        raise RuntimeError('Legacy T04-10 flat training directory detected; use a new prepared run')
+    # Match T04-07: the lock covers all session setup, training, and publishing.
+    # CUDA/model initialization is done only after the run has passed verification.
+    with experiment_lock(run):
+        if mode == 'resume':
+            _recover_last_session(run, latest_checkpoint(run))
+        session = start_session(run, mode=mode, target_epochs=cfg['epochs'])
+        print(f'EXECUTING {mode} {run} {session}', flush=True)
+        try:
+            train, val, model, optimizer, scheduler = build_run(cfg, device)
+            def seed_epoch(epoch):
+                if train.generator is None:
+                    raise RuntimeError('Deterministic training generator missing')
+                train.generator.manual_seed(int(cfg['seed']) + epoch)
+            outcome = train_session(
+                run=run, session=session, mode=mode,
+                model=model, train_loader=train, val_loader=val, optimizer=optimizer,
+                scheduler=scheduler, task=cfg['task'],
+                config_sha256=json.loads((run / 'run_manifest.json').read_text())['config_sha256'],
+                epochs=cfg['epochs'], device=device, precision=cfg['precision'],
+                reset_loader_seed=seed_epoch, microbatch_size=cfg['batch_size'])
+        except BaseException:
+            # The last published checkpoint remains authoritative on failure.
+            # SIGKILL does not execute Python cleanup; next resume handles that case.
+            try:
+                finish_session(run, session, status='interrupted')
+            except Exception:
+                pass
+            raise
+        print('T04-10 session completed: ' + session.name + ' ' + str(outcome), flush=True)
+        print('SESSION_COMPLETED=' + str(session), flush=True)
         return outcome
-    finally:
-        # Even an exception releases only this process' exclusive lock.
-        lock.unlink(missing_ok=True)
 
 
 def main(argv=None):
