@@ -1,7 +1,6 @@
 """T04-10 single-head adaptation of the T04-02/T04-07 session training contract.
 
-Append-only sessions; SHA-256-verified checkpoint pointer; fixed-budget 80-epoch
-training; no T04-07 writes; best-model selection is task validation macro-F1.
+Append-only sessions; SHA-256-verified checkpoint pointer; continuation training; no T04-07 writes; best-model selection is task validation macro-F1.
 """
 from __future__ import annotations
 
@@ -94,8 +93,7 @@ def run_session(*, run, mode, model, train_loader, val_loader, optimizer,
                 reset_loader_seed=None, microbatch_size=None):
     """Reserve and execute one session while caller holds experiment_lock.
 
-    Accepts 1..80 target epochs for CPU validation; production resolved configs
-    require 80. Recovery starts at the latest published checkpoint epoch.
+    Accepts any positive target epoch. Recovery starts at the latest published checkpoint epoch.
     """
     from train_utils.t04_10_sessions import start_session
     run = Path(run).resolve()
@@ -128,8 +126,8 @@ def train_session(*, run, session, mode, model, train_loader, val_loader,
     run, session = Path(run).resolve(), Path(session).resolve()
     if task not in ('alpha_only', 'q0_only') or getattr(model, 'task', None) != task:
         raise ValueError('Single-head task mismatch')
-    if type(epochs) is not int or not 1 <= epochs <= 80:
-        raise ValueError('Invalid fixed-budget epochs')
+    if type(epochs) is not int or epochs < 1:
+        raise ValueError('Target epochs must be a positive integer')
     manifest = json.loads((run / 'run_manifest.json').read_text())
     if config_sha256 != manifest['config_sha256']:
         raise SessionError('Configuration hash does not match prepared manifest')
