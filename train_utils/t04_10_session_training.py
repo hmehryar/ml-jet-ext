@@ -90,7 +90,7 @@ def _recover_last_session(run, pointer):
 
 def run_session(*, run, mode, model, train_loader, val_loader, optimizer,
                 scheduler, task, config_sha256, epochs, device='cpu', precision='fp32',
-                reset_loader_seed=None, microbatch_size=None):
+                reset_loader_seed=None, microbatch_size=None, criterion=None, loss_sha256=None):
     """Reserve and execute one session while caller holds experiment_lock.
 
     Accepts any positive target epoch. Recovery starts at the latest published checkpoint epoch.
@@ -108,7 +108,8 @@ def run_session(*, run, mode, model, train_loader, val_loader, optimizer,
                                config_sha256=config_sha256, epochs=epochs,
                                device=device, precision=precision,
                                reset_loader_seed=reset_loader_seed,
-                               microbatch_size=microbatch_size)
+                               microbatch_size=microbatch_size, criterion=criterion,
+                               loss_sha256=loss_sha256)
         return session, result
     except BaseException:
         try:
@@ -121,7 +122,7 @@ def run_session(*, run, mode, model, train_loader, val_loader, optimizer,
 def train_session(*, run, session, mode, model, train_loader, val_loader,
                   optimizer, scheduler, task, config_sha256, epochs=80,
                   device='cpu', precision='fp32', reset_loader_seed=None,
-                  microbatch_size=None):
+                  microbatch_size=None, criterion=None, loss_sha256=None):
     """Train an already reserved session with T04-07-compatible publication."""
     run, session = Path(run).resolve(), Path(session).resolve()
     if task not in ('alpha_only', 'q0_only') or getattr(model, 'task', None) != task:
@@ -142,7 +143,8 @@ def train_session(*, run, session, mode, model, train_loader, val_loader,
         saved = torch.load(pointer['absolute_path'], map_location=device, weights_only=False)
         if (saved.get('schema') != 2 or saved.get('task') != task or
             saved.get('config_sha256') != config_sha256 or
-            saved.get('epoch') != pointer['epoch']):
+            saved.get('epoch') != pointer['epoch'] or
+            saved.get('loss_sha256') != loss_sha256):
             raise SessionError('Checkpoint training identity mismatch')
         if saved.get('scheduler') is None and scheduler is not None:
             raise SessionError('Missing scheduler state')
@@ -181,9 +183,9 @@ def train_session(*, run, session, mode, model, train_loader, val_loader,
         counts = {}
         train = run_single_head_epoch(train_loader, model, task=task, device=device,
                                       precision=precision, optimizer=optimizer,
-                                      telemetry_counts=counts)
+                                      criterion=criterion, telemetry_counts=counts)
         val = run_single_head_epoch(val_loader, model, task=task, device=device,
-                                    precision=precision)
+                                    precision=precision, criterion=criterion)
         if scheduler is not None:
             scheduler.step(val['loss'])
         improved = val['macro_f1'] > best_f1
@@ -193,6 +195,7 @@ def train_session(*, run, session, mode, model, train_loader, val_loader,
                    best_val_macro_f1=best_f1)
         history.append(row)
         state = dict(schema=2, task=task, epoch=epoch, best_epoch=best_epoch,
+                     loss_sha256=loss_sha256,
                      config_sha256=config_sha256, model=model.state_dict(),
                      optimizer=optimizer.state_dict(),
                      scheduler=scheduler.state_dict() if scheduler else None,
