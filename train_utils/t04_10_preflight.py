@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 import yaml
 
 TASKS = ('alpha_only', 'q0_only')
-MODELS = ('clip', 'siglip')  # ViT excluded until independently validated parity protocol.
+MODELS = ('clip', 'siglip', 'vit')  # ViT scratch-only S4/E1-E5 pilot protocol.
 STRATEGIES = ('S1', 'S2', 'S3', 'S4')
 SEEDS = (42, 123, 2026)
 SAFE_ID = re.compile(r'^[a-zA-Z0-9][a-zA-Z0-9_.-]*$')
@@ -52,10 +52,10 @@ def load_settings(config_path):
         'source_audit_report', 'split_protocol', 'training_protocol',
         'gpu_profile'
     }
-    optional = {'fold', 'scheduler'}
+    optional = {'fold', 'scheduler', 'vit_initialization'}
     _fail(set(data) <= required | optional and required <= set(data),
           f'Config fields: missing={sorted(required - set(data))}; unexpected={sorted(set(data) - required - optional)}')
-    _fail(data['model'] in MODELS, 'Stage 2 only supports CLIP/SigLIP; ViT parity is a separate task')
+    _fail(data['model'] in MODELS, 'Unsupported single-head architecture')
     _fail(data['task'] in TASKS, 'Select alpha_only or q0_only')
     _fail(data['strategy'] in STRATEGIES, 'Unknown adaptation strategy')
     _fail(data['seed'] in SEEDS and type(data['seed']) is int, 'Unrecognized pilot seed')
@@ -67,9 +67,19 @@ def load_settings(config_path):
     _fail(type(data['checkpoint']) is str and data['checkpoint'].strip(), 'Missing checkpoint')
     _fail(type(data['checkpoint_revision']) is str and
           bool(PINNED_REVISION.fullmatch(data['checkpoint_revision'])), 'Require pinned 40-hex revision')
-    expected = ('openai/clip-vit-base-patch16' if data['model'] == 'clip'
-                else 'google/siglip-base-patch16-224')
-    _fail(data['checkpoint'] == expected, 'Unrecognized architecture checkpoint')
+    if data['model'] == 'vit':
+        _fail(data['strategy'] == 'S4' and data['moments'] in [list(range(1, k + 1)) for k in range(1, 6)],
+              'ViT scratch pilot requires S4 with E1-E5')
+        _fail(data.get('vit_initialization') == 'random',
+              'ViT scratch protocol requires random initialization')
+        _fail(data['checkpoint'] == 'timm/vit_tiny_patch16_224_scratch',
+              'ViT checkpoint must identify the no-weights scratch model')
+        _fail(data['checkpoint_revision'] == '0'*40,
+              'ViT scratch revision must use the no-checkpoint sentinel')
+    else:
+        expected = ('openai/clip-vit-base-patch16' if data['model'] == 'clip'
+                    else 'google/siglip-base-patch16-224')
+        _fail(data['checkpoint'] == expected, 'Unrecognized architecture checkpoint')
     _fail(data['optimizer'] == {'type': 'adamw', 'weight_decay': 0.01},
           'Pilot requires AdamW weight decay 0.01')
     _fail(type(data['learning_rates']) is dict and
@@ -147,6 +157,11 @@ def inspect_inputs(data):
     if data['split_protocol'] == 'source_disjoint':
         _fail(overlap == 0, 'Cannot claim source-disjoint split with source overlap')
     records['source_audit'] = {'path': str(audit), 'sha256': sha256(audit)}
+    if data['model'] == 'vit':
+        records['vit_initialization'] = {
+            'type': 'random', 'model': 'vit_tiny_patch16_224',
+            'pretrained': False, 'checkpoint_loaded': False,
+        }
     return {'inputs': records, 'source_overlap': overlap, 'split_protocol': data['split_protocol']}
 
 

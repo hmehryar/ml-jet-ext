@@ -4,8 +4,8 @@ Additive implementation: the existing T03 and T04 dual-head classes are not
 imported or modified. Each instance has precisely one classification head.
 
 CLIP/SigLIP use the same 1x1 adapter, interpolation, and S1-S4 policies as
-MomentVisionClassifier. ViT-Tiny support is provisional until the separately
-planned cross-transformer S1-S4 parity benchmark is complete.
+MomentVisionClassifier. ViT-Tiny scratch S4/E1-E5 training is supported for Stage 10; fully matched
+cross-transformer architectural comparisons remain future work.
 """
 from __future__ import annotations
 
@@ -81,9 +81,8 @@ class SingleHeadMomentVisionClassifier(nn.Module):
 class SingleHeadViTClassifier(nn.Module):
     """Single-task ViT-Tiny input path (provisional T03-style architecture).
 
-    A caller supplies an initialized timm ViT feature extractor. The historical
-    JetBench transfer weights and normalization must be independently audited
-    before using this variant for inter-architecture claims.
+    A caller supplies a newly initialized timm ViT feature extractor. No historical
+    checkpoint or pretrained weights are loaded in the Stage 10 scratch protocol.
     """
 
     def __init__(self, backbone: nn.Module, *, task: str, channels: int = 5,
@@ -96,6 +95,11 @@ class SingleHeadViTClassifier(nn.Module):
         self.dataset_type = "moment"
         self.backbone = backbone
         self.input_adapter = nn.Conv2d(channels, 3, 1, bias=False) if use_adapter else nn.Identity()
+        if use_adapter:
+            # T03 MomentInputAdapter: M1 replicated into R/G/B, other moments zero initially.
+            with torch.no_grad():
+                self.input_adapter.weight.zero_()
+                self.input_adapter.weight[:, 0, 0, 0] = 1.0
         if not use_adapter and channels != 3:
             raise ValueError("Without adapter, ViT must receive exactly 3 channels")
         hidden_size = getattr(backbone, "num_features", None)

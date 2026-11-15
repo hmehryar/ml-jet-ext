@@ -18,8 +18,8 @@ from train_utils.t04_10_preflight import verify
 
 
 def build_run(cfg, device):
-    if cfg['model'] not in ('clip', 'siglip'):
-        raise ValueError('ViT parity has not been established in T04-10')
+    if cfg['model'] not in ('clip', 'siglip', 'vit'):
+        raise ValueError('Unknown single-head architecture')
     if cfg['task'] not in ('alpha_only', 'q0_only'):
         raise ValueError('Invalid single-head task')
     seed = cfg['seed']
@@ -33,10 +33,28 @@ def build_run(cfg, device):
         num_workers=cfg['num_workers'], seed=seed, fold=None,
         pin_memory=(device.type == 'cuda'), validate_files=True,
         check_normalization=True)
-    model = build_clip_siglip_single_head(
-        architecture=cfg['model'], task=cfg['task'], channels=len(cfg['moments']),
-        strategy=cfg['strategy'], checkpoint=cfg['checkpoint'],
-        revision=cfg['checkpoint_revision'], pretrained=(cfg['strategy'] != 'S4'))
+    if cfg['model'] == 'vit':
+        # Scratch-only S4/E1-E5: never load historical JetBench or timm pretrained weights.
+        if (cfg['strategy'] != 'S4' or cfg['moments'] not in [list(range(1, k + 1)) for k in range(1, 6)]
+                or cfg.get('vit_initialization') != 'random'
+                or cfg['checkpoint'] != 'timm/vit_tiny_patch16_224_scratch'):
+            raise ValueError('Unsupported ViT scratch protocol')
+        from models.t04_10_single_head import SingleHeadViTClassifier
+        import timm
+        backbone = timm.create_model('vit_tiny_patch16_224', pretrained=False,
+                                     in_chans=3, num_classes=0)
+        model = SingleHeadViTClassifier(backbone, task=cfg['task'], channels=len(cfg['moments']))
+        model.strategy = 'S4'
+        model.checkpoint_name = cfg['checkpoint']
+        model.checkpoint_revision = cfg['checkpoint_revision']
+        model.pretrained_backbone = False
+        model.architecture = 'vit'
+        print(f'T04_10_VIT_SCRATCH model=vit_tiny_patch16_224 E{len(cfg["moments"])} pretrained=false checkpoint_loaded=false', flush=True)
+    else:
+        model = build_clip_siglip_single_head(
+            architecture=cfg['model'], task=cfg['task'], channels=len(cfg['moments']),
+            strategy=cfg['strategy'], checkpoint=cfg['checkpoint'],
+            revision=cfg['checkpoint_revision'], pretrained=(cfg['strategy'] != 'S4'))
     model = model.to(device)
     lr = cfg['learning_rates']
     optimizer = build_trainable_optimizer(model, lr_backbone=lr['backbone'],
