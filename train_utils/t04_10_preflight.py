@@ -224,8 +224,17 @@ def verify(directory):
     actual = {str(p.relative_to(source)): sha256(p) for p in source.rglob('*')
               if p.is_file() and not ('__pycache__' in p.parts and p.suffix == '.pyc')}
     _fail(actual == manifest['source_sha256'], 'Snapshot sources modified')
-    for record in manifest['inputs']['inputs'].values():
-        _fail(sha256(record['path']) == record['sha256'], f'Input modified: {record["path"]}')
+    for name, record in manifest['inputs']['inputs'].items():
+        if name == 'vit_initialization':
+            _fail(record == {
+                'type': 'random',
+                'model': 'vit_tiny_patch16_224',
+                'pretrained': False,
+                'checkpoint_loaded': False,
+            }, 'ViT initialization metadata modified')
+            continue
+        _fail(sha256(record['path']) == record['sha256'],
+              f'Input modified: {record["path"]}')
     return True
 
 
