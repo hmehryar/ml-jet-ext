@@ -49,3 +49,27 @@ __pycache__/
 
 # Notebook checkpoints
 .ipynb_checkpoints/
+
+# Generated manuscript figures
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.svg
+
+# Generated data and evaluation artifacts
+*.csv
+*.npz
+*.npy
+
+# Local archives and temporary packages
+*.zip
+
+# Model weights and checkpoints
+*.pt
+*.pth
+*.ckpt
+
+
+# Evaluation artifacts
+/results/

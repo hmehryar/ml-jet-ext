@@ -8,7 +8,7 @@ import argparse
 import yaml
 from types import SimpleNamespace
 
-def get_config(config_path=None):
+def get_config(config_path=None, overrides=None):
     # --- Parse command-line args only if not running in notebook ---
     if config_path is None:
         try:
@@ -26,11 +26,23 @@ def get_config(config_path=None):
 
     with open(config_path, 'r') as f:
         cfg_dict = yaml.safe_load(f)
+    # Explicit callers can override host-dependent values without editing YAML.
+    # Existing CLI and positional callers retain their original behavior.
+    if overrides:
+        cfg_dict.update({key: value for key, value in overrides.items() if value is not None})
 
     # T02: preserve legacy mode by default. Moment mode reads precomputed splits.
     dataset_type = cfg_dict.get("dataset_type", "legacy")
     if dataset_type not in ("legacy", "moment"):
         raise ValueError(f"Unknown dataset_type: {dataset_type!r}")
+    # Opt-in machine override for moment data. Keep YAML > DATASET_ROOT and
+    # all legacy defaults unchanged when MLJET_DATASET_ROOT is absent.
+    if dataset_type == "moment" and os.environ.get("MLJET_DATASET_ROOT"):
+        if not (overrides or {}).get("dataset_root"):
+            cfg_dict["dataset_root"] = os.environ["MLJET_DATASET_ROOT"]
+    if dataset_type == "moment" and os.environ.get("MLJET_OUTPUT_ROOT"):
+        if not (overrides or {}).get("output_dir"):
+            cfg_dict["output_dir"] = os.environ["MLJET_OUTPUT_ROOT"]
     moments = cfg_dict.get("moments", [1, 2]) if dataset_type == "moment" else None
     if dataset_type == "moment":
         if not isinstance(moments, list) or not moments or any(type(m) is not int or m not in range(1, 6) for m in moments) or len(set(moments)) != len(moments):
@@ -195,6 +207,10 @@ def get_config(config_path=None):
         loss_weights = {"alpha_output": 1.0, "q0_output": 1.0} if not loss_cfg.get("weights") else loss_weights
         if "energy_loss_output" in loss_weights:
             raise ValueError("Moment dataset has no energy_loss_output target")
+    moment_loss = None
+    if dataset_type == "moment":
+        from train_utils.loss_config import resolve_moment_loss
+        moment_loss = resolve_moment_loss(loss_cfg)
 
     scheduler_type = scheduler.get('type', 'NoScheduler')
     run_tag = f"{model_tag}_bs{batch_size}_ep{epochs}_lr{learning_rate:.0e}_ds{dataset_size}_g{group_size}_sched_{scheduler_type}{preloaded}{frozen_backbone_tag}{init_tag}{weighted_loss}"
@@ -233,6 +249,7 @@ def get_config(config_path=None):
         "dataset_size": dataset_size,
         "preload_model_path": preload_model_path,
         "loss_weights": loss_weights,
+        "moment_loss": moment_loss,
         "freeze_backbone": freeze_backbone,
         "initialization": initialization,
     })

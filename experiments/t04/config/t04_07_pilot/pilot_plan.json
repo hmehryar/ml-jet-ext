@@ -1,0 +1,242 @@
+{
+  "schema": 1,
+  "baseline": "clip_s4_e3",
+  "baseline_seeds": [
+    42,
+    123,
+    2026
+  ],
+  "baseline_reused": 3,
+  "new_config_count": 21,
+  "rows": [
+    {
+      "id": "clip_s4_e3_seed42_physical_mae",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed42_physical_mae.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed42.yml",
+      "seed": 42,
+      "loss": {
+        "type": "physical_mae"
+      },
+      "sha256": "b07418940abd5246d81752f86c42c17f77a37dc22eb806184a3a117c60cf6ce3"
+    },
+    {
+      "id": "clip_s4_e3_seed42_ce_physical_mae_lambda0p1",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed42_ce_physical_mae_lambda0p1.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed42.yml",
+      "seed": 42,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.1
+      },
+      "sha256": "a445b2949c59f25b67f2e2d2e6d3e83c4afca428f9758b35ff14b2e976791e53"
+    },
+    {
+      "id": "clip_s4_e3_seed42_ce_physical_mae_lambda0p5",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed42_ce_physical_mae_lambda0p5.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed42.yml",
+      "seed": 42,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.5
+      },
+      "sha256": "13b4d51e677fdb1a02d2e061a09aa99a5cf42bbf6ae52beb8b1849cf65258393"
+    },
+    {
+      "id": "clip_s4_e3_seed42_ce_physical_mae_lambda1p0",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed42_ce_physical_mae_lambda1p0.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed42.yml",
+      "seed": 42,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 1.0
+      },
+      "sha256": "00ee5897b26f33ea8ee8326318d6dd3bb5e996b561920cf43db44e176552e28b"
+    },
+    {
+      "id": "clip_s4_e3_seed42_ce_ordinal_lambda0p1",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed42_ce_ordinal_lambda0p1.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed42.yml",
+      "seed": 42,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.1
+      },
+      "sha256": "af6948f95f5514210af2fe1becd8167141c7985bbcf72022e0d862977b4e028b"
+    },
+    {
+      "id": "clip_s4_e3_seed42_ce_ordinal_lambda0p5",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed42_ce_ordinal_lambda0p5.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed42.yml",
+      "seed": 42,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.5
+      },
+      "sha256": "ade8256ace6a97c3acb23c084760719c6227ac3dd64166ff36dc17f6361b9602"
+    },
+    {
+      "id": "clip_s4_e3_seed42_ce_ordinal_lambda1p0",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed42_ce_ordinal_lambda1p0.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed42.yml",
+      "seed": 42,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 1.0
+      },
+      "sha256": "35188171db3891dde56a057de3eee0985b62ac0ad4cf6ae21322c9be04094662"
+    },
+    {
+      "id": "clip_s4_e3_seed123_physical_mae",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed123_physical_mae.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed123.yml",
+      "seed": 123,
+      "loss": {
+        "type": "physical_mae"
+      },
+      "sha256": "f21634d8896c17455f3528830bd027c61929f5b235abe4e7a20ced3ffbdeb778"
+    },
+    {
+      "id": "clip_s4_e3_seed123_ce_physical_mae_lambda0p1",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed123_ce_physical_mae_lambda0p1.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed123.yml",
+      "seed": 123,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.1
+      },
+      "sha256": "7497018f55f791c8009a7e18f240f63e7fb2db08817ad830fd81be46bfe62823"
+    },
+    {
+      "id": "clip_s4_e3_seed123_ce_physical_mae_lambda0p5",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed123_ce_physical_mae_lambda0p5.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed123.yml",
+      "seed": 123,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.5
+      },
+      "sha256": "d848ca5c571f3731364bf3d12984e117eb5a1260c7066ddcc972d021e86bf60d"
+    },
+    {
+      "id": "clip_s4_e3_seed123_ce_physical_mae_lambda1p0",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed123_ce_physical_mae_lambda1p0.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed123.yml",
+      "seed": 123,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 1.0
+      },
+      "sha256": "5e637e110ccd0a3ca491cedc69b4d8af2cfe3e51b2e02579d1306009f6cee8a6"
+    },
+    {
+      "id": "clip_s4_e3_seed123_ce_ordinal_lambda0p1",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed123_ce_ordinal_lambda0p1.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed123.yml",
+      "seed": 123,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.1
+      },
+      "sha256": "f79191fcc20a6dff1740f0848925500258f1ab89b08ceb17b7743702228a03ee"
+    },
+    {
+      "id": "clip_s4_e3_seed123_ce_ordinal_lambda0p5",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed123_ce_ordinal_lambda0p5.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed123.yml",
+      "seed": 123,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.5
+      },
+      "sha256": "0edd2eeca341f3f819827022f4037a0c888b44182569bbc72a2bca8351c2fa7e"
+    },
+    {
+      "id": "clip_s4_e3_seed123_ce_ordinal_lambda1p0",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed123_ce_ordinal_lambda1p0.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed123.yml",
+      "seed": 123,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 1.0
+      },
+      "sha256": "18b47aeee1e3b81d474f35b5265385be979eca8c155e2606a5b2940a014f3657"
+    },
+    {
+      "id": "clip_s4_e3_seed2026_physical_mae",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed2026_physical_mae.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed2026.yml",
+      "seed": 2026,
+      "loss": {
+        "type": "physical_mae"
+      },
+      "sha256": "ee8abec8bb5107f2353ff67f79503f7c97d15f9bcd3b342656dc561aa36dd65a"
+    },
+    {
+      "id": "clip_s4_e3_seed2026_ce_physical_mae_lambda0p1",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed2026_ce_physical_mae_lambda0p1.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed2026.yml",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.1
+      },
+      "sha256": "a4446af44ffd5d106d9afd329aa070dd091bef5be6c0af83a175d378083dd885"
+    },
+    {
+      "id": "clip_s4_e3_seed2026_ce_physical_mae_lambda0p5",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed2026_ce_physical_mae_lambda0p5.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed2026.yml",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.5
+      },
+      "sha256": "2bc88dec04bacdb47311ae77d71cc1ae37884f16d9e03bc82d3efdfc5358a81e"
+    },
+    {
+      "id": "clip_s4_e3_seed2026_ce_physical_mae_lambda1p0",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed2026_ce_physical_mae_lambda1p0.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed2026.yml",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 1.0
+      },
+      "sha256": "ff0181f3fa0eb9f6c92c3bdcc76cc15f7f1e3c464e47ab81344040f4e3101561"
+    },
+    {
+      "id": "clip_s4_e3_seed2026_ce_ordinal_lambda0p1",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed2026_ce_ordinal_lambda0p1.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed2026.yml",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.1
+      },
+      "sha256": "70ea91186a70202fc58f7499bb98fc6baacf95b210b78461de1e10a8e6893dc0"
+    },
+    {
+      "id": "clip_s4_e3_seed2026_ce_ordinal_lambda0p5",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed2026_ce_ordinal_lambda0p5.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed2026.yml",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.5
+      },
+      "sha256": "df46c1dd4cf4d14c8584e7b45ca4488bb9dd0973ac38d21d123c6cd0e58ac26d"
+    },
+    {
+      "id": "clip_s4_e3_seed2026_ce_ordinal_lambda1p0",
+      "path": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_07_pilot/clip_s4_e3_seed2026_ce_ordinal_lambda1p0.yml",
+      "source": "/wsu/home/gy/gy40/gy4065/ml-jet-ext/experiments/t04/config/t04_06_v2/clip_s4_e3_seed2026.yml",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 1.0
+      },
+      "sha256": "5825401c2b071668678db6f43013e17e2bca304fc5ab823027bd9b8ccd833b78"
+    }
+  ],
+  "no_test_selection": true
+}

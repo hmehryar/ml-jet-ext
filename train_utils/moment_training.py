@@ -5,6 +5,7 @@ from pathlib import Path
 import torch
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, confusion_matrix
 from tqdm import tqdm
+from train_utils.ordinal_loss import CEOrdinalLoss, PhysicalMAELoss, physical_class_metrics, criterion_settings
 
 HEADS = ("alpha_output", "q0_output")
 
@@ -30,6 +31,7 @@ def _run(loader, model, criterion, device, loss_weights=None, optimizer=None):
     if "energy_loss_output" in weights:
         raise ValueError("Moment dataset does not support energy-loss weights")
     totals = {"loss": 0.0, "loss_alpha": 0.0, "loss_q0": 0.0}
+    components = {}
     truth, guesses = {k: [] for k in HEADS}, {k: [] for k in HEADS}
     correct_both = 0
     total = 0
@@ -40,7 +42,23 @@ def _run(loader, model, criterion, device, loss_weights=None, optimizer=None):
             labels = {key: label_batch[key].to(device, non_blocking=True) for key in HEADS}
             outputs = model(images)
             _check_batch(outputs, labels)
-            losses = {key: criterion[key](outputs[key], labels[key]) for key in HEADS}
+            losses = {}
+            batch_components = {}
+            for key, tag in zip(HEADS, ('alpha', 'q0')):
+                if isinstance(criterion[key], CEOrdinalLoss):
+                    losses[key], ce, ordinal = criterion[key].components(outputs[key], labels[key])
+                    batch_components[f'loss_{tag}_ce'] = ce.item()
+                    batch_components[f'loss_{tag}_ordinal'] = ordinal.item()
+                elif isinstance(criterion[key], PhysicalMAELoss):
+                    losses[key], ce, physical = criterion[key].components(outputs[key], labels[key])
+                    batch_components[f'loss_{tag}_ce'] = float(ce.detach()) if ce is not None else 0.
+                    batch_components[f'loss_{tag}_ordinal'] = 0.
+                    batch_components[f'loss_{tag}_physical_mae'] = float(physical.detach())
+                else:
+                    losses[key] = criterion[key](outputs[key], labels[key])
+                    if isinstance(criterion[key], torch.nn.CrossEntropyLoss):
+                        batch_components[f'loss_{tag}_ce'] = losses[key].item()
+                        batch_components[f'loss_{tag}_ordinal'] = 0.0
             batch_loss = sum(float(weights.get(key, 1.0)) * losses[key] for key in HEADS)
             if training:
                 optimizer.zero_grad(set_to_none=True)
@@ -48,6 +66,8 @@ def _run(loader, model, criterion, device, loss_weights=None, optimizer=None):
                 optimizer.step()
             b = images.size(0)
             total += b
+            for key, value in batch_components.items():
+                components[key] = components.get(key, 0.0) + value * b
             totals["loss"] += batch_loss.item() * b
             totals["loss_alpha"] += losses["alpha_output"].item() * b
             totals["loss_q0"] += losses["q0_output"].item() * b
@@ -60,6 +80,7 @@ def _run(loader, model, criterion, device, loss_weights=None, optimizer=None):
     if not total:
         raise ValueError("Empty moment dataset")
     result = {key: v / total for key, v in totals.items()}
+    result.update({key: value / total for key, value in components.items()})
     result["accuracy"] = correct_both / total  # both heads correct, same sample
     for key, tag, count in (("alpha_output", "alpha", 7), ("q0_output", "q0", 5)):
         y, p = truth[key], guesses[key]
@@ -71,6 +92,9 @@ def _run(loader, model, criterion, device, loss_weights=None, optimizer=None):
             "confusion_matrix": confusion_matrix(y, p, labels=list(range(count))).tolist(),
         }
         result[f"accuracy_{tag}"] = result[tag]["accuracy"]
+        from data.moment_loader import ALPHA_VALUES, Q0_VALUES
+        values = ALPHA_VALUES if tag == 'alpha' else Q0_VALUES
+        result[tag].update(physical_class_metrics(y, p, values))
     return result
 
 
@@ -89,18 +113,36 @@ def run_moment_training_loop(cfg, train_loader, val_loader, device, model, crite
         raise ValueError("OneCycleLR requires per-batch scheduling; not supported by moment epoch loop")
     out = Path(cfg.output_dir)
     out.mkdir(parents=True, exist_ok=True)
+    # A loop invocation owns its training artifacts exclusively. Existing callers
+    # may supply an empty directory; prepared runs also contain provenance files.
+    if any((out / name).exists() for name in
+           ('best_model.pth', 'last_model.pth', 'moment_epoch_metrics.csv')):
+        raise FileExistsError(f'Existing training outputs at {out}; choose a fresh run')
+    with (out / '.training.lock').open('x') as lock:
+        lock.write('fresh training; automatic resume is not supported\n')
+    scheduler_settings = None
+    if isinstance(scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
+        from train_utils.t03_runtime import resolve_scheduler
+        scheduler_settings = resolve_scheduler(getattr(cfg, 'scheduler', {}) or {})
+        if scheduler.mode != scheduler_settings['mode']:
+            raise ValueError('Scheduler object direction differs from resolved configuration')
     weights = getattr(cfg, "loss_weights", None)
     best_acc, best_epoch, best_metrics, stagnant = -1.0, -1, None, 0
     csv_file = out / "moment_epoch_metrics.csv"
     cols = ["epoch", "train_loss", "train_alpha_accuracy", "train_q0_accuracy",
             "train_joint_accuracy", "train_alpha_loss", "train_q0_loss", "val_loss", "val_alpha_loss", "val_q0_loss", "val_alpha_accuracy",
             "val_q0_accuracy", "val_joint_accuracy", "val_alpha_macro_f1", "val_q0_macro_f1", "lr"]
+    cols += [f'{split}_{tag}_{component}_loss' for split in ('train', 'val')
+             for tag in ('alpha', 'q0') for component in ('ce', 'ordinal')]
+    cols += [f'{split}_{tag}_{metric}' for split in ('train', 'val')
+             for tag in ('alpha', 'q0') for metric in ('mae', 'rmse', 'normalized_mae')]
     for epoch in range(start_epoch, cfg.epochs):
         train = train_moment_epoch(train_loader, model, criterion, optimizer, device, weights)
         val = evaluate_moment(val_loader, model, criterion, device, weights)
         if scheduler is not None:
             if isinstance(scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
-                scheduler.step(val["accuracy"])
+                monitor = scheduler_settings['monitor']
+                scheduler.step(val['loss'] if monitor == 'val_loss' else val['accuracy'])
             else:
                 scheduler.step()
         lr = optimizer.param_groups[0]["lr"]
@@ -115,6 +157,12 @@ def run_moment_training_loop(cfg, train_loader, val_loader, device, model, crite
                       val_joint_accuracy=val["accuracy"],
                       val_alpha_macro_f1=val["alpha"]["f1"],
                       val_q0_macro_f1=val["q0"]["f1"], lr=lr)
+        for split, metrics in (('train', train), ('val', val)):
+            for tag in ('alpha', 'q0'):
+                for component in ('ce', 'ordinal'):
+                    record[f'{split}_{tag}_{component}_loss'] = metrics.get(f'loss_{tag}_{component}', '')
+                for metric in ('mae', 'rmse', 'normalized_mae'):
+                    record[f'{split}_{tag}_{metric}'] = metrics[tag].get(metric, '')
         with csv_file.open("a", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=cols)
             if f.tell() == 0:
@@ -122,7 +170,11 @@ def run_moment_training_loop(cfg, train_loader, val_loader, device, model, crite
             writer.writerow(record)
         state = {"epoch": epoch + 1, "model_state_dict": model.state_dict(),
                  "optimizer_state_dict": optimizer.state_dict(), "metrics": val,
-                 "dataset_type": "moment", "moments": getattr(cfg, "moments", None)}
+                 "dataset_type": "moment", "moments": getattr(cfg, "moments", None),
+                 "scheduler_state_dict": scheduler.state_dict() if scheduler is not None else None,
+                 "scheduler_settings": scheduler_settings,
+                 "loss_config": getattr(cfg, 'moment_loss', None),
+                 "criterion_settings": criterion_settings(criterion)}
         torch.save(state, out / "last_model.pth")
         if val["accuracy"] > best_acc:
             best_acc, best_epoch, best_metrics, stagnant = val["accuracy"], epoch + 1, val, 0
@@ -132,6 +184,9 @@ def run_moment_training_loop(cfg, train_loader, val_loader, device, model, crite
         print(f"[Moment] Epoch {epoch + 1}: val alpha={val['alpha']['accuracy']:.4f}, "
               f"q0={val['q0']['accuracy']:.4f}, joint={val['accuracy']:.4f}, "
               f"loss={val['loss']:.4f}")
+        if 'mae' in val['alpha']:
+            print(f"[Moment] Physical MAE: alpha={val['alpha']['mae']:.6f}, "
+                  f"Q0={val['q0']['mae']:.6f} GeV", flush=True)
         if stagnant >= cfg.patience:
             break
     return best_epoch, best_acc, best_metrics

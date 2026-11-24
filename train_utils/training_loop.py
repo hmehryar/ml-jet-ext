@@ -240,7 +240,8 @@ def build_model_optimizer_and_criterion_from_cfg(cfg, device):
         'q0_output': nn.CrossEntropyLoss()
     }
     if getattr(cfg, "dataset_type", "legacy") == "moment":
-        criterion.pop("energy_loss_output")
+        from train_utils.ordinal_loss import build_moment_criterion
+        criterion = build_moment_criterion(getattr(cfg, 'moment_loss', None), device)
     print(f"[INFO] Loss functions:{criterion}")
     return model, criterion, optimizer
     """Replace this stub with your actual model + criterion creation."""

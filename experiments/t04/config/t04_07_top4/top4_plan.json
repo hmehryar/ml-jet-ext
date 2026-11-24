@@ -1,0 +1,1298 @@
+{
+  "schema": 1,
+  "kind": "T04-07-top4-loss-production-v1",
+  "baseline_reused": 12,
+  "original_top1_already_complete": "clip_s4_e3",
+  "expected_new_runs": 84,
+  "original_ce_ranked": [
+    {
+      "rank": 2,
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "mean_best_joint_accuracy": 0.1914285714,
+      "sample_sd": 0.0108091043
+    },
+    {
+      "rank": 3,
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "mean_best_joint_accuracy": 0.175,
+      "sample_sd": 0.0173205081
+    },
+    {
+      "rank": 4,
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "mean_best_joint_accuracy": 0.1733333333,
+      "sample_sd": 0.0136713116
+    },
+    {
+      "rank": 5,
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "mean_best_joint_accuracy": 0.165952381,
+      "sample_sd": 0.0505295091
+    }
+  ],
+  "output_root": "/rs/rs_grp_mljet/ml-jet-ext/training_output/T04/t04_07_top4_production",
+  "seeds": [
+    42,
+    123,
+    2026
+  ],
+  "treatments": 7,
+  "rows": [
+    {
+      "id": "clip_s4_e4_seed42_physical_mae",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed42_physical_mae.yml",
+      "config_sha256": "5f8891b28705317ee185b64c1b05db49e17c9d1461ba67a752221606e3c01393",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed42.yml",
+      "source_baseline_sha256": "a3ca28cd3f96d30db35f9972fa9f6843b9c46e5ec196388557f09c7b6d1dc83b",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 42,
+      "loss": {
+        "type": "physical_mae"
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed42_ce_physical_mae_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed42_ce_physical_mae_lambda0p1.yml",
+      "config_sha256": "a3d51ca1b27137d71cb279bd9442e8d6d8364d356d596a9997d95f410f2181f4",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed42.yml",
+      "source_baseline_sha256": "a3ca28cd3f96d30db35f9972fa9f6843b9c46e5ec196388557f09c7b6d1dc83b",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 42,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.1
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed42_ce_physical_mae_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed42_ce_physical_mae_lambda0p5.yml",
+      "config_sha256": "41e03a8c647d102a2e8099a4781b0b7020d9f21f255730e8835db3dbb3fd776a",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed42.yml",
+      "source_baseline_sha256": "a3ca28cd3f96d30db35f9972fa9f6843b9c46e5ec196388557f09c7b6d1dc83b",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 42,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.5
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed42_ce_physical_mae_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed42_ce_physical_mae_lambda1p0.yml",
+      "config_sha256": "39e171be9fd738c9efbc94d4c117545eb1fd983423bf0edc3c6bd124b41eaca6",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed42.yml",
+      "source_baseline_sha256": "a3ca28cd3f96d30db35f9972fa9f6843b9c46e5ec196388557f09c7b6d1dc83b",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 42,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 1.0
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed42_ce_ordinal_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed42_ce_ordinal_lambda0p1.yml",
+      "config_sha256": "41fb4f30ae56959fa5a88ca7b49ef88bdee58f7bbd934280b819c09a364258af",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed42.yml",
+      "source_baseline_sha256": "a3ca28cd3f96d30db35f9972fa9f6843b9c46e5ec196388557f09c7b6d1dc83b",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 42,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.1
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed42_ce_ordinal_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed42_ce_ordinal_lambda0p5.yml",
+      "config_sha256": "9c3a0da0845ea892c7d5ddf0d46deac56a89a1821c6096b3ac73ac258ab318f3",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed42.yml",
+      "source_baseline_sha256": "a3ca28cd3f96d30db35f9972fa9f6843b9c46e5ec196388557f09c7b6d1dc83b",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 42,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.5
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed42_ce_ordinal_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed42_ce_ordinal_lambda1p0.yml",
+      "config_sha256": "8712a1997d0d8365f42520bad719d6648ffd68971ff0ec21af49945d0f74029c",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed42.yml",
+      "source_baseline_sha256": "a3ca28cd3f96d30db35f9972fa9f6843b9c46e5ec196388557f09c7b6d1dc83b",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 42,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 1.0
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed123_physical_mae",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed123_physical_mae.yml",
+      "config_sha256": "767fdf052c2d09ca28ea94476256f40d7334cc7a6eff5539c69e245196920509",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed123.yml",
+      "source_baseline_sha256": "25f2829ccdb72367d11edae0606f6fc1cfde866d85aeb09559192163d00079b0",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 123,
+      "loss": {
+        "type": "physical_mae"
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed123_ce_physical_mae_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed123_ce_physical_mae_lambda0p1.yml",
+      "config_sha256": "ca95298e69efd8bb9e47a49be3ac5c1618403718bf993800d57b36d90f25d87e",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed123.yml",
+      "source_baseline_sha256": "25f2829ccdb72367d11edae0606f6fc1cfde866d85aeb09559192163d00079b0",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 123,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.1
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed123_ce_physical_mae_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed123_ce_physical_mae_lambda0p5.yml",
+      "config_sha256": "ba5c7c96f29791e62a0d66eb8a534b2564ba3017e3ff94407eafbcaa838d5c49",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed123.yml",
+      "source_baseline_sha256": "25f2829ccdb72367d11edae0606f6fc1cfde866d85aeb09559192163d00079b0",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 123,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.5
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed123_ce_physical_mae_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed123_ce_physical_mae_lambda1p0.yml",
+      "config_sha256": "6d6684ef1892af603768ba235d31316459941ec808eaedb6022a17f9b09aff84",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed123.yml",
+      "source_baseline_sha256": "25f2829ccdb72367d11edae0606f6fc1cfde866d85aeb09559192163d00079b0",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 123,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 1.0
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed123_ce_ordinal_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed123_ce_ordinal_lambda0p1.yml",
+      "config_sha256": "3e89e7623ba796ea879f671ef7561f827a0a6cff18ad181e7842bf247667d856",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed123.yml",
+      "source_baseline_sha256": "25f2829ccdb72367d11edae0606f6fc1cfde866d85aeb09559192163d00079b0",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 123,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.1
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed123_ce_ordinal_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed123_ce_ordinal_lambda0p5.yml",
+      "config_sha256": "4a8711df018bb29e172cf709940c140ce1fe93e32ee965c7da40b7992687b70f",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed123.yml",
+      "source_baseline_sha256": "25f2829ccdb72367d11edae0606f6fc1cfde866d85aeb09559192163d00079b0",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 123,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.5
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed123_ce_ordinal_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed123_ce_ordinal_lambda1p0.yml",
+      "config_sha256": "37fe2dedc0498d1e926665b482e42eb5b06c9fd449e373d21b9733a81cfe0cc6",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed123.yml",
+      "source_baseline_sha256": "25f2829ccdb72367d11edae0606f6fc1cfde866d85aeb09559192163d00079b0",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 123,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 1.0
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed2026_physical_mae",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed2026_physical_mae.yml",
+      "config_sha256": "ce183fa6361980ae82ca8ab836663f07ee281b66fa9677c36658bc87aae0f7bf",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed2026.yml",
+      "source_baseline_sha256": "73b2d015d151c753037920267c21193b81be626657b55d23d00259e994dfc63f",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 2026,
+      "loss": {
+        "type": "physical_mae"
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed2026_ce_physical_mae_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed2026_ce_physical_mae_lambda0p1.yml",
+      "config_sha256": "424e181138b52bf76481c566cd3b40c7287033d22221951c13e686aabcf123de",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed2026.yml",
+      "source_baseline_sha256": "73b2d015d151c753037920267c21193b81be626657b55d23d00259e994dfc63f",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.1
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed2026_ce_physical_mae_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed2026_ce_physical_mae_lambda0p5.yml",
+      "config_sha256": "3b8a8b3319497d86bf5513df8bfe75c1090f1b55db5089013b701155de276a42",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed2026.yml",
+      "source_baseline_sha256": "73b2d015d151c753037920267c21193b81be626657b55d23d00259e994dfc63f",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.5
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed2026_ce_physical_mae_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed2026_ce_physical_mae_lambda1p0.yml",
+      "config_sha256": "d40870a793700f480b9ac1791e4ebad102fae8ac474f485e6c60da89179292bb",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed2026.yml",
+      "source_baseline_sha256": "73b2d015d151c753037920267c21193b81be626657b55d23d00259e994dfc63f",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 1.0
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed2026_ce_ordinal_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed2026_ce_ordinal_lambda0p1.yml",
+      "config_sha256": "dcee5c7c184d05bc03ec9db51574c6c80e0eb46a0c008577e2b43a7c23014ac2",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed2026.yml",
+      "source_baseline_sha256": "73b2d015d151c753037920267c21193b81be626657b55d23d00259e994dfc63f",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.1
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed2026_ce_ordinal_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed2026_ce_ordinal_lambda0p5.yml",
+      "config_sha256": "08b934df8046ff6057d6b85bd7cda31176640a1470eb535ac830ce7d5cb5da3c",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed2026.yml",
+      "source_baseline_sha256": "73b2d015d151c753037920267c21193b81be626657b55d23d00259e994dfc63f",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.5
+      }
+    },
+    {
+      "id": "clip_s4_e4_seed2026_ce_ordinal_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e4_seed2026_ce_ordinal_lambda1p0.yml",
+      "config_sha256": "68ed14d5334317fe52f766810cbef8f76618012a4e1e676260b9629389740f02",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e4_seed2026.yml",
+      "source_baseline_sha256": "73b2d015d151c753037920267c21193b81be626657b55d23d00259e994dfc63f",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 1.0
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed42_physical_mae",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed42_physical_mae.yml",
+      "config_sha256": "3bc164b124d7a0a3fdd58d699a76d20f1780553b99ed5c403f9a87288a5ec76e",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed42.yml",
+      "source_baseline_sha256": "0646bf8874eef06ac499669ea3e50c90794ad0382bb05440b94df4f4cf6ecc3b",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 42,
+      "loss": {
+        "type": "physical_mae"
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed42_ce_physical_mae_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed42_ce_physical_mae_lambda0p1.yml",
+      "config_sha256": "e08ecfc86781f848f0b55dfee06a003593d088cf996fda69a165d0ec247a830b",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed42.yml",
+      "source_baseline_sha256": "0646bf8874eef06ac499669ea3e50c90794ad0382bb05440b94df4f4cf6ecc3b",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 42,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.1
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed42_ce_physical_mae_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed42_ce_physical_mae_lambda0p5.yml",
+      "config_sha256": "b60c401666960fb0d86c619069d58abc3a3c768a47492f333ad9b1959d3be9b9",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed42.yml",
+      "source_baseline_sha256": "0646bf8874eef06ac499669ea3e50c90794ad0382bb05440b94df4f4cf6ecc3b",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 42,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.5
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed42_ce_physical_mae_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed42_ce_physical_mae_lambda1p0.yml",
+      "config_sha256": "3852033f934d2a9cfc407bbd2d6180b69118fdce291c876e1ce1202c02c1df7f",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed42.yml",
+      "source_baseline_sha256": "0646bf8874eef06ac499669ea3e50c90794ad0382bb05440b94df4f4cf6ecc3b",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 42,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 1.0
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed42_ce_ordinal_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed42_ce_ordinal_lambda0p1.yml",
+      "config_sha256": "73e0fb09b1cec468c6d5f01ff311b04f574fd8a08b16246f0fd7b82febb12ff3",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed42.yml",
+      "source_baseline_sha256": "0646bf8874eef06ac499669ea3e50c90794ad0382bb05440b94df4f4cf6ecc3b",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 42,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.1
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed42_ce_ordinal_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed42_ce_ordinal_lambda0p5.yml",
+      "config_sha256": "aa29e493bd450628b085547daf3dd68546e792e70e0a2e2960194b76296b0be0",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed42.yml",
+      "source_baseline_sha256": "0646bf8874eef06ac499669ea3e50c90794ad0382bb05440b94df4f4cf6ecc3b",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 42,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.5
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed42_ce_ordinal_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed42_ce_ordinal_lambda1p0.yml",
+      "config_sha256": "95d84740dd32544fe48583e7f8ed18904aed03a50902ee8af9a774968036fc37",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed42.yml",
+      "source_baseline_sha256": "0646bf8874eef06ac499669ea3e50c90794ad0382bb05440b94df4f4cf6ecc3b",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 42,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 1.0
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed123_physical_mae",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed123_physical_mae.yml",
+      "config_sha256": "6a83af9c7b18e0c024878f91fb38b91b9221d4ba8a15f38e1a3dc4099491c638",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed123.yml",
+      "source_baseline_sha256": "831157f9d21a42db7821153c0d13cde1eeb37c552d042dfd0bb6be7c2d08252e",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 123,
+      "loss": {
+        "type": "physical_mae"
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed123_ce_physical_mae_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed123_ce_physical_mae_lambda0p1.yml",
+      "config_sha256": "5e8dcc323b8850110f22b76902ceaeeaff881ad8718d2bbacd5747dff29f1289",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed123.yml",
+      "source_baseline_sha256": "831157f9d21a42db7821153c0d13cde1eeb37c552d042dfd0bb6be7c2d08252e",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 123,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.1
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed123_ce_physical_mae_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed123_ce_physical_mae_lambda0p5.yml",
+      "config_sha256": "9115167b3c96308ba2d1ba1dae12a22e5ddf6bc319713345368425f9aa3fa189",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed123.yml",
+      "source_baseline_sha256": "831157f9d21a42db7821153c0d13cde1eeb37c552d042dfd0bb6be7c2d08252e",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 123,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.5
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed123_ce_physical_mae_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed123_ce_physical_mae_lambda1p0.yml",
+      "config_sha256": "f97dbd7357193d213ad2192134eedb7f749818fc9ca1ac0b0dbebf148d720927",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed123.yml",
+      "source_baseline_sha256": "831157f9d21a42db7821153c0d13cde1eeb37c552d042dfd0bb6be7c2d08252e",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 123,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 1.0
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed123_ce_ordinal_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed123_ce_ordinal_lambda0p1.yml",
+      "config_sha256": "9c72bcf5446ae631d4e8162659a4c67118d2804a8d5f69a643fc1dce553706b4",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed123.yml",
+      "source_baseline_sha256": "831157f9d21a42db7821153c0d13cde1eeb37c552d042dfd0bb6be7c2d08252e",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 123,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.1
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed123_ce_ordinal_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed123_ce_ordinal_lambda0p5.yml",
+      "config_sha256": "590a1da33a53dfbba04ed84ba175ec9807f2634a16591d5c7acd3f8f7d76c36d",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed123.yml",
+      "source_baseline_sha256": "831157f9d21a42db7821153c0d13cde1eeb37c552d042dfd0bb6be7c2d08252e",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 123,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.5
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed123_ce_ordinal_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed123_ce_ordinal_lambda1p0.yml",
+      "config_sha256": "aa3405e470b62ae7c831135fff3588c4855ba915bf09a7d35d4e675e8479b27e",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed123.yml",
+      "source_baseline_sha256": "831157f9d21a42db7821153c0d13cde1eeb37c552d042dfd0bb6be7c2d08252e",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 123,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 1.0
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed2026_physical_mae",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed2026_physical_mae.yml",
+      "config_sha256": "9542bd2a694e25260c4127cb6ba345ddb3633593d694adc7c2b7d259706cc906",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed2026.yml",
+      "source_baseline_sha256": "8e9ca13158e85b4d6853d7222ec14fb98806be3cd2d64ea8197d17a63f4c32b3",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 2026,
+      "loss": {
+        "type": "physical_mae"
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed2026_ce_physical_mae_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed2026_ce_physical_mae_lambda0p1.yml",
+      "config_sha256": "53ced9bcda4b5f09a7ed4b6453776d7b21a89d0e05397d0ed366e44770d5ab0a",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed2026.yml",
+      "source_baseline_sha256": "8e9ca13158e85b4d6853d7222ec14fb98806be3cd2d64ea8197d17a63f4c32b3",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.1
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed2026_ce_physical_mae_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed2026_ce_physical_mae_lambda0p5.yml",
+      "config_sha256": "f88eb91bd014b2dedbee065117817d17a611e6e11a9e0434b397a28944c5851b",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed2026.yml",
+      "source_baseline_sha256": "8e9ca13158e85b4d6853d7222ec14fb98806be3cd2d64ea8197d17a63f4c32b3",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.5
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed2026_ce_physical_mae_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed2026_ce_physical_mae_lambda1p0.yml",
+      "config_sha256": "0ef00d7746aa8e06352e878ac558b4871ca3c7ac2ffadc797a4a86a2341c448d",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed2026.yml",
+      "source_baseline_sha256": "8e9ca13158e85b4d6853d7222ec14fb98806be3cd2d64ea8197d17a63f4c32b3",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 1.0
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed2026_ce_ordinal_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed2026_ce_ordinal_lambda0p1.yml",
+      "config_sha256": "11f8b9d2e3c8ab6bc8a025b5aa10e6391d4f0cc7e861f8c721fd13844ef7912e",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed2026.yml",
+      "source_baseline_sha256": "8e9ca13158e85b4d6853d7222ec14fb98806be3cd2d64ea8197d17a63f4c32b3",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.1
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed2026_ce_ordinal_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed2026_ce_ordinal_lambda0p5.yml",
+      "config_sha256": "088669f23ebeeb7b516c9ebde18d65320778fc859793a6dd0ad8e5876f3e6051",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed2026.yml",
+      "source_baseline_sha256": "8e9ca13158e85b4d6853d7222ec14fb98806be3cd2d64ea8197d17a63f4c32b3",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.5
+      }
+    },
+    {
+      "id": "siglip_s4_e4_seed2026_ce_ordinal_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e4_seed2026_ce_ordinal_lambda1p0.yml",
+      "config_sha256": "efa148ae8369fdd87d7e3b13f3585aaa8f30e422f7ece268c026f54d1055c2a7",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e4_seed2026.yml",
+      "source_baseline_sha256": "8e9ca13158e85b4d6853d7222ec14fb98806be3cd2d64ea8197d17a63f4c32b3",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E4",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 1.0
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed42_physical_mae",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed42_physical_mae.yml",
+      "config_sha256": "92dff780f22f60b730556568d6550ff6fc0a2780b2a059edb6ea44e17d144cb1",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed42.yml",
+      "source_baseline_sha256": "28d17f0b6346646a346a812cb7486a15a2652bd7a145b825ec9f2a289a6c0bbf",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 42,
+      "loss": {
+        "type": "physical_mae"
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed42_ce_physical_mae_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed42_ce_physical_mae_lambda0p1.yml",
+      "config_sha256": "eda7d7cc6fb8069efa664c8cd12b3b10924dec08b1bd6dd3068c350fdce28c18",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed42.yml",
+      "source_baseline_sha256": "28d17f0b6346646a346a812cb7486a15a2652bd7a145b825ec9f2a289a6c0bbf",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 42,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.1
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed42_ce_physical_mae_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed42_ce_physical_mae_lambda0p5.yml",
+      "config_sha256": "de1026375d45c1bd9ece81512a990ffe45d936ae30674e03260dd8c5aca8c51f",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed42.yml",
+      "source_baseline_sha256": "28d17f0b6346646a346a812cb7486a15a2652bd7a145b825ec9f2a289a6c0bbf",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 42,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.5
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed42_ce_physical_mae_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed42_ce_physical_mae_lambda1p0.yml",
+      "config_sha256": "35b85b32a4bd5c4e5e28017c4d57cb13859307a8b2f868a7319a8a1ce6489897",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed42.yml",
+      "source_baseline_sha256": "28d17f0b6346646a346a812cb7486a15a2652bd7a145b825ec9f2a289a6c0bbf",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 42,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 1.0
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed42_ce_ordinal_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed42_ce_ordinal_lambda0p1.yml",
+      "config_sha256": "c242cec9785e4c6247e8f4170e9ff5d3c89f171acb938225d1d349af02631874",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed42.yml",
+      "source_baseline_sha256": "28d17f0b6346646a346a812cb7486a15a2652bd7a145b825ec9f2a289a6c0bbf",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 42,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.1
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed42_ce_ordinal_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed42_ce_ordinal_lambda0p5.yml",
+      "config_sha256": "111f61a10f4fc1d5f5d367aaa5676c0d0567fe12b6fa8a55c6fa2eaa9a391b5a",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed42.yml",
+      "source_baseline_sha256": "28d17f0b6346646a346a812cb7486a15a2652bd7a145b825ec9f2a289a6c0bbf",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 42,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.5
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed42_ce_ordinal_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed42_ce_ordinal_lambda1p0.yml",
+      "config_sha256": "2b96cac71efdeb0baf7a2257c7eb32b1f73709738b852102229255012736d167",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed42.yml",
+      "source_baseline_sha256": "28d17f0b6346646a346a812cb7486a15a2652bd7a145b825ec9f2a289a6c0bbf",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 42,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 1.0
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed123_physical_mae",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed123_physical_mae.yml",
+      "config_sha256": "f5b3d37eb2625b97c5784dfbf2b8025af5ac0d37b62731e4ba17f4dc9a2dbd5d",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed123.yml",
+      "source_baseline_sha256": "08a2f88b6ad5af99e94b3aefaebe8f074cadc03583dbfaff7cebd6baca4bcf18",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 123,
+      "loss": {
+        "type": "physical_mae"
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed123_ce_physical_mae_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed123_ce_physical_mae_lambda0p1.yml",
+      "config_sha256": "96d780872d17176ab7c2ebc800f6b212dae0e1258b69076cd4bb9df9bcd0f1fd",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed123.yml",
+      "source_baseline_sha256": "08a2f88b6ad5af99e94b3aefaebe8f074cadc03583dbfaff7cebd6baca4bcf18",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 123,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.1
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed123_ce_physical_mae_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed123_ce_physical_mae_lambda0p5.yml",
+      "config_sha256": "592632e77e1c9515c3f96e95e814c39c2e0bdd2b48e4eced39f6b1fe85a28414",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed123.yml",
+      "source_baseline_sha256": "08a2f88b6ad5af99e94b3aefaebe8f074cadc03583dbfaff7cebd6baca4bcf18",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 123,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.5
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed123_ce_physical_mae_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed123_ce_physical_mae_lambda1p0.yml",
+      "config_sha256": "e501a50527c210809cb20a289399250629de08b211ceba9d6fbb166f7cd1d2c8",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed123.yml",
+      "source_baseline_sha256": "08a2f88b6ad5af99e94b3aefaebe8f074cadc03583dbfaff7cebd6baca4bcf18",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 123,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 1.0
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed123_ce_ordinal_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed123_ce_ordinal_lambda0p1.yml",
+      "config_sha256": "be22ff4fc4f4266f2d91dc48dc68f2ee9e32c6253f4d1b211d51ef6c34a3e398",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed123.yml",
+      "source_baseline_sha256": "08a2f88b6ad5af99e94b3aefaebe8f074cadc03583dbfaff7cebd6baca4bcf18",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 123,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.1
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed123_ce_ordinal_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed123_ce_ordinal_lambda0p5.yml",
+      "config_sha256": "2302c888f649ad8b2b243efbe2ef04baee61bda57de5bae071302090ce9c4301",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed123.yml",
+      "source_baseline_sha256": "08a2f88b6ad5af99e94b3aefaebe8f074cadc03583dbfaff7cebd6baca4bcf18",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 123,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.5
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed123_ce_ordinal_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed123_ce_ordinal_lambda1p0.yml",
+      "config_sha256": "538f0836fec48c8182f03a8164826675aa1198a811ccaff4f309cebb4e698735",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed123.yml",
+      "source_baseline_sha256": "08a2f88b6ad5af99e94b3aefaebe8f074cadc03583dbfaff7cebd6baca4bcf18",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 123,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 1.0
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed2026_physical_mae",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed2026_physical_mae.yml",
+      "config_sha256": "12a5d4005f153077b883cd5a7461c33b8da3692e195ed586f0d012fd60fea14e",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed2026.yml",
+      "source_baseline_sha256": "7206d3a230b1bed63d277304d17964b351b5e74116456531bcedf3f055c5c77e",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 2026,
+      "loss": {
+        "type": "physical_mae"
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed2026_ce_physical_mae_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed2026_ce_physical_mae_lambda0p1.yml",
+      "config_sha256": "1f21f53c1e717e768c6352b518f236e3642eb4db2d46f1c4c4fcdbbd68b93565",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed2026.yml",
+      "source_baseline_sha256": "7206d3a230b1bed63d277304d17964b351b5e74116456531bcedf3f055c5c77e",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.1
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed2026_ce_physical_mae_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed2026_ce_physical_mae_lambda0p5.yml",
+      "config_sha256": "ed7f667385bc1a5adc367859c8a0a64cde77ab55f6611086e71c2a939bd9a2a2",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed2026.yml",
+      "source_baseline_sha256": "7206d3a230b1bed63d277304d17964b351b5e74116456531bcedf3f055c5c77e",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.5
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed2026_ce_physical_mae_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed2026_ce_physical_mae_lambda1p0.yml",
+      "config_sha256": "28b9905796b6a3f3da303ddaa795ad6f9a2eaef784ff8d3de275d8e4a86a3aaf",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed2026.yml",
+      "source_baseline_sha256": "7206d3a230b1bed63d277304d17964b351b5e74116456531bcedf3f055c5c77e",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 1.0
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed2026_ce_ordinal_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed2026_ce_ordinal_lambda0p1.yml",
+      "config_sha256": "f31a2a0c9c489c94dd250858a3f420c5823ed5fe148681ff5257397d596de1f1",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed2026.yml",
+      "source_baseline_sha256": "7206d3a230b1bed63d277304d17964b351b5e74116456531bcedf3f055c5c77e",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.1
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed2026_ce_ordinal_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed2026_ce_ordinal_lambda0p5.yml",
+      "config_sha256": "72fb18a8294e72f3bcd6b7f320cbc1ead2a0afb103513b5f74637c9a9a3d4336",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed2026.yml",
+      "source_baseline_sha256": "7206d3a230b1bed63d277304d17964b351b5e74116456531bcedf3f055c5c77e",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.5
+      }
+    },
+    {
+      "id": "siglip_s4_e5_seed2026_ce_ordinal_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/siglip_s4_e5_seed2026_ce_ordinal_lambda1p0.yml",
+      "config_sha256": "d43fcd99e3ba45177cdd9dbee054c861f656f28a79d69e5eeda393f420da7283",
+      "source_baseline": "experiments/t04/config/t04_06_v2/siglip_s4_e5_seed2026.yml",
+      "source_baseline_sha256": "7206d3a230b1bed63d277304d17964b351b5e74116456531bcedf3f055c5c77e",
+      "model": "siglip",
+      "strategy": "S4",
+      "moments": "E5",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 1.0
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed42_physical_mae",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed42_physical_mae.yml",
+      "config_sha256": "b3693504d9c7ad3e80d23c7a56bb9e35a118e807fff83f90f4b2e2be26bc67c7",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed42.yml",
+      "source_baseline_sha256": "540186132db6d851b5ca15aa36db9c5af36b4eca58d0bc26eb226bf4f08e127b",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 42,
+      "loss": {
+        "type": "physical_mae"
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed42_ce_physical_mae_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed42_ce_physical_mae_lambda0p1.yml",
+      "config_sha256": "142af72facdf5f3849e5d3299e013602786a7d4b9932bee2882db980f4926514",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed42.yml",
+      "source_baseline_sha256": "540186132db6d851b5ca15aa36db9c5af36b4eca58d0bc26eb226bf4f08e127b",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 42,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.1
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed42_ce_physical_mae_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed42_ce_physical_mae_lambda0p5.yml",
+      "config_sha256": "7a6425789bce4b1547a9acaf0226f0994209a2a338583dc8bdb8c93e80aab66c",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed42.yml",
+      "source_baseline_sha256": "540186132db6d851b5ca15aa36db9c5af36b4eca58d0bc26eb226bf4f08e127b",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 42,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.5
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed42_ce_physical_mae_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed42_ce_physical_mae_lambda1p0.yml",
+      "config_sha256": "1984712cb9184fe066625e1472654bd71d0ac91a0e9b15bb4ba80e11b23f700e",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed42.yml",
+      "source_baseline_sha256": "540186132db6d851b5ca15aa36db9c5af36b4eca58d0bc26eb226bf4f08e127b",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 42,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 1.0
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed42_ce_ordinal_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed42_ce_ordinal_lambda0p1.yml",
+      "config_sha256": "e714eda66f620464dd1e6713fadada0616a87b76b05a4300ceedebd2d09f8216",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed42.yml",
+      "source_baseline_sha256": "540186132db6d851b5ca15aa36db9c5af36b4eca58d0bc26eb226bf4f08e127b",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 42,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.1
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed42_ce_ordinal_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed42_ce_ordinal_lambda0p5.yml",
+      "config_sha256": "4e2f3dc4c673f708ede92f5712f922078c0eefeb33c637f3e7a58cddd02bbd89",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed42.yml",
+      "source_baseline_sha256": "540186132db6d851b5ca15aa36db9c5af36b4eca58d0bc26eb226bf4f08e127b",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 42,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.5
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed42_ce_ordinal_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed42_ce_ordinal_lambda1p0.yml",
+      "config_sha256": "1af96dd82cdbd931ef891ee9ed015bcf4de02042cbe52a458dde6cef2f248967",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed42.yml",
+      "source_baseline_sha256": "540186132db6d851b5ca15aa36db9c5af36b4eca58d0bc26eb226bf4f08e127b",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 42,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 1.0
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed123_physical_mae",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed123_physical_mae.yml",
+      "config_sha256": "a18a1cc965096e3be0602063531273497f67873a9c33625c660825c62732e22c",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed123.yml",
+      "source_baseline_sha256": "1b4beaabe07a2a862989db40c21ab413bfa1098950472705e30f4ee3bb081630",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 123,
+      "loss": {
+        "type": "physical_mae"
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed123_ce_physical_mae_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed123_ce_physical_mae_lambda0p1.yml",
+      "config_sha256": "d82a6c32e6c5cd4b685f9002fc9225339bfbde39ff8787f77200e8c7265f4d68",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed123.yml",
+      "source_baseline_sha256": "1b4beaabe07a2a862989db40c21ab413bfa1098950472705e30f4ee3bb081630",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 123,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.1
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed123_ce_physical_mae_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed123_ce_physical_mae_lambda0p5.yml",
+      "config_sha256": "7a45504daa10906520229bc7e385888bd8642681c7f588af9347dcad7f5117f7",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed123.yml",
+      "source_baseline_sha256": "1b4beaabe07a2a862989db40c21ab413bfa1098950472705e30f4ee3bb081630",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 123,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.5
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed123_ce_physical_mae_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed123_ce_physical_mae_lambda1p0.yml",
+      "config_sha256": "268550ecaf2f663d004e26ef08902defe5eae517772bafd31f1cabb04bc04149",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed123.yml",
+      "source_baseline_sha256": "1b4beaabe07a2a862989db40c21ab413bfa1098950472705e30f4ee3bb081630",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 123,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 1.0
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed123_ce_ordinal_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed123_ce_ordinal_lambda0p1.yml",
+      "config_sha256": "6655b1bf62cfd183cb0aa44ae39266047a696b05315d56ad5e380dd486b5f432",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed123.yml",
+      "source_baseline_sha256": "1b4beaabe07a2a862989db40c21ab413bfa1098950472705e30f4ee3bb081630",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 123,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.1
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed123_ce_ordinal_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed123_ce_ordinal_lambda0p5.yml",
+      "config_sha256": "79d09677ac87a4f7f8db7cbbcab75f1caaa4aa4520bd7ae55332755e65b36e13",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed123.yml",
+      "source_baseline_sha256": "1b4beaabe07a2a862989db40c21ab413bfa1098950472705e30f4ee3bb081630",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 123,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.5
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed123_ce_ordinal_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed123_ce_ordinal_lambda1p0.yml",
+      "config_sha256": "223f16d496b0baa84fb8c86901931d18ae113c50c2890fb3f51bc5361d23f82b",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed123.yml",
+      "source_baseline_sha256": "1b4beaabe07a2a862989db40c21ab413bfa1098950472705e30f4ee3bb081630",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 123,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 1.0
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed2026_physical_mae",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed2026_physical_mae.yml",
+      "config_sha256": "79aebf867fd2effabfc59e6af02b5f773b7cffd2271015673d2b9f9c7c73dd87",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed2026.yml",
+      "source_baseline_sha256": "b6ada639839b469b44910e6bb239633e85508bbe48bdafdbbc4e46363fdd0d80",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 2026,
+      "loss": {
+        "type": "physical_mae"
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed2026_ce_physical_mae_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed2026_ce_physical_mae_lambda0p1.yml",
+      "config_sha256": "ee1b26d3a9fd7df1ecf816938806a3f6d11b16e6ec659337cd977ccb1cbf52e7",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed2026.yml",
+      "source_baseline_sha256": "b6ada639839b469b44910e6bb239633e85508bbe48bdafdbbc4e46363fdd0d80",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.1
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed2026_ce_physical_mae_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed2026_ce_physical_mae_lambda0p5.yml",
+      "config_sha256": "4387b60ee41efd091f4bfdf06bbe5262c91ef2a28280aab53748167863493bfd",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed2026.yml",
+      "source_baseline_sha256": "b6ada639839b469b44910e6bb239633e85508bbe48bdafdbbc4e46363fdd0d80",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 0.5
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed2026_ce_physical_mae_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed2026_ce_physical_mae_lambda1p0.yml",
+      "config_sha256": "4eb1173b8740a07ba48ea6cbb4f7136200329d4c80d54a0f20666fcfad764012",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed2026.yml",
+      "source_baseline_sha256": "b6ada639839b469b44910e6bb239633e85508bbe48bdafdbbc4e46363fdd0d80",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_physical_mae",
+        "mae_weight": 1.0
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed2026_ce_ordinal_lambda0p1",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed2026_ce_ordinal_lambda0p1.yml",
+      "config_sha256": "9d7067e1a3bd8658f0fc34c0541b1af581ac46b6c124735265b89d84dd048dcd",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed2026.yml",
+      "source_baseline_sha256": "b6ada639839b469b44910e6bb239633e85508bbe48bdafdbbc4e46363fdd0d80",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.1
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed2026_ce_ordinal_lambda0p5",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed2026_ce_ordinal_lambda0p5.yml",
+      "config_sha256": "6fc9717b0fbef706e1e71b7dc951609129e86de20eacd1f3aac077177d4946f0",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed2026.yml",
+      "source_baseline_sha256": "b6ada639839b469b44910e6bb239633e85508bbe48bdafdbbc4e46363fdd0d80",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 0.5
+      }
+    },
+    {
+      "id": "clip_s4_e2_seed2026_ce_ordinal_lambda1p0",
+      "config": "experiments/t04/config/t04_07_top4/clip_s4_e2_seed2026_ce_ordinal_lambda1p0.yml",
+      "config_sha256": "c5cc1a5727a5512cdb3764a9ee06f6d432dbfa034374ab14058d5a1864fb6069",
+      "source_baseline": "experiments/t04/config/t04_06_v2/clip_s4_e2_seed2026.yml",
+      "source_baseline_sha256": "b6ada639839b469b44910e6bb239633e85508bbe48bdafdbbc4e46363fdd0d80",
+      "model": "clip",
+      "strategy": "S4",
+      "moments": "E2",
+      "seed": 2026,
+      "loss": {
+        "type": "ce_ordinal",
+        "ordinal_weight": 1.0
+      }
+    }
+  ]
+}

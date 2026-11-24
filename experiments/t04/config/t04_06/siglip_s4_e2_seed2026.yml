@@ -1,0 +1,37 @@
+model: siglip
+checkpoint: google/siglip-base-patch16-224
+checkpoint_revision: 7fd15f0689c79d79e38b1c2e2e2370a7bf2761ed
+strategy: S4
+moments:
+- 1
+- 2
+moment_loss:
+  type: cross_entropy
+precision: bf16
+optimizer:
+  type: adamw
+  weight_decay: 0.01
+learning_rates:
+  backbone: 1.0e-05
+  adapter: 0.0001
+  heads: 0.0001
+seed: 2026
+epochs: 80
+min_epochs: 12
+patience: 16
+scheduler:
+  type: ReduceLROnPlateau
+  monitor: val_loss
+  mode: min
+  factor: 0.5
+  patience: 4
+  min_lr: 1.0e-08
+batch_size: 8
+gradient_accumulation: 1
+num_workers: 2
+dataset_root: /rs/rs_grp_mljet/ml-jet-ext/pTHat50-250_eCM5020_c0005_pT90-110_R0p4_agg500_m1-5_normalized
+output_root: training_output/T04/t04_06_production
+source_audit_report: /wsu/home/gy/gy40/gy4065/ml-jet-ext/training_output/T04/audits/source_disjointness.FAILED.json
+split_protocol: aggregate_disjoint
+fold: null
+gpu_profile: a100_mig_1g_10gb
